@@ -4,137 +4,137 @@
       "source": "hienphap.pdf",
       "output": "hienphap.txt",
       "method": "pdfplumber",
-      "raw_chars": 60696,
-      "clean_chars": 60672,
-      "clean_lines": 934
+      "raw_chars": 60529,
+      "clean_chars": 60505,
+      "clean_lines": 930
     },
     {
       "source": "Nhom_1\\Nghị định số 145.2020.NĐ-CP.pdf",
       "output": "Nghị_định_số_145.2020.NĐ-CP.txt",
       "method": "pdfplumber",
-      "raw_chars": 246508,
-      "clean_chars": 257526,
-      "clean_lines": 3384
+      "raw_chars": 189308,
+      "clean_chars": 189034,
+      "clean_lines": 2513
     },
     {
       "source": "Nhom_1\\Nghị định số 293.2025.NĐ-CP.pdf",
       "output": "Nghị_định_số_293.2025.NĐ-CP.txt",
       "method": "pdfplumber",
-      "raw_chars": 29299,
-      "clean_chars": 28035,
-      "clean_lines": 464
+      "raw_chars": 6922,
+      "clean_chars": 6922,
+      "clean_lines": 111
     },
     {
       "source": "Nhom_1\\VBHN-BoLuatLaoDong.pdf",
       "output": "VBHN-BoLuatLaoDong.txt",
       "method": "pdfplumber",
-      "raw_chars": 190879,
-      "clean_chars": 190455,
-      "clean_lines": 2584
+      "raw_chars": 189414,
+      "clean_chars": 188993,
+      "clean_lines": 2558
     },
     {
       "source": "Nhom_2\\LuatCongDoan.pdf",
       "output": "LuatCongDoan.txt",
       "method": "pdfplumber",
-      "raw_chars": 50306,
-      "clean_chars": 50274,
-      "clean_lines": 811
+      "raw_chars": 50143,
+      "clean_chars": 50111,
+      "clean_lines": 806
     },
     {
       "source": "Nhom_2\\LuatViecLam.pdf",
       "output": "LuatViecLam.txt",
       "method": "pdfplumber",
-      "raw_chars": 56861,
-      "clean_chars": 56819,
-      "clean_lines": 977
+      "raw_chars": 56699,
+      "clean_chars": 56657,
+      "clean_lines": 972
     },
     {
       "source": "Nhom_2\\VanBanGoc_84.2015.QH13.pdf",
       "output": "VanBanGoc_84.2015.QH13.txt",
       "method": "pdfplumber",
-      "raw_chars": 135763,
-      "clean_chars": 133410,
-      "clean_lines": 2064
+      "raw_chars": 133408,
+      "clean_chars": 133152,
+      "clean_lines": 2083
     },
     {
       "source": "Nhom_2\\VBHN-LuatBHXH.pdf",
       "output": "VBHN-LuatBHXH.txt",
       "method": "pdfplumber",
-      "raw_chars": 189512,
-      "clean_chars": 184337,
-      "clean_lines": 2967
+      "raw_chars": 189391,
+      "clean_chars": 184215,
+      "clean_lines": 2963
     },
     {
       "source": "Nhom_3\\LuatThanhTra.pdf",
       "output": "LuatThanhTra.txt",
       "method": "pdfplumber",
-      "raw_chars": 85644,
-      "clean_chars": 85508,
-      "clean_lines": 1382
+      "raw_chars": 85490,
+      "clean_chars": 85354,
+      "clean_lines": 1378
     },
     {
       "source": "Nhom_3\\Nghị định số 12.2022.NĐ-CP.pdf",
       "output": "Nghị_định_số_12.2022.NĐ-CP.txt",
       "method": "pdfplumber",
-      "raw_chars": 178641,
-      "clean_chars": 172407,
-      "clean_lines": 2255
+      "raw_chars": 177847,
+      "clean_chars": 171613,
+      "clean_lines": 2234
     },
     {
       "source": "Nhom_4\\luatnguoikhuyettat.pdf",
       "output": "luatnguoikhuyettat.txt",
       "method": "pdfplumber",
-      "raw_chars": 43005,
-      "clean_chars": 42859,
-      "clean_lines": 756
+      "raw_chars": 42834,
+      "clean_chars": 42690,
+      "clean_lines": 750
     },
     {
       "source": "Nhom_4\\Luật số 69.2020.QH14.pdf",
       "output": "Luật_số_69.2020.QH14.txt",
       "method": "pdfplumber",
-      "raw_chars": 89991,
-      "clean_chars": 89557,
-      "clean_lines": 1494
+      "raw_chars": 89829,
+      "clean_chars": 89395,
+      "clean_lines": 1490
     },
     {
       "source": "Nhom_4\\Nghị định số 152.2020.NĐ-CP.pdf",
       "output": "Nghị_định_số_152.2020.NĐ-CP.txt",
       "method": "pdfplumber",
-      "raw_chars": 55469,
-      "clean_chars": 55471,
-      "clean_lines": 767
+      "raw_chars": 54652,
+      "clean_chars": 54652,
+      "clean_lines": 744
     },
     {
       "source": "Nhom_4\\Nghị định số 70.2023.NĐ-CP.pdf",
       "output": "Nghị_định_số_70.2023.NĐ-CP.txt",
       "method": "pdfplumber",
-      "raw_chars": 35193,
-      "clean_chars": 34644,
-      "clean_lines": 608
+      "raw_chars": 18748,
+      "clean_chars": 18784,
+      "clean_lines": 256
     },
     {
       "source": "Nhom_5\\10.2012.QH13.pdf",
       "output": "10.2012.QH13.txt",
       "method": "pdfplumber",
-      "raw_chars": 160870,
-      "clean_chars": 160444,
-      "clean_lines": 2694
+      "raw_chars": 160695,
+      "clean_chars": 160271,
+      "clean_lines": 2688
     },
     {
       "source": "Nhom_6\\LuatBaoVeDuLieuCaNhan.pdf",
       "output": "LuatBaoVeDuLieuCaNhan.txt",
       "method": "pdfplumber",
-      "raw_chars": 52729,
-      "clean_chars": 52729,
-      "clean_lines": 729
+      "raw_chars": 52500,
+      "clean_chars": 52500,
+      "clean_lines": 724
     },
     {
       "source": "Nhom_6\\ND_luatbaovedulieu.pdf",
       "output": "ND_luatbaovedulieu.txt",
       "method": "pdfplumber",
-      "raw_chars": 122643,
-      "clean_chars": 113121,
-      "clean_lines": 1820
+      "raw_chars": 66813,
+      "clean_chars": 65495,
+      "clean_lines": 1058
     }
   ],
   "failed": [],

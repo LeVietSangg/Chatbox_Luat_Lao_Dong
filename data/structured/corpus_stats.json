@@ -1,20 +1,20 @@
 {
   "snapshot_date": "2026-08-01",
-  "total_chunks": 5036,
+  "total_chunks": 4880,
   "total_van_ban": 17,
-  "total_dieu": 1400,
-  "total_khoan": 4800,
-  "total_co_diem": 3081,
+  "total_dieu": 1397,
+  "total_khoan": 4686,
+  "total_co_diem": 3265,
   "hieu_luc": {
-    "con_hieu_luc": 2792,
-    "het_hieu_luc": 675,
-    "het_hieu_luc_mot_phan": 1569,
+    "con_hieu_luc": 4158,
+    "het_hieu_luc": 722,
+    "het_hieu_luc_mot_phan": 0,
     "sua_doi": 0
   },
   "by_document": {
     "Bộ luật Lao động 2012 (10/2012/QH13)": {
       "doc_code": "10_2012_QH13",
-      "chunks": 675,
+      "chunks": 674,
       "dieu": 242,
       "khoan": 629,
       "diem": 200,
@@ -38,11 +38,11 @@
     },
     "Luật Công đoàn (50/2024/QH15)": {
       "doc_code": "50_2024_QH15",
-      "chunks": 164,
+      "chunks": 175,
       "dieu": 37,
-      "khoan": 159,
-      "diem": 82,
-      "hieu_luc": "het_hieu_luc_mot_phan"
+      "khoan": 169,
+      "diem": 92,
+      "hieu_luc": "het_hieu_luc"
     },
     "Luật Người khuyết tật (51/2010/QH12)": {
       "doc_code": "51_2010_QH12",
@@ -50,15 +50,15 @@
       "dieu": 53,
       "khoan": 177,
       "diem": 101,
-      "hieu_luc": "het_hieu_luc_mot_phan"
+      "hieu_luc": "con_hieu_luc"
     },
     "Luật Thanh tra (84/2025/QH15)": {
       "doc_code": "84_2025_QH15",
       "chunks": 218,
       "dieu": 64,
-      "khoan": 214,
-      "diem": 191,
-      "hieu_luc": "het_hieu_luc_mot_phan"
+      "khoan": 215,
+      "diem": 218,
+      "hieu_luc": "con_hieu_luc"
     },
     "Luật Việc làm (74/2025/QH15)": {
       "doc_code": "74_2025_QH15",
@@ -70,59 +70,59 @@
     },
     "Luật Người lao động Việt Nam đi làm việc ở nước ngoài theo hợp đồng (69/2020/QH14)": {
       "doc_code": "69_2020_QH14",
-      "chunks": 266,
+      "chunks": 265,
       "dieu": 74,
       "khoan": 259,
-      "diem": 224,
+      "diem": 226,
       "hieu_luc": "con_hieu_luc"
     },
     "Nghị định 356/2025/NĐ-CP (356/2025/NĐ-CP)": {
       "doc_code": "356_2025_NDCP",
-      "chunks": 233,
+      "chunks": 196,
       "dieu": 42,
-      "khoan": 228,
-      "diem": 175,
+      "khoan": 195,
+      "diem": 182,
       "hieu_luc": "con_hieu_luc"
     },
     "Nghị định 12/2022/NĐ-CP (12/2022/NĐ-CP)": {
       "doc_code": "12_2022_NDCP",
-      "chunks": 328,
+      "chunks": 321,
       "dieu": 64,
       "khoan": 317,
-      "diem": 519,
+      "diem": 529,
       "hieu_luc": "con_hieu_luc"
     },
     "Nghị định 145/2020/NĐ-CP (145/2020/NĐ-CP)": {
       "doc_code": "145_2020_NDCP",
-      "chunks": 479,
-      "dieu": 118,
-      "khoan": 449,
-      "diem": 384,
-      "hieu_luc": "het_hieu_luc_mot_phan"
+      "chunks": 387,
+      "dieu": 115,
+      "khoan": 372,
+      "diem": 400,
+      "hieu_luc": "con_hieu_luc"
     },
     "Nghị định 152/2020/NĐ-CP (152/2020/NĐ-CP)": {
       "doc_code": "152_2020_NDCP",
-      "chunks": 130,
+      "chunks": 162,
       "dieu": 30,
-      "khoan": 125,
-      "diem": 92,
-      "hieu_luc": "het_hieu_luc_mot_phan"
+      "khoan": 158,
+      "diem": 164,
+      "hieu_luc": "con_hieu_luc"
     },
     "Nghị định 293/2025/NĐ-CP (293/2025/NĐ-CP)": {
       "doc_code": "293_2025_NDCP",
-      "chunks": 49,
+      "chunks": 15,
       "dieu": 5,
-      "khoan": 48,
+      "khoan": 14,
       "diem": 9,
       "hieu_luc": "con_hieu_luc"
     },
     "Nghị định 70/2023/NĐ-CP (70/2023/NĐ-CP)": {
       "doc_code": "70_2023_NDCP",
-      "chunks": 31,
+      "chunks": 20,
       "dieu": 3,
-      "khoan": 31,
+      "khoan": 20,
       "diem": 44,
-      "hieu_luc": "het_hieu_luc_mot_phan"
+      "hieu_luc": "con_hieu_luc"
     },
     "Luật An toàn, vệ sinh lao động (84/2015/QH13)": {
       "doc_code": "84_2015_QH13",
@@ -130,22 +130,22 @@
       "dieu": 93,
       "khoan": 358,
       "diem": 201,
-      "hieu_luc": "het_hieu_luc_mot_phan"
+      "hieu_luc": "con_hieu_luc"
     },
     "Bộ luật Lao động (45/2019/QH14)": {
       "doc_code": "45_2019_QH14",
-      "chunks": 683,
+      "chunks": 678,
       "dieu": 220,
-      "khoan": 644,
-      "diem": 280,
+      "khoan": 641,
+      "diem": 285,
       "hieu_luc": "con_hieu_luc"
     },
     "Luật Bảo hiểm xã hội (58/VBHN-VPQH)": {
       "doc_code": "58_VBHN-VPQH",
-      "chunks": 569,
+      "chunks": 558,
       "dieu": 141,
       "khoan": 548,
-      "diem": 318,
+      "diem": 353,
       "hieu_luc": "con_hieu_luc"
     }
   }

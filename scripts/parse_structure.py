@@ -28,167 +28,7 @@ DATA_STRUCTURED = BASE_DIR / "project" / "data" / "structured"
 
 SNAPSHOT_DATE = "2026-08-01"
 
-# ============================================================
-# BẢNG MAPPING THỦ CÔNG: filename → (doc_code, doc_name, doc_type, ngay_hieu_luc, trang_thai)
-# Đảm bảo doc_code duy nhất cho mỗi văn bản
-# ============================================================
-
-DOC_REGISTRY = {
-    "VBHN-BoLuatLaoDong": {
-        "doc_code": "45_2019_QH14",
-        "doc_name": "Bộ luật Lao động",
-        "doc_type": "Bộ luật",
-        "so_hieu": "45/2019/QH14",
-        "ngay_hieu_luc": "2026-01-01",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "VBHN, sửa đổi bởi Luật 71/2025/QH15",
-    },
-    "VBHN-LuatBHXH": {
-        "doc_code": "58_VBHN-VPQH",
-        "doc_name": "Luật Bảo hiểm xã hội",
-        "doc_type": "Luật",
-        "so_hieu": "58/VBHN-VPQH",
-        "ngay_hieu_luc": "2025-08-15",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "VBHN, sửa đổi bởi Luật 73/2025 và 84/2025",
-    },
-    "VanBanGoc_84.2015.QH13": {
-        "doc_code": "84_2015_QH13",
-        "doc_name": "Luật An toàn, vệ sinh lao động",
-        "doc_type": "Luật",
-        "so_hieu": "84/2015/QH13",
-        "ngay_hieu_luc": "2016-07-01",
-        "trang_thai_chung": "het_hieu_luc_mot_phan",
-        "ghi_chu": "Hết hiệu lực một phần",
-    },
-    "hienphap": {
-        "doc_code": "HP_2013",
-        "doc_name": "Hiến pháp 2013",
-        "doc_type": "Hiến pháp",
-        "so_hieu": "Hiến pháp 2013",
-        "ngay_hieu_luc": "2014-01-01",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "",
-    },
-    "LuatCongDoan": {
-        "doc_code": "50_2024_QH15",
-        "doc_name": "Luật Công đoàn",
-        "doc_type": "Luật",
-        "so_hieu": "50/2024/QH15",
-        "ngay_hieu_luc": "2025-07-01",
-        "trang_thai_chung": "het_hieu_luc_mot_phan",
-        "ghi_chu": "Hết hiệu lực một phần",
-    },
-    "LuatViecLam": {
-        "doc_code": "74_2025_QH15",
-        "doc_name": "Luật Việc làm",
-        "doc_type": "Luật",
-        "so_hieu": "74/2025/QH15",
-        "ngay_hieu_luc": "2026-01-01",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "",
-    },
-    "luatnguoikhuyettat": {
-        "doc_code": "51_2010_QH12",
-        "doc_name": "Luật Người khuyết tật",
-        "doc_type": "Luật",
-        "so_hieu": "51/2010/QH12",
-        "ngay_hieu_luc": "2011-01-01",
-        "trang_thai_chung": "het_hieu_luc_mot_phan",
-        "ghi_chu": "Hết hiệu lực một phần",
-    },
-    "10.2012.QH13": {
-        "doc_code": "10_2012_QH13",
-        "doc_name": "Bộ luật Lao động 2012",
-        "doc_type": "Bộ luật",
-        "so_hieu": "10/2012/QH13",
-        "ngay_hieu_luc": "2013-05-01",
-        "trang_thai_chung": "het_hieu_luc",
-        "ghi_chu": "Hết hiệu lực, thay thế bởi 45/2019/QH14",
-    },
-    "LuatThanhTra": {
-        "doc_code": "84_2025_QH15",
-        "doc_name": "Luật Thanh tra",
-        "doc_type": "Luật",
-        "so_hieu": "84/2025/QH15",
-        "ngay_hieu_luc": "2025-07-01",
-        "trang_thai_chung": "het_hieu_luc_mot_phan",
-        "ghi_chu": "Hết hiệu lực một phần",
-    },
-    "LuatBaoVeDuLieuCaNhan": {
-        "doc_code": "91_2025_QH15",
-        "doc_name": "Luật Bảo vệ dữ liệu cá nhân",
-        "doc_type": "Luật",
-        "so_hieu": "91/2025/QH15",
-        "ngay_hieu_luc": "2026-01-01",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "",
-    },
-    "Luật_số_69.2020.QH14": {
-        "doc_code": "69_2020_QH14",
-        "doc_name": "Luật Người lao động Việt Nam đi làm việc ở nước ngoài theo hợp đồng",
-        "doc_type": "Luật",
-        "so_hieu": "69/2020/QH14",
-        "ngay_hieu_luc": "2022-01-01",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "",
-    },
-    # --- Nghị định ---
-    "Nghị_định_số_145.2020.NĐ-CP": {
-        "doc_code": "145_2020_NDCP",
-        "doc_name": "Nghị định 145/2020/NĐ-CP",
-        "doc_type": "Nghị định",
-        "so_hieu": "145/2020/NĐ-CP",
-        "ngay_hieu_luc": "2021-02-01",
-        "trang_thai_chung": "het_hieu_luc_mot_phan",
-        "ghi_chu": "Hết hiệu lực một phần. Hướng dẫn BLLĐ về điều kiện lao động và quan hệ lao động",
-    },
-    "Nghị_định_số_293.2025.NĐ-CP": {
-        "doc_code": "293_2025_NDCP",
-        "doc_name": "Nghị định 293/2025/NĐ-CP",
-        "doc_type": "Nghị định",
-        "so_hieu": "293/2025/NĐ-CP",
-        "ngay_hieu_luc": "2026-01-01",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "Mức lương tối thiểu",
-    },
-    "Nghị_định_số_152.2020.NĐ-CP": {
-        "doc_code": "152_2020_NDCP",
-        "doc_name": "Nghị định 152/2020/NĐ-CP",
-        "doc_type": "Nghị định",
-        "so_hieu": "152/2020/NĐ-CP",
-        "ngay_hieu_luc": "2021-02-15",
-        "trang_thai_chung": "het_hieu_luc_mot_phan",
-        "ghi_chu": "Hết hiệu lực một phần. Lao động nước ngoài làm việc tại Việt Nam",
-    },
-    "Nghị_định_số_12.2022.NĐ-CP": {
-        "doc_code": "12_2022_NDCP",
-        "doc_name": "Nghị định 12/2022/NĐ-CP",
-        "doc_type": "Nghị định",
-        "so_hieu": "12/2022/NĐ-CP",
-        "ngay_hieu_luc": "2022-01-17",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "Xử phạt vi phạm hành chính trong lĩnh vực lao động",
-    },
-    "Nghị_định_số_70.2023.NĐ-CP": {
-        "doc_code": "70_2023_NDCP",
-        "doc_name": "Nghị định 70/2023/NĐ-CP",
-        "doc_type": "Nghị định",
-        "so_hieu": "70/2023/NĐ-CP",
-        "ngay_hieu_luc": "2023-09-18",
-        "trang_thai_chung": "het_hieu_luc_mot_phan",
-        "ghi_chu": "Hết hiệu lực một phần. Sửa đổi NĐ 152/2020 về lao động nước ngoài",
-    },
-    "ND_luatbaovedulieu": {
-        "doc_code": "356_2025_NDCP",
-        "doc_name": "Nghị định 356/2025/NĐ-CP",
-        "doc_type": "Nghị định",
-        "so_hieu": "356/2025/NĐ-CP",
-        "ngay_hieu_luc": "2026-01-01",
-        "trang_thai_chung": "con_hieu_luc",
-        "ghi_chu": "Hướng dẫn thi hành Luật Bảo vệ dữ liệu cá nhân",
-    },
-}
+from overrides import DOC_REGISTRY, MODIFIED_PROVISIONS, ADDED_PROVISIONS
 
 
 # ============================================================
@@ -210,7 +50,7 @@ RE_MUC = re.compile(
 # Điều – bắt đầu dòng
 # Xử lý cả "Điều 1. Tiêu đề" và "Điều 1." (không có tiêu đề, như Hiến pháp)
 RE_DIEU = re.compile(
-    r'^[ \t]*Đi[eề]u[ \t]+(\d+)\b\.?[ \t]*(.*)',
+    r'^[ \t]*Đi[eề]u[ \t]+(\d+)\b(?:\.[ \t]*(.*))?[ \t]*$',
     re.MULTILINE
 )
 
@@ -382,6 +222,13 @@ def _make_chunk(doc_info: dict, chuong: str, dieu_num: str,
 
     full_content = f"{header}\n{noi_dung}" if noi_dung and noi_dung != tieu_de_dieu else header
 
+    trang_thai = doc_info.get("trang_thai_chung", "con_hieu_luc")
+    # Nếu văn bản hết hiệu lực một phần, mặc định các chunk là còn hiệu lực
+    if trang_thai == "het_hieu_luc_mot_phan":
+        trang_thai = "con_hieu_luc"
+
+    ghi_chu = doc_info.get("ghi_chu", "")
+
     return {
         "provision_id": provision_id,
         "van_ban": f"{doc_info.get('doc_name', '')} ({doc_info.get('so_hieu', doc_code)})",
@@ -392,12 +239,63 @@ def _make_chunk(doc_info: dict, chuong: str, dieu_num: str,
         "khoan": khoan_num or "",
         "diem": diem or "",
         "noi_dung": full_content,
-        "hieu_luc": doc_info.get("trang_thai_chung", "con_hieu_luc"),
+        "hieu_luc": trang_thai,
         "ngay_hieu_luc": doc_info.get("ngay_hieu_luc", ""),
         "ngay_het_hieu_luc": doc_info.get("ngay_het_hieu_luc", ""),
+        "thay_the_boi": "",
+        "thay_the_cho": "",
         "van_ban_sua_doi": "",
-        "ghi_chu": doc_info.get("ghi_chu", ""),
+        "ghi_chu": ghi_chu,
     }
+
+
+def apply_versioning(all_chunks: list[dict]) -> list[dict]:
+    """Áp dụng versioning cho các provision bị sửa đổi.
+    
+    Với mỗi provision_id nằm trong MODIFIED_PROVISIONS:
+    - Chunk gốc → gắn _v1, đánh dấu het_hieu_luc, thêm trường thay_the_boi
+    - Tạo chunk mới → gắn _v2, đánh dấu con_hieu_luc, thêm trường thay_the_cho
+    """
+    new_chunks = []
+    for chunk in all_chunks:
+        pid = chunk["provision_id"]
+        if pid in MODIFIED_PROVISIONS:
+            override = MODIFIED_PROVISIONS[pid]
+            v2_id = f"{pid}_v2"
+
+            is_bai_bo = override.get("bai_bo", False)
+
+            # --- Chunk gốc (nội dung cũ, hết hiệu lực) - giữ nguyên ID ---
+            chunk["hieu_luc"] = "het_hieu_luc"
+            if not is_bai_bo:
+                chunk["thay_the_boi"] = v2_id
+            chunk["ngay_het_hieu_luc"] = override.get("ngay_het_hieu_luc", "")
+            chunk["van_ban_sua_doi"] = override.get("van_ban_sua_doi", "")
+            chunk["ghi_chu"] = override.get("ghi_chu_v1", chunk["ghi_chu"])
+            new_chunks.append(chunk)
+
+            if not is_bai_bo:
+                # --- Chunk v2 (nội dung mới, còn hiệu lực) ---
+                v2_chunk = chunk.copy()
+                v2_chunk["provision_id"] = v2_id
+                v2_chunk["noi_dung"] = override.get("noi_dung_v2", "")
+                v2_chunk["hieu_luc"] = "con_hieu_luc"
+                v2_chunk["thay_the_boi"] = ""
+                v2_chunk["thay_the_cho"] = pid
+                if "ngay_hieu_luc_v2" in override:
+                    v2_chunk["ngay_hieu_luc"] = override["ngay_hieu_luc_v2"]
+                v2_chunk["van_ban_sua_doi"] = override.get("van_ban_sua_doi", "")
+                v2_chunk["ghi_chu"] = override.get("ghi_chu_v2", "")
+                
+                # Cho phép ghi đè các trường cấu trúc nếu có thay đổi
+                for field in ["diem", "khoan", "tieu_de_dieu", "chuong", "dieu"]:
+                    if field in override:
+                        v2_chunk[field] = override[field]
+                        
+                new_chunks.append(v2_chunk)
+        else:
+            new_chunks.append(chunk)
+    return new_chunks
 
 
 def ensure_unique_ids(all_chunks: list[dict]) -> int:
@@ -509,6 +407,22 @@ def main():
         print(f"  -> {len(chunks)} chunk(s)")
 
         all_chunks.extend(chunks)
+
+    # Áp dụng versioning cho các provision bị sửa đổi
+    print(f"\nAp dung versioning cho cac provision bi sua doi...")
+    count_before = len(all_chunks)
+    all_chunks = apply_versioning(all_chunks)
+    count_new = len(all_chunks) - count_before
+    if count_new:
+        print(f"  Da tao {count_new} chunk v2 moi (tong: {len(all_chunks)} chunks).")
+    else:
+        print(f"  Khong co provision nao can versioning.")
+
+    # Bổ sung các provision mới hoàn toàn (thêm khoản mới)
+    if ADDED_PROVISIONS:
+        print(f"\nBo sung cac provision moi...")
+        all_chunks.extend(ADDED_PROVISIONS)
+        print(f"  Da them {len(ADDED_PROVISIONS)} chunk moi.")
 
     # Kiểm tra provision_id duy nhất
     print(f"\nKiem tra tinh duy nhat cua provision_id...")
