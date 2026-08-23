@@ -200,10 +200,10 @@ def main():
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     eval_dir = os.path.join(data_dir, "eval")
 
-    # Load test set (changed from dev_set)
-    test_set_path = os.path.join(eval_dir, "test_set_v1.json")
-    print(f"Loading test set from {test_set_path}...")
-    with open(test_set_path, "r", encoding="utf-8") as f:
+    # Load dev set
+    dev_set_path = os.path.join(eval_dir, "dev_set.json")
+    print(f"Loading dev set from {dev_set_path}...")
+    with open(dev_set_path, "r", encoding="utf-8") as f:
         dev_set = json.load(f)
     # Filter out out_of_scope questions for pure retrieval evaluation
     dev_set = [q for q in dev_set if q["category"] != "out_of_scope"]
