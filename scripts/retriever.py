@@ -189,11 +189,7 @@ def main():
     retriever = LegalRetriever()
 
     test_queries = [
-        "Người lao động nghỉ việc có được hưởng trợ cấp thôi việc không?",
-        "Thời gian thử việc tối đa là bao nhiêu ngày đối với lao động phổ thông?",
-        "Người sử dụng lao động có quyền đơn phương chấm dứt hợp đồng lao động khi nào?",
-        "Mức lương tối thiểu vùng hiện nay là bao nhiêu?",
-        "Điều kiện để người lao động nước ngoài làm việc tại Việt Nam là gì?",
+        "Ký hợp đồng thử việc tối đa bao lâu với người lao động phổ thông",
     ]
 
     for query in test_queries:

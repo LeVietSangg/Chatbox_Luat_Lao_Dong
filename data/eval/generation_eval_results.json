@@ -1,0 +1,657 @@
+{
+  "metrics": {
+    "total_questions": 30,
+    "in_scope_count": 25,
+    "out_scope_count": 5,
+    "answered_in_scope_count": 5,
+    "refusal_accuracy": 1.0,
+    "false_refusal_rate": 0.8,
+    "false_acceptance_rate": 0.0,
+    "citation_validity": 0.6,
+    "citation_exact_match": 0.6,
+    "generation_latency_p50_s": 0.1366133689880371,
+    "generation_latency_p95_s": 4.214245545864103
+  },
+  "per_query": [
+    {
+      "qid": "d1_01",
+      "question": "Ký hợp đồng thử việc tối đa bao lâu với người lao động phổ thông?",
+      "category": "hop_dong_lao_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D25__K4"
+      ],
+      "retrieved_ids": [
+        "12_2022_NDCP__D10__K1",
+        "12_2022_NDCP__D10__K2",
+        "45_2019_QH14__D24__K3",
+        "45_2019_QH14__D155"
+      ],
+      "answer": "Tôi không tìm thấy thông tin để trả lời.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.5180873870849609,
+      "generation_time": 3.5787851810455322
+    },
+    {
+      "qid": "d1_02",
+      "question": "Hợp đồng lao động bằng miệng có giá trị pháp lý không?",
+      "category": "hop_dong_lao_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D14__K2"
+      ],
+      "retrieved_ids": [
+        "12_2022_NDCP__D9__K2",
+        "45_2019_QH14__D196__K2",
+        "45_2019_QH14__D14__K2",
+        "145_2020_NDCP__D10__K2"
+      ],
+      "answer": "Hai bên có thể giao kết hợp đồng lao động bằng lời nói đối với hợp đồng có thời hạn dưới 01 tháng [45_2019_QH14__D14__K2].",
+      "citations": [
+        "45_2019_QH14__D14__K2"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "retrieval_time": 0.14181303977966309,
+      "generation_time": 1.3758392333984375
+    },
+    {
+      "qid": "d1_03",
+      "question": "Công ty giữ giấy tờ gốc của tôi khi nhận việc có đúng luật không?",
+      "category": "hop_dong_lao_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D17__K1"
+      ],
+      "retrieved_ids": [
+        "84_2025_QH15__D47__K3",
+        "69_2020_QH14__D25__K3",
+        "84_2025_QH15__D47__K1",
+        "84_2025_QH15__D47__K2"
+      ],
+      "answer": "Tôi không tìm thấy thông tin để trả lời.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.08246922492980957,
+      "generation_time": 2.7850441932678223
+    },
+    {
+      "qid": "d2_01",
+      "question": "Mức lương tối thiểu vùng hiện nay là bao nhiêu?",
+      "category": "tien_luong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "293_2025_NDCP__D3__K1"
+      ],
+      "retrieved_ids": [
+        "293_2025_NDCP__D3__K1",
+        "293_2025_NDCP__D3__K3"
+      ],
+      "answer": "Mức lương tối thiểu tháng và mức lương tối thiểu giờ đối với người lao động làm việc cho người sử dụng lao động theo vùng được quy định như sau [293_2025_NDCP__D3__K1]:\n* **Vùng I**: Mức lương tối thiểu tháng là 5.310.000 đồng/tháng; mức lương tối thiểu giờ là 25.500 đồng/giờ [293_2025_NDCP__D3__K1].\n* **Vùng II**: Mức lương tối thiểu tháng là 4.730.000 đồng/tháng; mức lương tối thiểu giờ là 22.700 đồng/giờ [293_2025_NDCP__D3__K1].\n* **Vùng III**: Mức lương tối thiểu tháng là 4.140.000 đồng/tháng; mức lương tối thiểu giờ là 20.000 đồng/giờ [293_2025_NDCP__D3__K1].\n* **Vùng IV**: Mức lương tối thiểu tháng là 3.700.000 đồng/tháng; mức lương tối thiểu giờ là 17.800 đồng/giờ [293_2025_NDCP__D3__K1].",
+      "citations": [
+        "293_2025_NDCP__D3__K1",
+        "293_2025_NDCP__D3__K1",
+        "293_2025_NDCP__D3__K1",
+        "293_2025_NDCP__D3__K1",
+        "293_2025_NDCP__D3__K1"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "retrieval_time": 0.05870413780212402,
+      "generation_time": 2.5447068214416504
+    },
+    {
+      "qid": "d2_02",
+      "question": "Công ty chậm trả lương bao lâu thì tôi được quyền nghỉ việc ngay?",
+      "category": "tien_luong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D35__K2"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D97__K4",
+        "45_2019_QH14__D97__K1"
+      ],
+      "answer": "Tôi không tìm thấy thông tin để trả lời.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.07582545280456543,
+      "generation_time": 2.0046896934509277
+    },
+    {
+      "qid": "d2_03",
+      "question": "Trợ cấp thôi việc được tính như thế nào khi nghỉ việc?",
+      "category": "tien_luong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D46__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D46__K3",
+        "145_2020_NDCP__D8__K5",
+        "45_2019_QH14__D46__K2"
+      ],
+      "answer": "Khi nghỉ việc, trợ cấp thôi việc được tính dựa trên thời gian làm việc và tiền lương như sau:\n1. **Thời gian làm việc để tính trợ cấp thôi việc** là tổng thời gian người lao động đã làm việc thực tế cho người sử dụng lao động, trừ đi thời gian người lao động đã tham gia bảo hiểm thất nghiệp theo quy định của pháp luật về bảo hiểm thất nghiệp và thời gian làm việc đã được người sử dụng lao động chi trả trợ cấp thôi việc, trợ cấp mất việc làm [45_2019_QH14__D46__K2].\n2. **Tiền lương để tính trợ cấp thôi việc** là tiền lương bình quân của 06 tháng liền kề theo hợp đồng lao động trước khi người lao động thôi việc [45_2019_QH14__D46__K3],.\n * Trường hợp người lao động làm việc cho người sử dụng lao động theo nhiều hợp đồng lao động kế tiếp nhau, tiền lương để tính trợ cấp thôi việc là tiền lương bình quân của 06 tháng liền kề theo hợp đồng lao động trước khi chấm dứt hợp đồng lao động cuối cùng.\n * Nếu hợp đồng lao động cuối cùng bị tuyên bố vô hiệu vì có nội dung tiền lương thấp hơn mức lương tối thiểu vùng do Chính phủ công bố hoặc mức lương ghi trong thỏa ước lao động tập thể, thì tiền lương làm căn cứ tính trợ cấp thôi việc do hai bên thỏa thuận nhưng không thấp hơn mức lương tối thiểu vùng hoặc mức lương ghi trong thỏa ước lao động tập thể.",
+      "citations": [
+        "45_2019_QH14__D46__K2",
+        "45_2019_QH14__D46__K3"
+      ],
+      "hallucinated_ids": [
+        "145_2020_NDCP__D8__K5__a",
+        "145_2020_NDCP__D8__K5__b",
+        "145_2020_NDCP__D8__K5__b"
+      ],
+      "is_refusal": false,
+      "retrieval_time": 0.06224489212036133,
+      "generation_time": 4.508935451507568
+    },
+    {
+      "qid": "d2_04",
+      "question": "Hình thức trả lương cho người lao động gồm những gì?",
+      "category": "tien_luong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D96__K1"
+      ],
+      "retrieved_ids": [
+        "145_2020_NDCP__D54__K2",
+        "45_2019_QH14__D96__K1",
+        "45_2019_QH14__D96__K2",
+        "45_2019_QH14__D94__K1"
+      ],
+      "answer": "Người sử dụng lao động và người lao động thỏa thuận về hình thức trả lương theo thời gian, sản phẩm hoặc khoán [45_2019_QH14__D96__K1].\nLương được trả bằng tiền mặt hoặc trả qua tài khoản cá nhân của người lao động được mở tại ngân hàng [45_2019_QH14__D96__K2], [145_2020_NDCP__D54__K2]. Trường hợp trả lương qua tài khoản cá nhân, người sử dụng lao động phải trả các loại phí liên quan đến việc mở tài khoản và chuyển tiền lương [45_2019_QH14__D96__K2], [145_2020_NDCP__D54__K2].",
+      "citations": [
+        "45_2019_QH14__D96__K1",
+        "45_2019_QH14__D96__K2",
+        "145_2020_NDCP__D54__K2",
+        "45_2019_QH14__D96__K2",
+        "145_2020_NDCP__D54__K2"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "retrieval_time": 0.09586095809936523,
+      "generation_time": 3.8540689945220947
+    },
+    {
+      "qid": "d3_01",
+      "question": "Tiền lương làm thêm giờ vào ngày nghỉ lễ được tính thế nào?",
+      "category": "lam_them_gio",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D98__K1"
+      ],
+      "retrieved_ids": [
+        "145_2020_NDCP__D55__K3",
+        "145_2020_NDCP__D57__K2",
+        "145_2020_NDCP__D57__K1",
+        "45_2019_QH14__D98__K1"
+      ],
+      "answer": "Người lao động làm thêm giờ vào ngày nghỉ lễ, tết, ngày nghỉ có hưởng lương được trả lương tính theo đơn giá tiền lương hoặc tiền lương thực trả theo công việc đang làm ít nhất bằng 300%. Khoản tiền này chưa kể tiền lương ngày lễ, tết, ngày nghỉ có hưởng lương đối với người lao động hưởng lương ngày.",
+      "citations": [],
+      "hallucinated_ids": [
+        "45_2019_QH14__D98__K1c",
+        "45_2019_QH14__D98__K1c"
+      ],
+      "is_refusal": false,
+      "retrieval_time": 0.06438374519348145,
+      "generation_time": 9.647366285324097
+    },
+    {
+      "qid": "d3_02",
+      "question": "Tôi phải làm thêm giờ vào ban đêm thì được trả lương như thế nào?",
+      "category": "lam_them_gio",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D98__K3"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D98__K2",
+        "45_2019_QH14__D98__K3",
+        "145_2020_NDCP__D57__K1"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.10338497161865234,
+      "generation_time": 0.17273759841918945
+    },
+    {
+      "qid": "d3_03",
+      "question": "Làm thêm giờ tối đa trong một tháng là bao nhiêu giờ?",
+      "category": "lam_them_gio",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D107__K2"
+      ],
+      "retrieved_ids": [
+        "145_2020_NDCP__D60__K4",
+        "145_2020_NDCP__D61__K3",
+        "145_2020_NDCP__D62__4",
+        "145_2020_NDCP__D60__K2",
+        "145_2020_NDCP__D62__K2"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.07089543342590332,
+      "generation_time": 0.14324474334716797
+    },
+    {
+      "qid": "d4_01",
+      "question": "Thời giờ làm việc bình thường của người lao động là bao nhiêu tiếng một ngày?",
+      "category": "nghi_phep",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D105__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D105__K2",
+        "45_2019_QH14__D105__K1",
+        "145_2020_NDCP__D89__K3"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.08240890502929688,
+      "generation_time": 0.1319446563720703
+    },
+    {
+      "qid": "d4_02",
+      "question": "Mỗi tuần tôi được nghỉ ít nhất bao nhiêu ngày?",
+      "category": "nghi_phep",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D111__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D111__K1",
+        "45_2019_QH14__D111__K3",
+        "45_2019_QH14__D111__K2"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.07479381561279297,
+      "generation_time": 2.0956387519836426
+    },
+    {
+      "qid": "d4_03",
+      "question": "Làm việc đủ 12 tháng thì được nghỉ phép năm bao nhiêu ngày?",
+      "category": "nghi_phep",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D113__K1"
+      ],
+      "retrieved_ids": [
+        "145_2020_NDCP__D66__K1",
+        "45_2019_QH14__D113__K2",
+        "45_2019_QH14__D113__K1",
+        "145_2020_NDCP__D66__K2",
+        "45_2019_QH14__D114"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.0641012191772461,
+      "generation_time": 0.13638949394226074
+    },
+    {
+      "qid": "d4_04",
+      "question": "Người lao động được nghỉ lễ, tết như thế nào tại Việt Nam?",
+      "category": "nghi_phep",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D112__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D112__K2",
+        "145_2020_NDCP__D55__K3",
+        "45_2019_QH14__D111__K3"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.1013185977935791,
+      "generation_time": 0.1175236701965332
+    },
+    {
+      "qid": "d5_01",
+      "question": "Người lao động có được đơn phương chấm dứt hợp đồng không?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D35__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D36__K3",
+        "45_2019_QH14__D40__K1",
+        "45_2019_QH14__D34__K9"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.09548759460449219,
+      "generation_time": 0.1210012435913086
+    },
+    {
+      "qid": "d5_02",
+      "question": "Người lao động tổ chức đánh bạc tại nơi làm việc thì có bị sa thải không?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D125__K1"
+      ],
+      "retrieved_ids": [
+        "12_2022_NDCP__D15__K2",
+        "145_2020_NDCP__D37__K1",
+        "145_2020_NDCP__D37__K5",
+        "45_2019_QH14__D125__K1",
+        "45_2019_QH14__D175__K1"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.07527279853820801,
+      "generation_time": 0.13585758209228516
+    },
+    {
+      "qid": "d5_03",
+      "question": "Tự ý bỏ việc mấy ngày thì công ty có quyền sa thải?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D125__K4"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D125__K4",
+        "145_2020_NDCP__D8__K1",
+        "45_2019_QH14__D125__K2"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.1025235652923584,
+      "generation_time": 0.16147065162658691
+    },
+    {
+      "qid": "d5_04",
+      "question": "Người sử dụng lao động có quyền đơn phương chấm dứt hợp đồng lao động trong trường hợp nào?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D36__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D36__K3",
+        "45_2019_QH14__D34__K10",
+        "45_2019_QH14__D34__K9"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.11238431930541992,
+      "generation_time": 0.11554193496704102
+    },
+    {
+      "qid": "d6_01",
+      "question": "Lao động nữ sẩy thai thì được nghỉ việc hưởng BHXH bao nhiêu ngày?",
+      "category": "bao_hiem",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "58_VBHN-VPQH__D52__K1"
+      ],
+      "retrieved_ids": [
+        "58_VBHN-VPQH__D52__K2",
+        "58_VBHN-VPQH__D53__K8",
+        "58_VBHN-VPQH__D53__K1",
+        "58_VBHN-VPQH__D55__K1",
+        "58_VBHN-VPQH__D51__K1"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.10014152526855469,
+      "generation_time": 0.11812949180603027
+    },
+    {
+      "qid": "d6_02",
+      "question": "Điều kiện hưởng lương hưu đối với lao động nam làm việc bình thường là gì?",
+      "category": "bao_hiem",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "58_VBHN-VPQH__D64__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D169__K2",
+        "45_2019_QH14__D219__K4",
+        "58_VBHN-VPQH__D23__K1",
+        "58_VBHN-VPQH__D98"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.09479951858520508,
+      "generation_time": 0.12286591529846191
+    },
+    {
+      "qid": "d6_03",
+      "question": "Mức đóng bảo hiểm xã hội bắt buộc đối với người lao động là bao nhiêu?",
+      "category": "bao_hiem",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "58_VBHN-VPQH__D33__K1"
+      ],
+      "retrieved_ids": [
+        "12_2022_NDCP__D39__K7",
+        "12_2022_NDCP__D39__K5",
+        "58_VBHN-VPQH__D34__K3",
+        "12_2022_NDCP__D39__K6",
+        "12_2022_NDCP__D39__K2"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.07744884490966797,
+      "generation_time": 0.12997770309448242
+    },
+    {
+      "qid": "d7_01",
+      "question": "Công ty có bắt buộc phải tổ chức khám sức khỏe định kỳ cho nhân viên không?",
+      "category": "quyen_loi_khac",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "84_2015_QH13__D21__K1"
+      ],
+      "retrieved_ids": [
+        "84_2015_QH13__D21__K1",
+        "84_2015_QH13__D21__K4",
+        "84_2015_QH13__D21__K2",
+        "145_2020_NDCP__D80__K1"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.08208608627319336,
+      "generation_time": 0.11087822914123535
+    },
+    {
+      "qid": "d7_02",
+      "question": "Khi bị tai nạn lao động, người sử dụng lao động phải sơ cứu như thế nào?",
+      "category": "quyen_loi_khac",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "84_2015_QH13__D38__K1"
+      ],
+      "retrieved_ids": [
+        "84_2015_QH13__D38__K1",
+        "84_2015_QH13__D39__K3",
+        "84_2015_QH13__D69__K2",
+        "84_2015_QH13__D39__K1",
+        "12_2022_NDCP__D23__K1"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.1089935302734375,
+      "generation_time": 0.1192026138305664
+    },
+    {
+      "qid": "d7_03",
+      "question": "Đoàn viên công đoàn có quyền được đại diện bảo vệ quyền lợi không?",
+      "category": "quyen_loi_khac",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "50_2024_QH15__D21__K1"
+      ],
+      "retrieved_ids": [
+        "50_2024_QH15__D21__K1",
+        "50_2024_QH15__D21__K2",
+        "50_2024_QH15__D21__K6",
+        "50_2024_QH15__D4__K1",
+        "50_2024_QH15__D11__K12"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.09181809425354004,
+      "generation_time": 0.1407928466796875
+    },
+    {
+      "qid": "d7_04",
+      "question": "Việc thu thập dữ liệu cá nhân của người lao động phải đảm bảo nguyên tắc gì?",
+      "category": "quyen_loi_khac",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "91_2025_QH15__D3__K3"
+      ],
+      "retrieved_ids": [
+        "91_2025_QH15__D25__K3",
+        "91_2025_QH15__D11__K1",
+        "91_2025_QH15__D25__K2",
+        "91_2025_QH15__D3__K2",
+        "91_2025_QH15__D26__K1"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.10101747512817383,
+      "generation_time": 0.11746382713317871
+    },
+    {
+      "qid": "d8_01",
+      "question": "Công ty tôi phá sản thì giám đốc có bị đi tù không?",
+      "category": "out_of_scope",
+      "is_out_of_scope": true,
+      "gold_ids": [],
+      "retrieved_ids": [
+        "45_2019_QH14__D34__K4",
+        "145_2020_NDCP__D5__K5",
+        "69_2020_QH14__D29__K2",
+        "145_2020_NDCP__D5__K7"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.0871739387512207,
+      "generation_time": 0.1382598876953125
+    },
+    {
+      "qid": "d8_02",
+      "question": "Tôi bị tai nạn giao thông trên đường đi chơi, có được bảo hiểm y tế chi trả không?",
+      "category": "out_of_scope",
+      "is_out_of_scope": true,
+      "gold_ids": [],
+      "retrieved_ids": [
+        "84_2015_QH13__D45__K1",
+        "84_2015_QH13__D56__K3",
+        "84_2015_QH13__D39__K3",
+        "84_2015_QH13__D35__K5"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.08766412734985352,
+      "generation_time": 0.12214970588684082
+    },
+    {
+      "qid": "d8_03",
+      "question": "Mức thuế thu nhập doanh nghiệp năm 2025 là bao nhiêu?",
+      "category": "out_of_scope",
+      "is_out_of_scope": true,
+      "gold_ids": [],
+      "retrieved_ids": [
+        "58_VBHN-VPQH__D17__K2",
+        "45_2019_QH14__D102__K3",
+        "58_VBHN-VPQH__D99__K3",
+        "58_VBHN-VPQH__D17__K3",
+        "58_VBHN-VPQH__D30__K3"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.07328295707702637,
+      "generation_time": 0.12179803848266602
+    },
+    {
+      "qid": "d8_04",
+      "question": "Tôi cãi nhau với đồng nghiệp sứt đầu mẻ trán, công ty có nên đuổi cả hai không?",
+      "category": "out_of_scope",
+      "is_out_of_scope": true,
+      "gold_ids": [],
+      "retrieved_ids": [
+        "58_VBHN-VPQH__D130__K3",
+        "45_2019_QH14__D179__K2",
+        "45_2019_QH14__D177__K3"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.09946370124816895,
+      "generation_time": 0.13683724403381348
+    },
+    {
+      "qid": "d8_05",
+      "question": "Alo chatbot, tối nay ăn gì ngon?",
+      "category": "out_of_scope",
+      "is_out_of_scope": true,
+      "gold_ids": [],
+      "retrieved_ids": [
+        "45_2019_QH14__D67__K1",
+        "45_2019_QH14__D98__K3",
+        "HP_2013__D35__K2",
+        "45_2019_QH14__D106"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": true,
+      "retrieval_time": 0.08214569091796875,
+      "generation_time": 0.11781859397888184
+    }
+  ]
+}
