@@ -2,11 +2,14 @@ import os
 import json
 import re
 import time
+import logging
 
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+# Tắt cảnh báo AFC không cần thiết của SDK google-genai
+logging.getLogger("google").setLevel(logging.ERROR)
 
 class LegalGenerator:
     """
@@ -34,7 +37,7 @@ class LegalGenerator:
 
     def __init__(
         self,
-        model_name="gemini-2.5-flash",
+        model_name="gemini-2.5-flash-lite",
         temperature=0.0
     ):
         # ============================================================
@@ -254,38 +257,54 @@ CONTEXT
         (citation có thực sự hỗ trợ nội dung câu hay không).
         """
 
-        # ------------------------------------------------------------
-        # Tìm tất cả nội dung trong [...]
-        # ------------------------------------------------------------
+        citations = []
+        hallucinated = []
+        valid_citations = []
 
-        citations = re.findall(
+        # Hàm thay thế để chuẩn hóa và kiểm tra citation
+        def repl_fn(match):
+            raw_text = match.group(1)
+
+            # Tách các provision_id bằng dấu phẩy, chấm phẩy hoặc |
+            parts = re.split(r"[,;|]+", raw_text.strip())
+            parts = [p.strip() for p in parts if p.strip()]
+
+            valid_parts = []
+
+            for pid in parts:
+
+                # Tránh duplicate citation
+                if pid not in citations:
+                    citations.append(pid)
+
+                if pid not in valid_ids:
+
+                    # Tránh duplicate hallucination
+                    if pid not in hallucinated:
+                        hallucinated.append(pid)
+
+                else:
+
+                    if pid not in valid_citations:
+                        valid_citations.append(pid)
+
+                    valid_parts.append(pid)
+
+            if not valid_parts:
+                return ""
+
+            # Chuẩn hóa:
+            # [D10_K2, D11_K2]
+            # thành:
+            # [D10_K2][D11_K2]
+            return "[" + "][".join(valid_parts) + "]"
+
+
+        verified_answer = re.sub(
             r"\[([^\[\]]+)\]",
+            repl_fn,
             answer
         )
-
-        hallucinated = []
-
-        # ------------------------------------------------------------
-        # Kiểm tra citation
-        # ------------------------------------------------------------
-
-        for cid in citations:
-
-            if cid not in valid_ids:
-                hallucinated.append(cid)
-
-        # ------------------------------------------------------------
-        # Xóa citation không hợp lệ
-        # ------------------------------------------------------------
-
-        verified_answer = answer
-
-        for cid in set(hallucinated):
-
-            verified_answer = verified_answer.replace(
-                f"[{cid}]",
-                ""
-            )
 
         # ------------------------------------------------------------
         # Làm sạch khoảng trắng
@@ -312,20 +331,10 @@ CONTEXT
             verified_answer
         )
 
-        # ------------------------------------------------------------
-        # Chỉ giữ citation hợp lệ
-        # ------------------------------------------------------------
-
-        valid_citations = [
-            cid
-            for cid in citations
-            if cid in valid_ids
-        ]
-
         return (
             verified_answer,
-            hallucinated,
-            valid_citations
+            list(set(hallucinated)),
+            list(set(valid_citations))
         )
 
     # ================================================================
@@ -537,7 +546,8 @@ CONTEXT
                     "raw_answer": raw_answer,
                     "hallucinated_ids": hallucinated,
                     "citations": citations,
-                    "is_refusal": is_refusal
+                    "is_refusal": is_refusal,
+                    "api_error": False
                 }
 
             except Exception as e:
@@ -560,6 +570,7 @@ CONTEXT
                     "raw_answer": "",
                     "hallucinated_ids": [],
                     "citations": [],
-                    "is_refusal": True,
+                    "is_refusal": False,
+                    "api_error": True,
                     "error": error_str
                 }
