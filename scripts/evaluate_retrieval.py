@@ -67,13 +67,13 @@ def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
         dict chứa kết quả đánh giá theo từng phương pháp.
     """
     if top_k_values is None:
-        top_k_values = [1, 3, 5]
+        top_k_values = [1, 3, 5, 10]
 
     max_k = max(top_k_values)
     methods = {
         "BM25": lambda q: retriever.search_bm25(q, top_k=max_k),
         "Dense": lambda q: retriever.search_dense(q, top_k=max_k),
-        "Hybrid_RRF": lambda q: retriever.search_hybrid(q, top_k=max_k, rrf_k=60),
+        "Hybrid_RRF": lambda q: retriever.search_hybrid(q, top_k=max_k),
     }
 
     # Khởi tạo accumulators
@@ -151,10 +151,10 @@ def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
 def print_summary_table(summary, mode, top_k_values=None):
     """In bảng tổng hợp kết quả."""
     if top_k_values is None:
-        top_k_values = [1, 3, 5]
+        top_k_values = [1, 3, 5, 10]
 
     print(f"\n{'='*80}")
-    print(f"KẾT QUẢ ĐÁNH GIÁ RETRIEVAL (mode={mode})")
+    print(f"KET QUA DANH GIA RETRIEVAL (mode={mode})")
     print(f"{'='*80}")
 
     # Header

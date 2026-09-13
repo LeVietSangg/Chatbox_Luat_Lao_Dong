@@ -88,7 +88,13 @@ def main():
         print(f"\n---> Bắt đầu đánh giá Generation cho pipeline: {method_name}")
         
         results_for_method = all_gen_results.get(method_name, [])
-        processed_qids = {r["qid"] for r in results_for_method}
+        
+        # Chỉ skip những câu ĐÃ CÓ KẾT QUẢ THÀNH CÔNG (không bị api_error)
+        processed_qids = {r["qid"] for r in results_for_method if not r.get("api_error", False)}
+        
+        # Lọc lại danh sách kết quả, vứt bỏ những câu lỗi API cũ để chạy lại đè lên
+        results_for_method = [r for r in results_for_method if not r.get("api_error", False)]
+        all_gen_results[method_name] = results_for_method
         
         for i, item in enumerate(test_set):
             qid = item["id"]

@@ -1529,29 +1529,6 @@
       "generation_time": 1.6268882751464844
     },
     {
-      "qid": "t5_10",
-      "question": "Khi nào thì bị sa thải do tự ý bỏ việc?",
-      "category": "cham_dut_hop_dong",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D125__K4"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D125__K4",
-        "12_2022_NDCP__D46__K1",
-        "69_2020_QH14__D7__K14",
-        "45_2019_QH14__D217__K1"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "'NoneType' object has no attribute 'strip'",
-      "retrieval_time": 0.05136275291442871,
-      "generation_time": 1.6031410694122314
-    },
-    {
       "qid": "t5_11",
       "question": "Khi chấm dứt hợp đồng lao động, công ty phải thanh toán các khoản tiền trong thời gian bao lâu?",
       "category": "cham_dut_hop_dong",
@@ -2179,28 +2156,6 @@
       "error": null,
       "retrieval_time": 0.014626741409301758,
       "generation_time": 1.4788517951965332
-    },
-    {
-      "qid": "t7_09",
-      "question": "Người lao động làm hư hỏng dụng cụ phải bồi thường bao nhiêu?",
-      "category": "quyen_loi_khac",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D129__K1"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D102__K1",
-        "145_2020_NDCP__D72__K1",
-        "45_2019_QH14__D129__K1"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "'NoneType' object has no attribute 'strip'",
-      "retrieval_time": 0.03649592399597168,
-      "generation_time": 1.6150968074798584
     },
     {
       "qid": "t7_10",
@@ -2852,6 +2807,55 @@
       "error": null,
       "retrieval_time": 0.056591033935546875,
       "generation_time": 1.09501051902771
+    },
+    {
+      "qid": "t5_10",
+      "question": "Khi nào thì bị sa thải do tự ý bỏ việc?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D125__K4"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D125__K4",
+        "12_2022_NDCP__D46__K1",
+        "69_2020_QH14__D7__K14",
+        "45_2019_QH14__D217__K1"
+      ],
+      "answer": "Người lao động bị áp dụng hình thức xử lý kỷ luật sa thải khi tự ý bỏ việc 05 ngày cộng dồn trong thời hạn 30 ngày hoặc 20 ngày cộng dồn trong thời hạn 365 ngày tính từ ngày đầu tiên tự ý bỏ việc mà không có lý do chính đáng [45_2019_QH14__D125__K4].",
+      "citations": [
+        "45_2019_QH14__D125__K4"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": false,
+      "error": null,
+      "retrieval_time": 0.03003978729248047,
+      "generation_time": 1.3635663986206055
+    },
+    {
+      "qid": "t7_09",
+      "question": "Người lao động làm hư hỏng dụng cụ phải bồi thường bao nhiêu?",
+      "category": "quyen_loi_khac",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D129__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D102__K1",
+        "145_2020_NDCP__D72__K1",
+        "45_2019_QH14__D129__K1"
+      ],
+      "answer": "Người lao động làm hư hỏng dụng cụ, thiết bị hoặc có hành vi khác gây thiệt hại tài sản của người sử dụng lao động thì phải bồi thường theo quy định của pháp luật hoặc nội quy lao động của người sử dụng lao động [45_2019_QH14__D129__K1]. \nTrường hợp người lao động gây thiệt hại không nghiêm trọng do sơ suất với giá trị không quá 10 tháng lương tối thiểu vùng do Chính phủ công bố được áp dụng tại nơi người lao động làm việc thì người lao động phải bồi thường nhiều nhất là 03 tháng tiền lương và bị khấu trừ hằng tháng vào lương [45_2019_QH14__D129__K1].",
+      "citations": [
+        "45_2019_QH14__D129__K1"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": false,
+      "error": null,
+      "retrieval_time": 0.01577448844909668,
+      "generation_time": 1.8745474815368652
     }
   ],
   "Dense": [
@@ -3111,28 +3115,6 @@
       "error": null,
       "retrieval_time": 0.08405852317810059,
       "generation_time": 1.0900375843048096
-    },
-    {
-      "qid": "t1_12",
-      "question": "Người lao động có được giao kết nhiều hợp đồng lao động với nhiều công ty không?",
-      "category": "hop_dong_lao_dong",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D19__K1"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D19__K1",
-        "45_2019_QH14__D19__K2",
-        "45_2019_QH14__D11__K1"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'The service is currently unavailable.', 'status': 'UNAVAILABLE'}}",
-      "retrieval_time": 0.1067802906036377,
-      "generation_time": 3.1605043411254883
     },
     {
       "qid": "t1_13",
@@ -4158,28 +4140,6 @@
       "generation_time": 1.3984432220458984
     },
     {
-      "qid": "t5_01",
-      "question": "Người sử dụng lao động có quyền đơn phương chấm dứt hợp đồng lao động trong trường hợp nào?",
-      "category": "cham_dut_hop_dong",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D36__K1"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D36__K1",
-        "45_2019_QH14__D36__K3",
-        "45_2019_QH14__D35__K2"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "'NoneType' object has no attribute 'strip'",
-      "retrieval_time": 0.11165523529052734,
-      "generation_time": 2.497047185897827
-    },
-    {
       "qid": "t5_02",
       "question": "Người lao động được đơn phương chấm dứt hợp đồng lao động không cần báo trước khi nào?",
       "category": "cham_dut_hop_dong",
@@ -4367,27 +4327,6 @@
       "error": null,
       "retrieval_time": 0.1944115161895752,
       "generation_time": 1.3366749286651611
-    },
-    {
-      "qid": "t5_10",
-      "question": "Khi nào thì bị sa thải do tự ý bỏ việc?",
-      "category": "cham_dut_hop_dong",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D125__K4"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D125__K4",
-        "12_2022_NDCP__D46__K1"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "'NoneType' object has no attribute 'strip'",
-      "retrieval_time": 0.6074068546295166,
-      "generation_time": 1.5410397052764893
     },
     {
       "qid": "t5_11",
@@ -5021,28 +4960,6 @@
       "error": null,
       "retrieval_time": 0.0840001106262207,
       "generation_time": 1.5224664211273193
-    },
-    {
-      "qid": "t7_09",
-      "question": "Người lao động làm hư hỏng dụng cụ phải bồi thường bao nhiêu?",
-      "category": "quyen_loi_khac",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D129__K1"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D129__K1",
-        "45_2019_QH14__D129__K2",
-        "145_2020_NDCP__D71__K1"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "'NoneType' object has no attribute 'strip'",
-      "retrieval_time": 0.07652163505554199,
-      "generation_time": 1.5301663875579834
     },
     {
       "qid": "t7_10",
@@ -5694,6 +5611,99 @@
       "error": null,
       "retrieval_time": 0.06922054290771484,
       "generation_time": 1.0932724475860596
+    },
+    {
+      "qid": "t1_12",
+      "question": "Người lao động có được giao kết nhiều hợp đồng lao động với nhiều công ty không?",
+      "category": "hop_dong_lao_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D19__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D19__K1",
+        "45_2019_QH14__D19__K2",
+        "45_2019_QH14__D11__K1"
+      ],
+      "answer": "Người lao động có thể giao kết nhiều hợp đồng lao động với nhiều người sử dụng lao động nhưng phải bảo đảm thực hiện đầy đủ các nội dung đã giao kết [45_2019_QH14__D19__K1].",
+      "citations": [
+        "45_2019_QH14__D19__K1"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": false,
+      "error": null,
+      "retrieval_time": 0.053648948669433594,
+      "generation_time": 1.130723476409912
+    },
+    {
+      "qid": "t5_01",
+      "question": "Người sử dụng lao động có quyền đơn phương chấm dứt hợp đồng lao động trong trường hợp nào?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D36__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D36__K1",
+        "45_2019_QH14__D36__K3",
+        "45_2019_QH14__D35__K2"
+      ],
+      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
+      "citations": [],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": true,
+      "error": "'NoneType' object has no attribute 'strip'",
+      "retrieval_time": 0.05270576477050781,
+      "generation_time": 2.3168537616729736
+    },
+    {
+      "qid": "t5_10",
+      "question": "Khi nào thì bị sa thải do tự ý bỏ việc?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D125__K4"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D125__K4",
+        "12_2022_NDCP__D46__K1"
+      ],
+      "answer": "Người lao động bị áp dụng hình thức xử lý kỷ luật sa thải khi tự ý bỏ việc 05 ngày cộng dồn trong thời hạn 30 ngày hoặc 20 ngày cộng dồn trong thời hạn 365 ngày tính từ ngày đầu tiên tự ý bỏ việc mà không có lý do chính đáng [45_2019_QH14__D125__K4].",
+      "citations": [
+        "45_2019_QH14__D125__K4"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": false,
+      "error": null,
+      "retrieval_time": 0.0575716495513916,
+      "generation_time": 0.9792230129241943
+    },
+    {
+      "qid": "t7_09",
+      "question": "Người lao động làm hư hỏng dụng cụ phải bồi thường bao nhiêu?",
+      "category": "quyen_loi_khac",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D129__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D129__K1",
+        "45_2019_QH14__D129__K2",
+        "145_2020_NDCP__D71__K1"
+      ],
+      "answer": "Người lao động làm hư hỏng dụng cụ, thiết bị hoặc có hành vi khác gây thiệt hại tài sản của người sử dụng lao động thì phải bồi thường theo quy định của pháp luật hoặc nội quy lao động của người sử dụng lao động [45_2019_QH14__D129__K1]. \nTrường hợp gây thiệt hại không nghiêm trọng do sơ suất với giá trị không quá 10 tháng lương tối thiểu vùng do Chính phủ công bố được áp dụng tại nơi làm việc thì phải bồi thường nhiều nhất là 03 tháng tiền lương và bị khấu trừ hằng tháng vào lương theo quy định [45_2019_QH14__D129__K1].",
+      "citations": [
+        "45_2019_QH14__D129__K1"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": false,
+      "error": null,
+      "retrieval_time": 0.0446164608001709,
+      "generation_time": 1.477945327758789
     }
   ],
   "Hybrid_RRF": [
@@ -7227,29 +7237,6 @@
       "generation_time": 1.4528353214263916
     },
     {
-      "qid": "t5_10",
-      "question": "Khi nào thì bị sa thải do tự ý bỏ việc?",
-      "category": "cham_dut_hop_dong",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D125__K4"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D125__K4",
-        "12_2022_NDCP__D46__K1",
-        "69_2020_QH14__D7__K14",
-        "45_2019_QH14__D34__K8"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "'NoneType' object has no attribute 'strip'",
-      "retrieval_time": 0.11059951782226562,
-      "generation_time": 1.6223390102386475
-    },
-    {
       "qid": "t5_11",
       "question": "Khi chấm dứt hợp đồng lao động, công ty phải thanh toán các khoản tiền trong thời gian bao lâu?",
       "category": "cham_dut_hop_dong",
@@ -7884,28 +7871,6 @@
       "error": null,
       "retrieval_time": 0.09490060806274414,
       "generation_time": 1.5338211059570312
-    },
-    {
-      "qid": "t7_09",
-      "question": "Người lao động làm hư hỏng dụng cụ phải bồi thường bao nhiêu?",
-      "category": "quyen_loi_khac",
-      "is_out_of_scope": false,
-      "gold_ids": [
-        "45_2019_QH14__D129__K1"
-      ],
-      "retrieved_ids": [
-        "45_2019_QH14__D129__K1",
-        "145_2020_NDCP__D71__K1",
-        "145_2020_NDCP__D72__K1"
-      ],
-      "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
-      "citations": [],
-      "hallucinated_ids": [],
-      "is_refusal": false,
-      "api_error": true,
-      "error": "'NoneType' object has no attribute 'strip'",
-      "retrieval_time": 0.0981602668762207,
-      "generation_time": 1.7684035301208496
     },
     {
       "qid": "t7_10",
@@ -8553,6 +8518,55 @@
       "error": null,
       "retrieval_time": 0.11371278762817383,
       "generation_time": 1.1009666919708252
+    },
+    {
+      "qid": "t5_10",
+      "question": "Khi nào thì bị sa thải do tự ý bỏ việc?",
+      "category": "cham_dut_hop_dong",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D125__K4"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D125__K4",
+        "12_2022_NDCP__D46__K1",
+        "69_2020_QH14__D7__K14",
+        "45_2019_QH14__D34__K8"
+      ],
+      "answer": "Người lao động bị áp dụng hình thức xử lý kỷ luật sa thải khi tự ý bỏ việc 05 ngày cộng dồn trong thời hạn 30 ngày hoặc 20 ngày cộng dồn trong thời hạn 365 ngày tính từ ngày đầu tiên tự ý bỏ việc mà không có lý do chính đáng [45_2019_QH14__D125__K4].",
+      "citations": [
+        "45_2019_QH14__D125__K4"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": false,
+      "error": null,
+      "retrieval_time": 0.05646181106567383,
+      "generation_time": 1.1398108005523682
+    },
+    {
+      "qid": "t7_09",
+      "question": "Người lao động làm hư hỏng dụng cụ phải bồi thường bao nhiêu?",
+      "category": "quyen_loi_khac",
+      "is_out_of_scope": false,
+      "gold_ids": [
+        "45_2019_QH14__D129__K1"
+      ],
+      "retrieved_ids": [
+        "45_2019_QH14__D129__K1",
+        "145_2020_NDCP__D71__K1",
+        "145_2020_NDCP__D72__K1"
+      ],
+      "answer": "Người lao động làm hư hỏng dụng cụ phải bồi thường theo quy định của pháp luật hoặc nội quy lao động của người sử dụng lao động [45_2019_QH14__D129__K1]. \nTrường hợp gây thiệt hại không nghiêm trọng do sơ suất với giá trị không quá 10 tháng lương tối thiểu vùng do Chính phủ công bố được áp dụng tại nơi làm việc thì người lao động phải bồi thường nhiều nhất là 03 tháng tiền lương và bị khấu trừ hằng tháng vào lương [45_2019_QH14__D129__K1].",
+      "citations": [
+        "45_2019_QH14__D129__K1"
+      ],
+      "hallucinated_ids": [],
+      "is_refusal": false,
+      "api_error": false,
+      "error": null,
+      "retrieval_time": 0.0615391731262207,
+      "generation_time": 1.5894172191619873
     }
   ]
 }

@@ -94,11 +94,11 @@ class LegalRetriever:
     # ------------------------------------------------------------------
     # Hybrid Retrieval – Reciprocal Rank Fusion (RRF)
     # ------------------------------------------------------------------
-    def search_hybrid(self, query, top_k=5, rrf_k=60, retrieval_depth=100):
+    def search_hybrid(self, query, top_k=5, rrf_k=10, retrieval_depth=100, alpha=0.5):
         """Kết hợp BM25 và Dense Retrieval bằng Reciprocal Rank Fusion.
 
         Công thức RRF:
-            score_rrf(d) = Σ  1 / (k + rank_i(d))
+            score_rrf(d) = alpha * (1 / (k + rank_bm25(d))) + (1 - alpha) * (1 / (k + rank_dense(d)))
         với k là hằng số (mặc định 60, theo bài báo gốc của Cormack et al.).
 
         Args:
@@ -108,6 +108,7 @@ class LegalRetriever:
                    ảnh hưởng của thứ hạng cao; 60 là giá trị phổ biến).
             retrieval_depth: Số lượng kết quả lấy từ mỗi phương pháp trước
                              khi gộp (nên >= top_k, thường gấp 2-3 lần).
+            alpha: Trọng số cho BM25 (từ 0.0 đến 1.0). Dense sẽ có trọng số (1 - alpha).
         """
         # Lấy kết quả từ cả hai phương pháp với retrieval_depth lớn hơn top_k
         bm25_results = self.search_bm25(query, top_k=retrieval_depth)
@@ -118,11 +119,11 @@ class LegalRetriever:
 
         for rank, res in enumerate(bm25_results, start=1):
             pid = res["provision_id"]
-            rrf_scores[pid] = rrf_scores.get(pid, 0.0) + 1.0 / (rrf_k + rank)
+            rrf_scores[pid] = rrf_scores.get(pid, 0.0) + alpha * (1.0 / (rrf_k + rank))
 
         for rank, res in enumerate(dense_results, start=1):
             pid = res["provision_id"]
-            rrf_scores[pid] = rrf_scores.get(pid, 0.0) + 1.0 / (rrf_k + rank)
+            rrf_scores[pid] = rrf_scores.get(pid, 0.0) + (1.0 - alpha) * (1.0 / (rrf_k + rank))
 
         # Sắp xếp theo điểm RRF giảm dần
         sorted_pids = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)

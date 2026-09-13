@@ -58,6 +58,8 @@ def run_evaluation(retriever, generator, eval_set, top_k=5):
             "citations": gen_result["citations"],
             "hallucinated_ids": gen_result["hallucinated_ids"],
             "is_refusal": gen_result["is_refusal"],
+            "api_error": gen_result.get("api_error", False),
+            "error": gen_result.get("error"),
             "retrieval_time": retrieval_time,
             "generation_time": generation_time,
         })
@@ -78,8 +80,21 @@ def compute_metrics(results):
     """Tính toán các chỉ số đánh giá Generation."""
 
     # Phân loại câu hỏi
-    in_scope = [r for r in results if not r["is_out_of_scope"]]
-    out_scope = [r for r in results if r["is_out_of_scope"]]
+    # Loại các câu bị lỗi API khỏi việc tính metrics
+    valid_results = [
+        r for r in results
+        if not r.get("api_error", False)
+    ]
+
+    in_scope = [
+        r for r in valid_results
+        if not r["is_out_of_scope"]
+    ]
+
+    out_scope = [
+        r for r in valid_results
+        if r["is_out_of_scope"]
+    ]
 
     # =================================================================
     # 1. REFUSAL METRICS
@@ -135,10 +150,19 @@ def compute_metrics(results):
     # =================================================================
 
     import numpy as np
-    gen_times = [r["generation_time"] for r in results]
-
+    gen_times = [
+        r["generation_time"]
+        for r in valid_results
+    ]
+    api_error_count = sum(
+        1 for r in results
+        if r.get("api_error", False)
+    )
     metrics = {
         "total_questions": len(results),
+        "valid_questions": len(valid_results),
+        "api_error_count": api_error_count,
+
         "in_scope_count": len(in_scope),
         "out_scope_count": len(out_scope),
         "answered_in_scope_count": len(answered_in_scope),
@@ -168,6 +192,7 @@ def print_report(metrics, results):
     print(f"  - Trong phạm vi:       {metrics['in_scope_count']}")
     print(f"  - Ngoài phạm vi:       {metrics['out_scope_count']}")
     print(f"  - Đã trả lời (in):     {metrics['answered_in_scope_count']}")
+    print(f"  - API lỗi:              {metrics['api_error_count']}")
 
     print(f"\n--- Refusal Metrics ---")
     if metrics["refusal_accuracy"] is not None:
@@ -189,7 +214,12 @@ def print_report(metrics, results):
 
     # Chi tiết các câu bị lỗi
     print(f"\n--- Chi tiết False Refusal (câu in-scope bị từ chối sai) ---")
-    false_refs = [r for r in results if not r["is_out_of_scope"] and r["is_refusal"]]
+    false_refs = [
+        r for r in results
+        if not r.get("api_error", False)
+        and not r["is_out_of_scope"]
+        and r["is_refusal"]
+    ]
     if false_refs:
         for r in false_refs:
             print(f"  ✗ [{r['qid']}] {r['question'][:60]}")
@@ -198,7 +228,12 @@ def print_report(metrics, results):
         print("  (Không có)")
 
     print(f"\n--- Chi tiết False Acceptance (câu out-of-scope bị trả lời sai) ---")
-    false_accs = [r for r in results if r["is_out_of_scope"] and not r["is_refusal"]]
+    false_accs = [
+        r for r in results
+        if not r.get("api_error", False)
+        and r["is_out_of_scope"]
+        and not r["is_refusal"]
+    ]
     if false_accs:
         for r in false_accs:
             print(f"  ✗ [{r['qid']}] {r['question'][:60]}")

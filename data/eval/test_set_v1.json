@@ -7,10 +7,7 @@
       "45_2019_QH14__D25__K4"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D25__K4",
-      "45_2019_QH14__D25__K3",
-      "45_2019_QH14__D25__K2",
-      "45_2019_QH14__D25__K1"
+      "45_2019_QH14__D25__K4"
     ]
   },
   {
@@ -87,7 +84,7 @@
       "45_2019_QH14__D49__K1"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D49__K1"
+      "45_2019_QH14__D49__K2"
     ]
   },
   {
@@ -142,7 +139,9 @@
       "45_2019_QH14__D14__K2"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D14__K2"
+      "45_2019_QH14__D18__K2",
+      "45_2019_QH14__D145__K1",
+      "45_2019_QH14__D162__K1"
     ]
   },
   {
@@ -164,12 +163,13 @@
       "45_2019_QH14__D96__K1"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D96__K1"
+      "45_2019_QH14__D96__K2",
+      "45_2019_QH14__D96__K3"
     ]
   },
   {
     "id": "t2_03",
-    "question": "Kỳ hạn trả lương được quy định ra sao?",
+    "question": "Kỳ hạn trả lương theo giờ được quy định ra sao?",
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D97__K1"
@@ -213,7 +213,7 @@
   },
   {
     "id": "t2_07",
-    "question": "Tạm ứng tiền lương được quy định như thế nào?",
+    "question": "Người lao động có được tạm ứng tiền lương không?",
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D101__K1"
@@ -293,10 +293,10 @@
     "question": "Khi thay đổi hình thức trả lương công ty phải báo trước bao lâu?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D96__K1"
+      "10_2012_QH13__D94__K1"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D96__K1"
+      "10_2012_QH13__D94__K1"
     ]
   },
   {
@@ -403,21 +403,21 @@
     "question": "Công ty huy động làm thêm giờ trong trường hợp khẩn cấp thiên tai thì có quyền từ chối không?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D108"
+      "45_2019_QH14__D108__K2"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D108"
+      "45_2019_QH14__D108__K2"
     ]
   },
   {
     "id": "t3_11",
-    "question": "Sau những đợt làm thêm giờ nhiều ngày liên tục thì có được nghỉ bù không?",
+    "question": "Khi tổ chức làm thêm giờ, người sử dụng lao động phải thông báo cho người lao động như thế nào?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D111__K4"
+      "45_2019_QH14__D107__K4"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D111__K4"
+      "45_2019_QH14__D107__K3"
     ]
   },
   {
@@ -455,7 +455,7 @@
   },
   {
     "id": "t4_02",
-    "question": "Nghỉ lễ, tết người lao động được nghỉ những ngày nào?",
+    "question": "Người lao động được nghỉ lễ và Tết như thế nào?",
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D112__K1"
@@ -620,7 +620,7 @@
   },
   {
     "id": "t5_03",
-    "question": "Trường hợp nào người sử dụng lao động không được đơn phương chấm dứt hợp đồng?",
+    "question": "Người lao động bị bệnh nghỉ thì có bị chấm dứt hợp đông lao động không?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D37__K1"
@@ -733,15 +733,15 @@
     "question": "Nếu đơn phương chấm dứt hợp đồng trái pháp luật, người lao động phải bồi thường gì?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D40__K1"
+      "45_2019_QH14__D40__K2"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D40__K1"
+      "45_2019_QH14__D40__K2"
     ]
   },
   {
     "id": "t5_14",
-    "question": "Nghỉ hưu có phải là trường hợp chấm dứt hợp đồng lao động không?",
+    "question": "Người lao động bị kết án phạt tù thì hợp đồng lao động có chấm dứt không?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D34__K4"
@@ -895,7 +895,7 @@
   },
   {
     "id": "t7_01",
-    "question": "Người sử dụng lao động có trách nhiệm gì trong việc bảo đảm an toàn lao động?",
+    "question": "Người sử dụng lao động có trách nhiệm gì trong việc bảo đảm an toàn tại nơi làm việc?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "84_2015_QH13__D16__K1"
@@ -906,7 +906,7 @@
   },
   {
     "id": "t7_02",
-    "question": "Khi xảy ra tai nạn lao động, công ty phải làm gì?",
+    "question": "Khi xảy ra tai nạn lao động, người sử dụng lao động phải làm gì?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "84_2015_QH13__D38__K1"
@@ -928,7 +928,7 @@
   },
   {
     "id": "t7_04",
-    "question": "Được trang bị bảo hộ lao động khi nào?",
+    "question": "Người lao động được trang bị bảo hộ lao động khi nào?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "84_2015_QH13__D16__K3"
@@ -950,24 +950,24 @@
   },
   {
     "id": "t7_06",
-    "question": "Các hình thức xử lý kỷ luật lao động gồm những gì?",
+    "question": "Người lao động có quyền từ chối làm việc khi có nguy cơ rõ ràng đe dọa nghiêm trọng tính mạng, sức khỏe không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "45_2019_QH14__D124__K1"
+      "84_2015_QH13__D6__K1"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D124__K1"
+      "84_2015_QH13__D6__K1"
     ]
   },
   {
     "id": "t7_07",
-    "question": "Hành vi nào bị nghiêm cấm khi xử lý kỷ luật lao động?",
+    "question": "Người sử dụng lao động có được phạt tiền người lao động thay cho xử lý kỷ luật không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "45_2019_QH14__D127__K1"
+      "45_2019_QH14__D127__K2"
     ],
     "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D127__K1"
+      "45_2019_QH14__D127__K2"
     ]
   },
   {
@@ -994,24 +994,24 @@
   },
   {
     "id": "t7_10",
-    "question": "Đoàn viên công đoàn có những quyền gì?",
+    "question": "Đoàn viên công đoàn có được hỗ trợ pháp lý miễn phí không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "50_2024_QH15__D21__K7"
+      "50_2024_QH15__D21__K6"
     ],
     "gold_provision_ids_relaxed": [
-      "50_2024_QH15__D21__K7"
+      "50_2024_QH15__D21__K6"
     ]
   },
   {
     "id": "t7_11",
-    "question": "Quyền đại diện của công đoàn trong doanh nghiệp?",
+    "question": "Công đoàn có quyền đại diện cho tập thể người lao động thương lượng tập thể không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "50_2024_QH15__D11__K8"
+      "50_2024_QH15__D11__K2"
     ],
     "gold_provision_ids_relaxed": [
-      "50_2024_QH15__D11__K8"
+      "50_2024_QH15__D11__K2"
     ]
   },
   {
@@ -1217,7 +1217,7 @@
   },
   {
     "id": "t8_25",
-    "question": "Nghỉ hưu trước tuổi do suy giảm khả năng lao động 61% thì bị trừ bao nhiêu phần trăm lương hưu?",
+    "question": "Người lao động nghỉ hưu có phải nộp thuế thu nhập cá nhân đối với lương hưu không?",
     "category": "out_of_scope",
     "gold_provision_ids": [],
     "gold_provision_ids_relaxed": []

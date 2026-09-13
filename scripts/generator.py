@@ -490,7 +490,9 @@ CONTEXT
                     config=config
                 )
 
-                raw_answer = response.text.strip()
+                raw_answer = (response.text or "").strip()
+                if not raw_answer:
+                    raise ValueError("Gemini returned empty response")
 
                 # --------------------------------------------------------
                 # 4. Citation verification
