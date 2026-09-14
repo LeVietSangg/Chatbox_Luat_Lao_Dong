@@ -650,7 +650,7 @@ with col_chat:
                     body = '<div class="refusal">Xin lỗi, tôi không tìm thấy thông tin phù hợp trong cơ sở dữ liệu pháp luật.</div>'
                 else:
                     body = f'<div class="msg-ans">{ans}</div>'
-                    cited_c = [c for c in chunks if c.get("provision_id") in cits][:3]
+                    cited_c = [c for c in chunks if c.get("provision_id") in cits]
                     if cited_c:
                         rows = ""
                         for idx, c in enumerate(cited_c, 1):
@@ -664,7 +664,7 @@ with col_chat:
                             elif hieu_luc == "con_hieu_luc":
                                 hl_badge = '<span style="font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; margin-left: 8px; font-weight: 500;">Còn hiệu lực</span>'
 
-                        rows += f"""<details class="lbc-details">
+                            rows += f"""<details class="lbc-details">
 <summary>
 <div class="lbc-row">
 <div class="lbc-n">{idx}</div>
@@ -678,7 +678,7 @@ with col_chat:
 </summary>
 <div class="chat-fulltext">{noi_dung}</div>
 </details>"""
-                        body += f'<div class="lbc"><div class="lbc-hd">📄 Căn cứ pháp lý</div>{rows}</div>'
+                        body += f'<div class="lbc"><div class="lbc-hd">📄 Căn cứ pháp lý ({len(cited_c)})</div>{rows}</div>'
 
                 html_content += f"""<div class="msg-bot">
 <div class="bot-av">⚖️</div>
@@ -717,7 +717,7 @@ with col_chat:
 
         # Pipeline
         with st.spinner("Đang tìm kiếm điều khoản..."):
-            chunks = retriever.search_hybrid(prompt, top_k=TOP_K)
+            chunks = retriever.search_hybrid(prompt, top_k=TOP_K, expand_siblings=True)
 
         with st.spinner("Đang soạn câu trả lời..."):
             res = generator.generate(prompt, chunks)

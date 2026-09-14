@@ -37,7 +37,7 @@ class LegalGenerator:
 
     def __init__(
         self,
-        model_name="gemini-2.5-flash-lite",
+        model_name="gemini-3.5-flash-lite",
         temperature=0.0
     ):
         # ============================================================
@@ -213,15 +213,16 @@ Khi từ chối:
 - Không sử dụng kiến thức bên ngoài.
 - Không đưa ra lời khuyên.
 
-6. ƯU TIÊN PROVISION LIÊN QUAN TRỰC TIẾP
+6. ƯU TIÊN PROVISION LIÊN QUAN TRỰC TIẾP VÀ XỬ LÝ PHẠM VI CÂU HỎI
 
 Khi có nhiều provision trong CONTEXT:
 
-- Ưu tiên provision trực tiếp trả lời câu hỏi.
-- Không sử dụng provision chỉ vì nó có từ khóa giống câu hỏi.
+- Phân biệt rõ loại câu hỏi để trả lời:
+  + Nếu câu hỏi chỉ hỏi về một khía cạnh hẹp/cụ thể (ví dụ: thời hạn bao nhiêu ngày, mức phạt, có được phép làm gì không, điều kiện riêng lẻ...): CHỈ trả lời và trích dẫn đúng Khoản trực tiếp giải quyết vấn đề đó. TUYỆT ĐỐI KHÔNG liệt kê tràn lan các Khoản khác dù chúng thuộc cùng một Điều luật.
+  + Nếu câu hỏi mang tính tổng quan, bao quát hoặc hỏi về trách nhiệm, quy định chung, gồm những gì, các trường hợp, hoặc hỏi về toàn bộ một Điều (ví dụ: "cho biết trách nhiệm quản lý lao động...", "Điều 12 quy định gì", "gồm những quyền gì"): PHẢI tổng hợp và trình bày đầy đủ tất cả các Khoản/quy định có trong CONTEXT thuộc Điều luật đó thành các gạch đầu dòng rõ ràng, có citation [provision_id] tương ứng cho từng Khoản.
+- Không sử dụng provision chỉ vì nó có từ khóa giống câu hỏi nếu nội dung không hỗ trợ.
 - Không đưa các provision không liên quan vào câu trả lời.
-- Không cần sử dụng toàn bộ context nếu chỉ một provision đã đủ
-  để trả lời.
+- Không cần sử dụng toàn bộ context nếu câu hỏi hẹp và chỉ một provision đã đủ để trả lời.
 
 7. NGÔN NGỮ VÀ ĐỊNH DẠNG
 

@@ -48,6 +48,17 @@ class LegalRetriever:
         print(f"Loading SentenceTransformer model ({model_name})...")
         self.model = SentenceTransformer(model_name)
 
+        # Build mapping: (doc_code, dieu) -> list of provision_ids in sequential order
+        self.article_to_provisions = {}
+        for item in self.corpus_list:
+            doc_code = item.get("doc_code", "")
+            dieu = str(item.get("dieu", "")).strip()
+            if doc_code and dieu:
+                key = (doc_code, dieu)
+                if key not in self.article_to_provisions:
+                    self.article_to_provisions[key] = []
+                self.article_to_provisions[key].append(item["provision_id"])
+
         print("All resources loaded successfully!\n")
 
     # ------------------------------------------------------------------
@@ -92,9 +103,132 @@ class LegalRetriever:
         return results
 
     # ------------------------------------------------------------------
+    # Ý định câu hỏi & Mở rộng ngữ cảnh cùng Điều (Context Expansion)
+    # ------------------------------------------------------------------
+    @staticmethod
+    def detect_query_intent(query: str) -> dict:
+        """Phát hiện ý định của câu hỏi: tổng quan (broad) vs chi tiết (narrow), và nhận diện Điều/Văn bản cụ thể."""
+        import re
+        q_lower = query.lower()
+
+        # Các từ khóa hỏi tổng quan, trách nhiệm, phạm vi hoặc liệt kê toàn bộ
+        broad_keywords = [
+            "trách nhiệm", "chính sách", "quy định thế nào", "quy định gì", "gồm những gì",
+            "gồm các", "những điều kiện gì", "các trường hợp", "như thế nào",
+            "nội dung của", "bao gồm những gì", "các quyền", "nghĩa vụ của",
+            "nguyên tắc", "nêu các", "cho biết các", "chế độ", "biện pháp", "là gì"
+        ]
+
+        # Kiểm tra hỏi đích danh Điều luật: ví dụ "điều 14", "điều 112"
+        dieu_match = re.search(r"\bđiều\s+(\d+)\b", q_lower)
+
+        # Nhận diện văn bản cụ thể nếu có
+        explicit_doc = None
+        if "2012" in q_lower:
+            explicit_doc = "10_2012_QH13"
+        elif "145" in q_lower or "nghị định 145" in q_lower:
+            explicit_doc = "145_2020_NDCP"
+        elif "bảo hiểm" in q_lower or "bhxh" in q_lower:
+            explicit_doc = "58_VBHN-VPQH"
+        elif "an toàn" in q_lower or "atvslđ" in q_lower:
+            explicit_doc = "84_2015_QH13"
+        elif "công đoàn" in q_lower:
+            explicit_doc = "50_2024_QH15"
+        elif "2019" in q_lower or "bộ luật lao động" in q_lower or "bllđ" in q_lower:
+            explicit_doc = "45_2019_QH14"
+        else:
+            if dieu_match:
+                explicit_doc = "45_2019_QH14"
+
+        is_broad = any(kw in q_lower for kw in broad_keywords) or (dieu_match is not None)
+
+        return {
+            "is_broad": is_broad,
+            "explicit_dieu": dieu_match.group(1) if dieu_match else None,
+            "explicit_doc": explicit_doc,
+        }
+
+    def expand_sibling_provisions(self, results, query, max_siblings_per_article=4, max_total=15):
+        """Mở rộng ngữ cảnh: Nếu câu hỏi có tính bao quát hoặc hỏi trực tiếp một Điều,
+        bổ sung các Khoản anh em (cùng Điều) của các kết quả hàng đầu (Top 1-3).
+        Đặc biệt: Nếu hỏi đích danh một Điều, tra cứu trực tiếp và ưu tiên đưa lên đầu.
+        """
+        if not results:
+            return results
+
+        intent = self.detect_query_intent(query)
+        if not intent["is_broad"]:
+            return results
+
+        existing_pids = {r["provision_id"] for r in results}
+        expanded_results = list(results)
+
+        # 1. TRƯỜNG HỢP HỎI ĐÍCH DANH ĐIỀU LUẬT (Direct Article Lookup)
+        if intent["explicit_dieu"]:
+            exp_dieu = intent["explicit_dieu"]
+            exp_doc = intent["explicit_doc"] or "45_2019_QH14"
+
+            direct_pids = self.article_to_provisions.get((exp_doc, exp_dieu), [])
+            if not direct_pids:
+                # Tìm trong các văn bản phổ biến khác nếu chưa có
+                for doc_code in ["45_2019_QH14", "145_2020_NDCP", "10_2012_QH13"]:
+                    if (doc_code, exp_dieu) in self.article_to_provisions:
+                        direct_pids = self.article_to_provisions[(doc_code, exp_dieu)]
+                        break
+
+            if direct_pids:
+                injected_chunks = []
+                for pid in direct_pids:
+                    sib_content = self.corpus_dict.get(pid)
+                    if sib_content:
+                        injected_chunks.append({
+                            "provision_id": pid,
+                            "score": 1.0,  # Điểm ưu tiên cao nhất
+                            "content": sib_content,
+                            "is_expanded": True,
+                        })
+                        existing_pids.add(pid)
+
+                # Giữ các điều khoản của Điều được hỏi ở đầu danh sách
+                other_chunks = [r for r in expanded_results if r["provision_id"] not in {c["provision_id"] for c in injected_chunks}]
+                return (injected_chunks + other_chunks)[:max_total]
+
+        # 2. TRƯỜNG HỢP CÂU HỎI TỔNG QUAN KHÁC (Sibling expansion trên top kết quả)
+        top_candidates = results[:3]
+        target_articles = []
+        for r in top_candidates:
+            item = r["content"]
+            doc_code = item.get("doc_code")
+            dieu = str(item.get("dieu", "")).strip()
+            if doc_code and dieu and (doc_code, dieu) not in target_articles:
+                target_articles.append((doc_code, dieu))
+
+        for doc_code, dieu in target_articles:
+            siblings = self.article_to_provisions.get((doc_code, dieu), [])
+            added_count = 0
+            for sib_id in siblings:
+                if sib_id not in existing_pids:
+                    sib_content = self.corpus_dict.get(sib_id)
+                    if sib_content:
+                        expanded_results.append({
+                            "provision_id": sib_id,
+                            "score": 0.0,
+                            "content": sib_content,
+                            "is_expanded": True,
+                        })
+                        existing_pids.add(sib_id)
+                        added_count += 1
+                        if added_count >= max_siblings_per_article or len(expanded_results) >= max_total:
+                            break
+            if len(expanded_results) >= max_total:
+                break
+
+        return expanded_results
+
+    # ------------------------------------------------------------------
     # Hybrid Retrieval – Reciprocal Rank Fusion (RRF)
     # ------------------------------------------------------------------
-    def search_hybrid(self, query, top_k=5, rrf_k=10, retrieval_depth=100, alpha=0.5):
+    def search_hybrid(self, query, top_k=5, rrf_k=10, retrieval_depth=100, alpha=0.5, expand_siblings=False):
         """Kết hợp BM25 và Dense Retrieval bằng Reciprocal Rank Fusion.
 
         Công thức RRF:
@@ -109,6 +243,7 @@ class LegalRetriever:
             retrieval_depth: Số lượng kết quả lấy từ mỗi phương pháp trước
                              khi gộp (nên >= top_k, thường gấp 2-3 lần).
             alpha: Trọng số cho BM25 (từ 0.0 đến 1.0). Dense sẽ có trọng số (1 - alpha).
+            expand_siblings: Có tự động mở rộng các khoản anh em của cùng Điều hay không.
         """
         # Lấy kết quả từ cả hai phương pháp với retrieval_depth lớn hơn top_k
         bm25_results = self.search_bm25(query, top_k=retrieval_depth)
@@ -134,7 +269,12 @@ class LegalRetriever:
                 "provision_id": pid,
                 "score": score,
                 "content": self.corpus_dict[pid],
+                "is_expanded": False,
             })
+
+        if expand_siblings:
+            results = self.expand_sibling_provisions(results, query)
+
         return results
 
     # ------------------------------------------------------------------
