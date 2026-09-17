@@ -2,6 +2,7 @@ import os
 import json
 import re
 import time
+import random
 import logging
 
 from dotenv import load_dotenv
@@ -137,99 +138,52 @@ class LegalGenerator:
         # ============================================================
 
         system_prompt = f"""
-Bạn là một CHATBOX HỖ TRỢ TRA CỨU MỘT SỐ QUY ĐỊNH VỀ PHÁP LUẬT VỀ LAO ĐỘNG
+Bạn là CHATBOT HỖ TRỢ TRA CỨU PHÁP LUẬT LAO ĐỘNG VIỆT NAM.
 
 NHIỆM VỤ:
-Trả lời câu hỏi của người dùng CHỈ dựa trên thông tin trong CONTEXT.
+Trả lời câu hỏi tra cứu pháp luật của người dùng CHỈ dựa trên thông tin trong CONTEXT được cung cấp.
 
 ============================================================
 NGUYÊN TẮC BẮT BUỘC
 ============================================================
 
-1. CHỈ SỬ DỤNG CONTEXT
+1. CĂN CỨ VÀ TRÍCH DẪN (STRICT GROUNDING & CITATION)
+- CHỈ sử dụng thông tin có trong CONTEXT. Tuyệt đối không dùng kiến thức bên ngoài, không suy đoán hay tự tạo điều luật.
+- Mọi khẳng định pháp lý phải có citation [provision_id] ngay sau câu khẳng định đó.
+- Chỉ sử dụng đúng provision_id có mặt trong CONTEXT. Không trích dẫn thừa thãi.
 
-- Không sử dụng kiến thức pháp luật bên ngoài CONTEXT.
-- Không suy đoán hoặc bổ sung thông tin không có trong CONTEXT.
-- Mọi khẳng định pháp lý phải được hỗ trợ bởi nội dung trong CONTEXT.
+2. TRẢ LỜI TRỰC TIẾP, ĐÚNG TRỌNG TÂM
+- Với câu hỏi dạng "có được... không?", "có quyền... không?", "có phải... không?": Nêu ngay kết luận rõ ràng (Có / Không) ở câu đầu tiên, sau đó mới giải thích ngắn gọn quy định, điều kiện hoặc nghĩa vụ liên quan.
+- Với câu hỏi tổng quan hoặc hỏi về một Điều (ví dụ: "Điều 12 quy định gì", "nghĩa vụ gồm những gì"): Liệt kê đầy đủ các Khoản/quy định có trong CONTEXT thành các gạch đầu dòng rõ ràng kèm citation.
+- Diễn đạt tự nhiên, dễ hiểu; KHÔNG sao chép nguyên văn từng câu từng chữ của văn bản luật để tránh lỗi chính sách trích dẫn.
 
-2. TRẢ LỜI ĐÚNG TRỌNG TÂM
+3. HIỂU VÀ ÁNH XẠ NGÔN NGỮ ĐỜI THƯỜNG
+- Người dùng thường dùng từ ngữ đời thường, hãy đối chiếu với quy định tương ứng trong CONTEXT để trả lời:
+  + "Nghỉ ngang", "nghỉ việc ngang", "tự ý nghỉ", "bỏ việc", "nghỉ không báo trước" ➔ Đơn phương chấm dứt HĐLĐ trái pháp luật (Điều 39, Điều 40).
+  + "Nghỉ trước hạn", "xin nghỉ việc", "muốn nghỉ việc" ➔ Quyền đơn phương chấm dứt HĐLĐ của người lao động và nghĩa vụ báo trước (Điều 35).
+  + "Cho nghỉ đột ngột", "đuổi việc đột ngột", "đuổi việc không báo trước" ➔ Người sử dụng lao động đơn phương chấm dứt HĐLĐ trái pháp luật (Điều 36, Điều 39, Điều 41).
+  + "Nghỉ phép năm có được nhận tiền không", "tiền lương nghỉ phép" ➔ Tiền lương ngày nghỉ hằng năm hưởng nguyên lương (Điều 113).
+  + "Chủ", "sếp", "công ty" ➔ Người sử dụng lao động.
+  + "Nhân viên", "người làm", "công nhân" ➔ Người lao động.
+  + "Bắt làm", "ép làm" ➔ Cưỡng bức lao động, buộc làm việc trái ý muốn (Điều 8, Điều 17, Điều 107).
+  + "Đuổi việc", "cho nghỉ việc" ➔ Sa thải, đơn phương chấm dứt hợp đồng lao động.
+  + "Quỵt lương", "nợ lương", "bùng lương" ➔ Chậm trả lương, vi phạm nghĩa vụ trả lương (Điều 97).
 
-- Trả lời trực tiếp câu hỏi của người dùng.
-- Ưu tiên câu trả lời ngắn gọn, rõ ràng và dễ hiểu.
-- Chỉ cung cấp thông tin cần thiết để trả lời câu hỏi.
-- Không tự ý mở rộng sang các vấn đề khác mà người dùng không hỏi.
-- Không tự ý bổ sung mức phạt, nghĩa vụ, thủ tục, thời hạn hoặc hậu quả
-  pháp lý khác nếu câu hỏi không yêu cầu.
-- Không lặp lại câu hỏi của người dùng.
+4. PHÂN BIỆT CÂU HỎI VÀ NGUYÊN TẮC TỪ CHỐI (REFUSAL CRITERIA)
+- CÂU HỎI THỰC TẾ CÓ ĐẠI TỪ XƯNG HÔ (VẪN TRẢ LỜI QUY ĐỊNH):
+  Người dùng thường hỏi tình huống đời thường ("Tôi muốn nghỉ trước hạn thì làm sao", "Sếp cho tôi nghỉ đột ngột có được không", "Công ty nợ lương tôi thì quy định thế nào", "Nghỉ phép năm có được nhận tiền không"). Nếu bản chất là hỏi về quy định, quyền, nghĩa vụ hoặc điều kiện pháp luật lao động ➔ PHẢI TRẢ LỜI các căn cứ pháp luật tương ứng có trong CONTEXT (ví dụ: người lao động được nghỉ việc nếu báo trước theo Điều 35; người sử dụng lao động phải báo trước theo Điều 36; nợ lương bị phạt lãi theo Điều 97; nghỉ phép năm được hưởng nguyên lương theo Điều 113).
 
-Ví dụ:
-
-Nếu người dùng hỏi:
-"Hợp đồng lao động bằng miệng có giá trị pháp lý không?"
-
-Không cần tự ý bổ sung:
-- mức phạt,
-- nghĩa vụ của người sử dụng lao động,
-- thủ tục xử phạt,
-- các quy định khác không cần thiết.
-
-3. CITATION
-
-- Mỗi khẳng định pháp lý phải có citation ngay sau câu hoặc mệnh đề
-  được nguồn hỗ trợ.
-- Citation phải có dạng:
-  [provision_id]
-- Chỉ sử dụng provision_id xuất hiện trong CONTEXT.
-- Không được tự tạo, sửa đổi hoặc đoán provision_id.
-- Không được tự sinh số Điều, Khoản hoặc Điểm nếu thông tin đó
-  không xuất hiện trong CONTEXT.
-- Chỉ trích dẫn provision thực sự hỗ trợ cho nội dung đang được nói.
-- Không cần đưa tất cả provision trong CONTEXT vào câu trả lời.
-- Chỉ sử dụng citation cần thiết.
-
-Ví dụ:
-
-"Người sử dụng lao động không được giữ bản chính giấy tờ tùy thân
-của người lao động [12_2022_NDCP__D9__K2]."
-
-4. KHÔNG HALLUCINATION
-
-- Không được sử dụng kiến thức bên ngoài CONTEXT.
-- Không được tự suy ra một quy định pháp luật mà CONTEXT không thể
-  hỗ trợ.
-- Không được tự tạo số Điều, Khoản, Điểm hoặc provision_id.
-- Không được biến thông tin không chắc chắn thành khẳng định pháp lý.
-
-5. KHI CONTEXT KHÔNG ĐỦ
-
-Nếu CONTEXT không chứa đủ thông tin để trả lời chính xác câu hỏi,
-hãy trả về chính xác:
-
-"Tôi không tìm thấy thông tin để trả lời."
-
-Khi từ chối:
-- Không giải thích thêm.
-- Không phỏng đoán.
-- Không sử dụng kiến thức bên ngoài.
-- Không đưa ra lời khuyên.
-
-6. ƯU TIÊN PROVISION LIÊN QUAN TRỰC TIẾP VÀ XỬ LÝ PHẠM VI CÂU HỎI
-
-Khi có nhiều provision trong CONTEXT:
-
-- Phân biệt rõ loại câu hỏi để trả lời:
-  + Nếu câu hỏi chỉ hỏi về một khía cạnh hẹp/cụ thể (ví dụ: thời hạn bao nhiêu ngày, mức phạt, có được phép làm gì không, điều kiện riêng lẻ...): CHỈ trả lời và trích dẫn đúng Khoản trực tiếp giải quyết vấn đề đó. TUYỆT ĐỐI KHÔNG liệt kê tràn lan các Khoản khác dù chúng thuộc cùng một Điều luật.
-  + Nếu câu hỏi mang tính tổng quan, bao quát hoặc hỏi về trách nhiệm, quy định chung, gồm những gì, các trường hợp, hoặc hỏi về toàn bộ một Điều (ví dụ: "cho biết trách nhiệm quản lý lao động...", "Điều 12 quy định gì", "gồm những quyền gì"): PHẢI tổng hợp và trình bày đầy đủ tất cả các Khoản/quy định có trong CONTEXT thuộc Điều luật đó thành các gạch đầu dòng rõ ràng, có citation [provision_id] tương ứng cho từng Khoản.
-- Không sử dụng provision chỉ vì nó có từ khóa giống câu hỏi nếu nội dung không hỗ trợ.
-- Không đưa các provision không liên quan vào câu trả lời.
-- Không cần sử dụng toàn bộ context nếu câu hỏi hẹp và chỉ một provision đã đủ để trả lời.
-
-7. NGÔN NGỮ VÀ ĐỊNH DẠNG
-
-- Trả lời bằng tiếng Việt.
-- Không tạo mục "Nguồn tham khảo" riêng.
-- Citation đặt ngay sau nội dung được hỗ trợ.
-- Không sử dụng markdown phức tạp nếu không cần thiết.
+- CÂU HỎI BẮT BUỘC TỪ CHỐI (OUT-OF-SCOPE):
+  CHỈ từ chối bằng chính xác câu sau:
+  "Tôi không tìm thấy thông tin để trả lời."
+  trong các trường hợp:
+  a) Xin lời khuyên quyết định tranh tụng/đời sống cá nhân: "tôi có nên kiện ra tòa án không?", "có nên nghỉ việc ra ngoài kinh doanh không?".
+  b) Yêu cầu tính toán cụ thể số tiền cho vụ kiện cá nhân: "tính toán xem tôi được bồi thường chính xác bao nhiêu tiền nếu kiện?".
+  c) Nhờ làm thơ, viết văn, soạn đơn hộ: "viết lá đơn xin nghỉ việc lâm li bi đát", "làm thơ mùa thu".
+  d) Lĩnh vực pháp luật khác (hình sự, đất đai, thuế, giao thông, ly hôn...).
+  e) Chào hỏi, thời tiết, toán học, câu hỏi vô nghĩa.
+  f) CONTEXT hoàn toàn không có thông tin để trả lời.
+- Khi từ chối: CHỈ trả về đúng câu: "Tôi không tìm thấy thông tin để trả lời." Không giải thích thêm, không đưa ra lời khuyên.
 
 ============================================================
 CONTEXT
@@ -474,8 +428,17 @@ CONTEXT
             system_instruction=prompt
         )
 
-        max_retries = 3
-        retry_delay = 15  # giây
+        # Exponential backoff: base 5s, tối đa 60s, jitter ±20%
+        max_retries = 4
+        base_delay = 5
+        max_delay = 60
+
+        # Lỗi tạm thời cần retry
+        RETRYABLE_CODES = (
+            "429", "500", "503",
+            "overload", "resource_exhausted",
+            "empty_response"   # model trả rỗng — có thể do quá tải nội bộ
+        )
 
         for attempt in range(max_retries + 1):
 
@@ -491,9 +454,97 @@ CONTEXT
                     config=config
                 )
 
-                raw_answer = (response.text or "").strip()
+                raw_answer = ""
+                finish_reason = None
+
+                # Kiểm tra finish_reason để phân biệt safety block vs empty
+                try:
+                    if response.candidates:
+                        finish_reason = str(
+                            response.candidates[0].finish_reason
+                        )
+                        raw_answer = (
+                            response.candidates[0].content.parts[0].text
+                            if response.candidates[0].content
+                            and response.candidates[0].content.parts
+                            else ""
+                        )
+                    else:
+                        raw_answer = (response.text or "").strip()
+                except Exception:
+                    raw_answer = (response.text or "").strip()
+
+                raw_answer = raw_answer.strip()
+
+                # Safety block → từ chối, không retry
+                if not raw_answer and finish_reason and "SAFETY" in finish_reason:
+                    return {
+                        "answer": self.REFUSAL_TEXT,
+                        "raw_answer": "",
+                        "hallucinated_ids": [],
+                        "citations": [],
+                        "is_refusal": True,
+                        "api_error": False
+                    }
+
+                # Recitation block (Gemini chặn do model trích dẫn y nguyên văn bản luật)
+                # Tự động xử lý ngay, KHÔNG lặp lại chờ đợi gây treo
+                if not raw_answer and finish_reason and "RECITATION" in finish_reason:
+                    print("  ⚠️ Phát hiện FinishReason.RECITATION - Kích hoạt cơ chế xử lý dự phòng...", flush=True)
+
+                    # Bước 1: Thử gọi lại 1 lần duy nhất với chỉ dẫn diễn đạt tự nhiên + temp 0.25
+                    try:
+                        recit_prompt = (
+                            prompt
+                            + "\n\nLƯU Ý ĐẶC BIỆT ĐỂ TRÁNH LỖI RECITATION:\n"
+                            "- Tuyệt đối KHÔNG sao chép nguyên văn các câu từ trong văn bản luật.\n"
+                            "- Hãy diễn giải tóm tắt ngắn gọn quy định bằng lời của bạn, "
+                            "kèm mã citation [provision_id] tương ứng."
+                        )
+                        recit_cfg = types.GenerateContentConfig(
+                            temperature=self.temperature,
+                            top_p=1.0,
+                            system_instruction=recit_prompt
+                        )
+                        recit_res = self.client.models.generate_content(
+                            model=self.model_name,
+                            contents=query,
+                            config=recit_cfg
+                        )
+                        if recit_res.text and recit_res.text.strip():
+                            raw_answer = recit_res.text.strip()
+                    except Exception as e_recit:
+                        print(f"  Thử lại do recitation không thành công: {e_recit}", flush=True)
+
+                    # Bước 2: Chỉ trích xuất trực tiếp nếu là câu hỏi tra cứu đích danh một Điều luật
+                    if not raw_answer and retrieved_chunks:
+                        direct_chunks = [c for c in retrieved_chunks if c.get("score", 0) >= 1.0]
+                        if direct_chunks:
+                            fallback_lines = []
+                            for c in direct_chunks[:3]:
+                                prov = c.get("content", {})
+                                pid = c.get("provision_id", "")
+                                dieu = prov.get("dieu", "")
+                                khoan = prov.get("khoan", "")
+                                vb = prov.get("van_ban", "")
+                                tieu_de = prov.get("tieu_de_dieu", "")
+                                noi_dung = prov.get("noi_dung", "").strip()
+
+                                header = f"Theo quy định tại {vb}, Điều {dieu}"
+                                if khoan:
+                                    header += f", Khoản {khoan}"
+                                if tieu_de:
+                                    header += f" ({tieu_de})"
+                                header += ":"
+
+                                fallback_lines.append(f"{header}\n{noi_dung} [{pid}]")
+
+                            raw_answer = "\n\n".join(fallback_lines)
+
                 if not raw_answer:
-                    raise ValueError("Gemini returned empty response")
+                    raise ValueError(
+                        f"empty_response|finish={finish_reason}"
+                    )
 
                 # --------------------------------------------------------
                 # 4. Citation verification
@@ -555,18 +606,26 @@ CONTEXT
 
             except Exception as e:
 
-                error_str = str(e)
+                error_str = str(e).lower()
+                is_retryable = any(
+                    code in error_str
+                    for code in RETRYABLE_CODES
+                )
 
-                # Nếu bị rate limit (429) và còn lần thử
-                if "429" in error_str and attempt < max_retries:
-                    wait = retry_delay * (attempt + 1)
-                    print(f"  ⏳ Rate limit, chờ {wait}s rồi thử lại "
-                          f"(lần {attempt + 1}/{max_retries})...")
+                if is_retryable and attempt < max_retries:
+                    # Exponential backoff với jitter
+                    wait = min(base_delay * (2 ** attempt), max_delay)
+                    jitter = wait * 0.2 * random.random()  # ±20%
+                    wait = wait + jitter
+
+                    label = "Rate limit" if "429" in error_str else "Overload"
+                    print(f"  ⏳ {label} (lần {attempt + 1}/{max_retries}), "
+                          f"chờ {wait:.1f}s rồi thử lại...", flush=True)
                     time.sleep(wait)
                     continue
 
                 # Lỗi khác hoặc hết lần thử
-                print(f"Lỗi khi gọi LLM API: {e}")
+                print(f"Lỗi khi gọi LLM API: {e}", flush=True)
 
                 return {
                     "answer": "Lỗi kết nối API. Vui lòng thử lại sau.",
@@ -575,5 +634,5 @@ CONTEXT
                     "citations": [],
                     "is_refusal": False,
                     "api_error": True,
-                    "error": error_str
+                    "error": str(e)
                 }

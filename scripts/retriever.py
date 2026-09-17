@@ -115,8 +115,11 @@ class LegalRetriever:
         broad_keywords = [
             "trách nhiệm", "chính sách", "quy định thế nào", "quy định gì", "gồm những gì",
             "gồm các", "những điều kiện gì", "các trường hợp", "như thế nào",
-            "nội dung của", "bao gồm những gì", "các quyền", "nghĩa vụ của",
-            "nguyên tắc", "nêu các", "cho biết các", "chế độ", "biện pháp", "là gì"
+            "nội dung của", "bao gồm những gì", "các quyền", "nghĩa vụ của", "nghĩa vụ",
+            "nguyên tắc", "nêu các", "cho biết các", "chế độ", "biện pháp", "là gì",
+            "có bị gì", "bị gì", "hậu quả", "bị phạt", "xử lý thế nào",
+            "có được không", "có được nhận", "được nhận tiền", "có được hưởng",
+            "thì sao", "thì làm sao", "có sao không", "đột ngột"
         ]
 
         # Kiểm tra hỏi đích danh Điều luật: ví dụ "điều 14", "điều 112"

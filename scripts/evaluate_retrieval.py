@@ -4,7 +4,7 @@ evaluate_retrieval.py
 
 Các chỉ số đo lường:
   - Recall@k (k=1, 3, 5): tỷ lệ gold provisions xuất hiện trong top-k.
-  - MRR (Mean Reciprocal Rank): trung bình nghịch đảo hạng đầu tiên đúng.
+  - MRR@10 (Mean Reciprocal Rank): trung bình nghịch đảo hạng đầu tiên đúng (trong top-10).
 
 Hỗ trợ 2 chế độ:
   - strict : gold_provision_ids (chỉ những provision trả lời trực tiếp).
@@ -67,9 +67,9 @@ def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
         dict chứa kết quả đánh giá theo từng phương pháp.
     """
     if top_k_values is None:
-        top_k_values = [1, 3, 5, 10]
+        top_k_values = [1, 3, 5]
 
-    max_k = max(top_k_values)
+    max_k = max(max(top_k_values), 10)  # Luôn lấy top-10 để tính MRR@10
     methods = {
         "BM25": lambda q: retriever.search_bm25(q, top_k=max_k),
         "Dense": lambda q: retriever.search_dense(q, top_k=max_k),
@@ -151,26 +151,23 @@ def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
 def print_summary_table(summary, mode, top_k_values=None):
     """In bảng tổng hợp kết quả."""
     if top_k_values is None:
-        top_k_values = [1, 3, 5, 10]
+        top_k_values = [1, 3, 5]
 
     print(f"\n{'='*80}")
     print(f"KET QUA DANH GIA RETRIEVAL (mode={mode})")
     print(f"{'='*80}")
 
-    # Header
-    metrics = ["MRR@10"] + [f"Recall@{k}" for k in top_k_values] + \
-              [f"Hit@{k}" for k in top_k_values] + ["Lat_p50", "Lat_p95"]
+    # Header: chỉ hiển thị Recall@1/3/5 và MRR@10
+    metrics = [f"Recall@{k}" for k in top_k_values] + ["MRR@10", "Lat_p50", "Lat_p95"]
     header = f"{'Method':<16}" + "".join(f"{m:>12}" for m in metrics)
     print(header)
     print("-" * len(header))
 
     for method_name, data in summary.items():
         row = f"{method_name:<16}"
-        row += f"{data['MRR@10']:>12.4f}"
         for k in top_k_values:
             row += f"{data[f'Recall@{k}']:>12.4f}"
-        for k in top_k_values:
-            row += f"{data[f'Hit@{k}']:>12.4f}"
+        row += f"{data['MRR@10']:>12.4f}"
         row += f"{data['Latency_p50_s']:>12.4f}"
         row += f"{data['Latency_p95_s']:>12.4f}"
         print(row)

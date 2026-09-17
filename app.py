@@ -9,9 +9,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "scripts"))
 from retriever import LegalRetriever
 from generator import LegalGenerator
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-TOP_K    = 10
-MODEL    = "gemini-3.5-flash-lite"
+DATA_DIR          = os.path.join(os.path.dirname(__file__), "data")
+TOP_K             = 10
+MAX_CONTEXT_CHARS = 10_000  # Giới hạn tổng ký tự context đưa vào LLM
+MODEL             = "gemini-3.5-flash-lite"
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -432,11 +433,12 @@ details > summary::-webkit-details-marker { display: none; }
 
 
 # ── Load pipeline ─────────────────────────────────────────────────────────────
-@st.cache_resource(show_spinner="Đang khởi động hệ thống...")
-def load_pipeline():
-    r = LegalRetriever(data_dir=DATA_DIR)
-    g = LegalGenerator(model_name=MODEL, temperature=0.0)
-    return r, g
+@st.cache_resource(show_spinner="Đang khởi động hệ thống tìm kiếm...")
+def load_retriever():
+    return LegalRetriever(data_dir=DATA_DIR)
+
+def get_generator():
+    return LegalGenerator(model_name=MODEL, temperature=0.0)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -470,6 +472,91 @@ def hm() -> str:
 
 def new_conv() -> dict:
     return {"title": "Cuộc trò chuyện mới", "time": hm(), "messages": [], "chunks": None}
+
+# Từ viết tắt pháp lý & teencode thường gặp
+ABBREVIATIONS = {
+    r"\bnlđ\b": "người lao động",
+    r"\bnsdlđ\b": "người sử dụng lao động",
+    r"\bhđlđ\b": "hợp đồng lao động",
+    r"\bhđ\b": "hợp đồng",
+    r"\bbhxh\b": "bảo hiểm xã hội",
+    r"\bbhtn\b": "bảo hiểm thất nghiệp",
+    r"\bbhyt\b": "bảo hiểm y tế",
+    r"\bcty\b": "công ty",
+    r"\bnv\b": "nhân viên",
+    r"\b(k|ko|kh|khg)\b": "không",
+    r"\b(đc|dc)\b": "được",
+    r"\bot\b": "làm thêm giờ",
+}
+
+def expand_legal_query(q: str) -> str:
+    """Mở rộng câu hỏi đời thường sang thuật ngữ pháp lý chuẩn xác, tránh gây nhiễu."""
+    q_low = q.lower()
+
+    # 0. Nếu là câu hỏi ngoài phạm vi rõ rệt (luật khác, thơ văn, tư vấn kiện tụng cụ thể) -> Giữ nguyên để LLM từ chối
+    if re.search(r"\b(tôi\s+có\s+nên\s+kiện|kiện\s+ra\s+tòa|tính\s+toán\s+xem\s+tôi|tư\s+vấn\s+giúp\s+tôi\s+mua|viết\s+cho\s+tôi|soạn\s+cho\s+tôi|làm\s+thơ|thời\s+tiết|sữa\s+nào|làm\s+riêng\s+kinh\s+doanh)\b", q_low):
+        return q
+
+    # Chuẩn hóa viết tắt
+    norm_q = q_low
+    for pattern, repl in ABBREVIATIONS.items():
+        norm_q = re.sub(pattern, repl, norm_q)
+
+    additions = []
+
+    # 1. Nghỉ trước hạn / xin nghỉ việc / muốn nghỉ việc
+    if re.search(r"nghỉ\s+(việc\s+)?trước\s+hạn|xin\s+nghỉ\s+việc|muốn\s+nghỉ\s+việc|đơn\s+phương\s+chấm\s+dứt\s+hợp\s+đồng", norm_q):
+        additions.append("quyền đơn phương chấm dứt hợp đồng lao động của người lao động thời hạn báo trước Điều 35")
+
+    # 2. Nghỉ ngang / tự ý bỏ việc / không báo trước / nghỉ việc ngang
+    elif re.search(r"nghỉ\s+(việc\s+)?ngang|tự\s+(ý\s+)?(nghỉ|bỏ)\s*(việc)?|bỏ\s+việc|nghỉ\s+(không|k|ko)\s*(phép|xin|báo)|nghỉ\s+đùng|thôi\s+việc\s+không", norm_q):
+        additions.append("đơn phương chấm dứt hợp đồng lao động trái pháp luật nghĩa vụ bồi thường Điều 39 Điều 40")
+
+    # 3. Cho nghỉ việc đột ngột / đuổi đột ngột (không báo trước)
+    if re.search(r"nghỉ\s+việc\s+đột\s+ngột|đuổi\s+đột\s+ngột|nghỉ\s+đột\s+ngột|đuổi\s+(việc\s+)?ngay|thôi\s+việc\s+ngay", norm_q):
+        additions.append("người sử dụng lao động đơn phương chấm dứt hợp đồng lao động thời hạn báo trước trái pháp luật Điều 36 Điều 39 Điều 41")
+    elif re.search(r"sa\s*thải|kỷ\s*luật\s*sa\s*thải", norm_q):
+        additions.append("kỷ luật sa thải xử lý kỷ luật lao động Điều 125")
+
+    # 4. Hết hạn hợp đồng (chỉ khi không phải nghỉ trước hạn)
+    if re.search(r"hết\s+(hạn\s+)?hợp\s+đồng|hết\s+hđ", norm_q) and not re.search(r"trước\s+hạn", norm_q):
+        additions.append("chấm dứt hợp đồng lao động hết hạn Điều 34")
+
+    # 5. Ép buộc / cưỡng bức lao động
+    if re.search(r"\b(bắt|ép|cưỡng\s*bức|bắt\s*buộc|cưỡng\s*ép)\b", norm_q):
+        additions.append("cưỡng bức lao động hành vi bị nghiêm cấm Điều 8 Điều 17")
+
+    # 6. Tiền lương / nợ lương / chậm lương
+    if re.search(r"quỵt\s*lương|nợ\s*lương|chậm\s*lương|bùng\s*lương|không\s*trả\s*lương", norm_q):
+        additions.append("tiền lương chậm trả lương đền bù tiền lãi quyền đơn phương chấm dứt Điều 97 Điều 35")
+    elif re.search(r"tiền\s*lương|trả\s*lương|lương\s*tối\s*thiểu", norm_q):
+        additions.append("tiền lương kỳ hạn trả lương Điều 97")
+
+    # 7. Làm thêm giờ / tăng ca
+    if re.search(r"làm\s*thêm|tăng\s*ca|ngoài\s*giờ|làm\s*đêm", norm_q):
+        additions.append("làm thêm giờ thời giờ làm việc sự đồng ý của người lao động Điều 107")
+
+    # 8. Nghỉ phép năm (tách riêng khỏi nghỉ lễ tết để không làm nhiễu)
+    if re.search(r"nghỉ\s*phép\s*năm|nghỉ\s*phép|nghỉ\s*hằng\s*năm", norm_q):
+        additions.append("nghỉ hằng năm hưởng nguyên lương tiền lương ngày nghỉ thanh toán ngày chưa nghỉ Điều 113")
+    elif re.search(r"nghỉ\s*lễ|nghỉ\s*tết|lễ\s*tết", norm_q):
+        additions.append("nghỉ lễ tết hưởng nguyên lương Điều 112")
+
+    # 9. Chủ / Sếp
+    if re.search(r"\b(chủ|sếp)\b", norm_q):
+        additions.append("người sử dụng lao động")
+
+    # 10. Thử việc
+    if re.search(r"thử\s*việc", norm_q):
+        additions.append("thời gian thử việc tiền lương thử việc Điều 25 Điều 26")
+
+    # 11. Thai sản
+    if re.search(r"thai\s*sản|nghỉ\s*đẻ|sinh\s*con", norm_q):
+        additions.append("chế độ thai sản lao động nữ Điều 137 Điều 139")
+
+    if additions:
+        return q + " " + " ".join(additions)
+    return q
 
 
 # ── Session state — multi-conversation ────────────────────────────────────────
@@ -565,7 +652,8 @@ with st.sidebar:
 # LOAD PIPELINE
 # ══════════════════════════════════════════════
 try:
-    retriever, generator = load_pipeline()
+    retriever = load_retriever()
+    generator = get_generator()
 except Exception as e:
     st.error(f"❌ Lỗi khởi tạo: {e}"); st.stop()
 
@@ -694,20 +782,36 @@ with col_chat:
         html_content += '</div>'
         st.markdown(html_content, unsafe_allow_html=True)
 
+    # Placeholder để hiển thị bong bóng đang tra cứu / suy nghĩ của bot
+    thinking_placeholder = st.empty()
+    if conv.get("needs_response"):
+        with thinking_placeholder:
+            st.markdown("""
+            <div class="msg-bot" style="padding-top: 4px; margin-bottom: 8px;">
+              <div class="bot-av">⚖️</div>
+              <div class="bot-wrap">
+                <div class="msg-ans" style="color: #7A6050; font-style: italic; display: flex; align-items: center; gap: 8px; border-left: 3px solid #7B1A1A;">
+                  <span>⚖️ Đang tra cứu điều khoản và soạn câu trả lời...</span>
+                </div>
+              </div>
+            </div>
+            """, unsafe_allow_html=True)
+
     # ── Chat input ───────────────────────────────
     st.markdown("<div style='margin-top:8px'></div>", unsafe_allow_html=True)
-    typed = st.chat_input("Nhập câu hỏi pháp luật lao động của bạn...")
+    is_busy = bool(conv.get("needs_response"))
+    typed = st.chat_input("Nhập câu hỏi của bạn...", disabled=is_busy)
 
     # Ưu tiên: typed > pending_q
     prompt = typed or st.session_state.pending_q
-    if st.session_state.pending_q and not typed:
-        st.session_state.pending_q = None  # clear sau khi dùng
+    if prompt and not is_busy:
+        if st.session_state.pending_q and not typed:
+            st.session_state.pending_q = None  # clear sau khi dùng
 
-    if prompt:
         t = hm()
         conv = get_conv()
 
-        # Thêm user message
+        # Thêm user message ngay lập tức để hiển thị trên màn hình
         conv["messages"].append({"role": "user", "content": prompt, "time": t})
 
         # Đặt title nếu là câu đầu tiên
@@ -715,24 +819,59 @@ with col_chat:
             conv["title"] = prompt[:40]
             conv["time"]  = t
 
-        # Pipeline
-        with st.spinner("Đang tìm kiếm điều khoản..."):
-            chunks = retriever.search_hybrid(prompt, top_k=TOP_K, expand_siblings=True)
+        # Đánh dấu cần generate câu trả lời và rerun ngay để hiển thị câu hỏi của user
+        conv["needs_response"] = prompt
+        st.rerun()
 
-        with st.spinner("Đang soạn câu trả lời..."):
-            res = generator.generate(prompt, chunks)
+    # ── Xử lý Generation khi có câu hỏi cần trả lời ───────
+    if conv.get("needs_response"):
+        prompt_to_gen = conv["needs_response"]
+        try:
+            with thinking_placeholder:
+                with st.spinner("Đang tìm kiếm điều khoản và soạn câu trả lời..."):
+                    search_q = expand_legal_query(prompt_to_gen)
+                    raw_chunks = retriever.search_hybrid(search_q, top_k=15, expand_siblings=True)
+                    valid_chunks = retriever.filter_by_hieu_luc(raw_chunks, "con_hieu_luc")
+                    chunks = valid_chunks[:TOP_K] if valid_chunks else raw_chunks[:TOP_K]
 
-        conv["chunks"] = chunks
-        conv["messages"].append({
-            "role":       "assistant",
-            "content":    res["answer"],
-            "citations":  res.get("citations", []),
-            "is_refusal": res.get("is_refusal", False),
-            "api_error":  res.get("api_error", False),
-            "chunks":     chunks,
-            "time":       t,
-        })
-        st.rerun()  # rerun duy nhất — để hiển thị conversation
+                    # Giới hạn theo tổng ký tự để tránh prompt quá lớn gây overload API
+                    budget = 0
+                    capped = []
+                    for ch in chunks:
+                        noi_dung = ch.get("content", {}).get("noi_dung", "")
+                        if budget + len(noi_dung) > MAX_CONTEXT_CHARS and capped:
+                            break
+                        capped.append(ch)
+                        budget += len(noi_dung)
+                    chunks = capped
+
+                    res = generator.generate(prompt_to_gen, chunks)
+
+            t_bot = hm()
+            conv["chunks"] = chunks
+            conv["messages"].append({
+                "role":       "assistant",
+                "content":    res["answer"],
+                "citations":  res.get("citations", []),
+                "is_refusal": res.get("is_refusal", False),
+                "api_error":  res.get("api_error", False),
+                "chunks":     chunks,
+                "time":       t_bot,
+            })
+        except Exception as ex:
+            conv["messages"].append({
+                "role":       "assistant",
+                "content":    f"Đã xảy ra lỗi khi xử lý câu hỏi: {str(ex)}",
+                "citations":  [],
+                "is_refusal": False,
+                "api_error":  True,
+                "chunks":     [],
+                "time":       hm(),
+            })
+        finally:
+            if "needs_response" in conv:
+                del conv["needs_response"]
+            st.rerun()
 
     st.markdown('<div class="inp-hint">Nhấn Enter để gửi · Shift+Enter để xuống dòng</div>', unsafe_allow_html=True)
 

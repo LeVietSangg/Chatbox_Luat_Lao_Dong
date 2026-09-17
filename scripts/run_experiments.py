@@ -162,9 +162,16 @@ def main():
         print(f"  - Citation Validity: {metrics['citation_validity']:.2%}" if metrics['citation_validity'] is not None else "  - Citation Validity: N/A")
         print(f"  - Citation Exact Match: {metrics['citation_exact_match']:.2%}" if metrics['citation_exact_match'] is not None else "  - Citation Exact Match: N/A")
 
+    # Lưu metrics tổng hợp ra file JSON riêng để tiện theo dõi và báo cáo
+    gen_metrics_path = os.path.join(eval_dir, "week6_generation_metrics.json")
+    all_metrics = {m: comp_gen_metrics(res) for m, res in all_gen_results.items()}
+    with open(gen_metrics_path, "w", encoding="utf-8") as f:
+        json.dump(all_metrics, f, ensure_ascii=False, indent=2)
+
     print("\n" + "=" * 80)
     print("ĐÃ HOÀN THÀNH TOÀN BỘ THỰC NGHIỆM TUẦN 6!")
-    print(f"Kết quả lưu tại: {gen_output_path}")
+    print(f"Kết quả chi tiết lưu tại: {gen_output_path}")
+    print(f"Kết quả metrics lưu tại:   {gen_metrics_path}")
     print("=" * 80)
 
 if __name__ == "__main__":

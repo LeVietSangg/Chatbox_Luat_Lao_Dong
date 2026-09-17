@@ -1,0 +1,24 @@
+# ==============================================================================
+# REQUIREMENTS.TXT — Chatbot Tra Cứu Pháp Luật Lao Động
+# ==============================================================================
+
+# --- Giao diện Web (Streamlit) ---
+streamlit>=1.35.0
+python-dotenv>=1.0.0
+
+# --- LLM Generation (Google Gemini SDK) ---
+google-genai>=1.0.0
+
+# --- Tiền xử lý & Tách từ tiếng Việt (Sparse Retrieval) ---
+pyvi>=0.1.1
+rank-bm25>=0.2.2
+
+# --- Mô hình Embedding & Vector Search (Dense Retrieval) ---
+torch>=2.0.0
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+
+# --- Xử lý dữ liệu & Công cụ hỗ trợ ---
+numpy>=1.24.0
+pandas>=2.0.0
+tqdm>=4.65.0
