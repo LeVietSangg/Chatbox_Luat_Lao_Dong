@@ -21,15 +21,12 @@ import os
 
 questions = []
 
-def add_q(q_id, text, cat, gold, gold_relaxed=None):
-    if not gold_relaxed:
-        gold_relaxed = gold
+def add_q(q_id, text, cat, gold):
     questions.append({
         "id": q_id,
         "question": text,
         "category": cat,
-        "gold_provision_ids": gold,
-        "gold_provision_ids_relaxed": gold_relaxed
+        "gold_provision_ids": gold
     })
 
 # =============================================================================
@@ -439,7 +436,7 @@ add_q("v2_76",
 add_q("v2_77",
       "Trợ cấp một lần khi sinh con hoặc nhận con nuôi bằng bao nhiêu tháng lương cơ sở?",
       "bao_hiem",
-      ["58_VBHN-VPQH__D58__4"])
+      ["58_VBHN-VPQH__D58__K1"])
 
 add_q("v2_78",
       "Người lao động đủ tuổi nghỉ hưu nhưng chưa đủ thời gian đóng bảo hiểm xã hội thì được hưởng gì?",
@@ -766,17 +763,21 @@ for cat, cnt in sorted(cats.items()):
     print(f"  {cat}: {cnt}")
 print(f"Saved to: {output_path}")
 
-# Kiểm tra trùng gold với v1/dev
-test_v1_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'eval', 'test_set_v1.json')
+# Kiểm tra có trùng câu hỏi với bộ test set cũ
+test_v1_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'eval', 'archive', 'test_set_v1.json')
+if not os.path.exists(test_v1_path):
+    test_v1_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'eval', 'test_set_v1.json')
 dev_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'eval', 'dev_set.json')
 
-with open(test_v1_path, 'r', encoding='utf-8') as f:
-      v1 = json.load(f)
-with open(dev_path, 'r', encoding='utf-8') as f:
-      dev = json.load(f)
+v1 = []
+if os.path.exists(test_v1_path):
+    with open(test_v1_path, 'r', encoding='utf-8') as f:
+        v1 = json.load(f)
+dev = []
+if os.path.exists(dev_path):
+    with open(dev_path, 'r', encoding='utf-8') as f:
+        dev = json.load(f)
 
-
-# Kiểm tra trùng câu hỏi
 old_questions = set(q["question"] for q in v1 + dev)
 new_questions = set(q["question"] for q in questions)
 q_overlap = old_questions & new_questions

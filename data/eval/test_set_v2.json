@@ -5,9 +5,6 @@
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D5__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D5__K1"
     ]
   },
   {
@@ -15,9 +12,6 @@
     "question": "Người sử dụng lao động có những quyền gì theo quy định?",
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D6__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D6__K1"
     ]
   },
@@ -27,9 +21,6 @@
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D8__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D8__K1"
     ]
   },
   {
@@ -37,9 +28,6 @@
     "question": "Trước khi ký hợp đồng, người sử dụng lao động phải cung cấp thông tin gì cho người lao động?",
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D16__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D16__K1"
     ]
   },
@@ -49,9 +37,6 @@
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D16__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D16__K2"
     ]
   },
   {
@@ -59,9 +44,6 @@
     "question": "Thỏa thuận thử việc có thể được ghi trong hợp đồng lao động không?",
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D24__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D24__K1"
     ]
   },
@@ -71,9 +53,6 @@
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D25__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D25__K2"
     ]
   },
   {
@@ -81,9 +60,6 @@
     "question": "Trong thời gian thử việc, mỗi bên có quyền hủy bỏ thỏa thuận thử việc không?",
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D27__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D27__K2"
     ]
   },
@@ -93,9 +69,6 @@
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D31"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D31"
     ]
   },
   {
@@ -103,9 +76,6 @@
     "question": "Muốn sửa đổi nội dung hợp đồng lao động thì phải làm thế nào?",
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D33__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D33__K1"
     ]
   },
@@ -115,9 +85,6 @@
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D34__K3"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D34__K3"
     ]
   },
   {
@@ -125,9 +92,6 @@
     "question": "Người lao động bị tuyên bố mất tích thì hợp đồng lao động có chấm dứt không?",
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D34__K7"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D34__K7"
     ]
   },
@@ -137,9 +101,6 @@
     "category": "hop_dong_lao_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D145__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D145__K1"
     ]
   },
   {
@@ -147,9 +108,6 @@
     "question": "Tiền lương là gì theo định nghĩa của Bộ luật Lao động?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D90__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D90__K1"
     ]
   },
@@ -159,9 +117,6 @@
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D90__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D90__K2"
     ]
   },
   {
@@ -169,9 +124,6 @@
     "question": "Trả lương bình đẳng, không phân biệt giới tính được quy định ở đâu?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D90__K3"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D90__K3"
     ]
   },
@@ -181,9 +133,6 @@
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D91__K3"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D91__K3"
     ]
   },
   {
@@ -191,9 +140,6 @@
     "question": "Người sử dụng lao động xây dựng bảng lương phải tham khảo ý kiến ai?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D93__K3"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D93__K3"
     ]
   },
@@ -203,9 +149,6 @@
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D94__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D94__K2"
     ]
   },
   {
@@ -213,9 +156,6 @@
     "question": "Tiền lương ghi trong hợp đồng lao động phải ghi bằng đơn vị tiền tệ nào?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D95__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D95__K2"
     ]
   },
@@ -225,9 +165,6 @@
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D95__K3"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D95__K3"
     ]
   },
   {
@@ -235,9 +172,6 @@
     "question": "Người lao động hưởng lương theo tháng thì kỳ hạn trả lương quy định thế nào?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D97__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D97__K2"
     ]
   },
@@ -247,9 +181,6 @@
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D97__K4"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D97__K4"
     ]
   },
   {
@@ -257,9 +188,6 @@
     "question": "Nếu ngừng việc do lỗi của người lao động thì có được trả lương không?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D99__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D99__K2"
     ]
   },
@@ -269,9 +197,6 @@
     "category": "tien_luong",
     "gold_provision_ids": [
       "45_2019_QH14__D100__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D100__K1"
     ]
   },
   {
@@ -279,9 +204,6 @@
     "question": "Người lao động bị tạm đình chỉ công việc có được trả lương không?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D128__K4"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D128__K4"
     ]
   },
@@ -291,9 +213,6 @@
     "category": "tien_luong",
     "gold_provision_ids": [
       "293_2025_NDCP__D3__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "293_2025_NDCP__D3__K1"
     ]
   },
   {
@@ -301,9 +220,6 @@
     "question": "Thời gian làm việc tiếp xúc với yếu tố nguy hiểm, yếu tố có hại phải tuân theo quy định nào?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D105__K3"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D105__K3"
     ]
   },
@@ -313,9 +229,6 @@
     "category": "lam_them_gio",
     "gold_provision_ids": [
       "45_2019_QH14__D105__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D105__K2"
     ]
   },
   {
@@ -323,9 +236,6 @@
     "question": "Thời gian làm việc bình thường trong ngày được quy định như nào?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D105__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D105__K1"
     ]
   },
@@ -335,9 +245,6 @@
     "category": "lam_them_gio",
     "gold_provision_ids": [
       "45_2019_QH14__D107__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D107__K2"
     ]
   },
   {
@@ -345,9 +252,6 @@
     "question": "Người sử dụng lao động phải đảm bảo điều kiện gì khi tổ chức làm thêm giờ?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D107__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D107__K2"
     ]
   },
@@ -357,9 +261,6 @@
     "category": "lam_them_gio",
     "gold_provision_ids": [
       "45_2019_QH14__D108__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D108__K2"
     ]
   },
   {
@@ -367,9 +268,6 @@
     "question": "Người lao động làm ca đêm thì thời giờ làm việc ban đêm được tính từ mấy giờ?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D106"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D106"
     ]
   },
@@ -379,9 +277,6 @@
     "category": "lam_them_gio",
     "gold_provision_ids": [
       "45_2019_QH14__D110"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D110"
     ]
   },
   {
@@ -389,9 +284,6 @@
     "question": "Lao động nữ mang thai có được làm thêm giờ không?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D137__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D137__K1"
     ]
   },
@@ -401,9 +293,6 @@
     "category": "lam_them_gio",
     "gold_provision_ids": [
       "45_2019_QH14__D146__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D146__K1"
     ]
   },
   {
@@ -411,9 +300,6 @@
     "question": "Công việc nào cấm sử dụng lao động chưa thành niên?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D147__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D147__K1"
     ]
   },
@@ -423,9 +309,6 @@
     "category": "lam_them_gio",
     "gold_provision_ids": [
       "45_2019_QH14__D148__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D148__K2"
     ]
   },
   {
@@ -433,9 +316,6 @@
     "question": "Người lao động có bị bắt buộc phải làm thêm giờ không?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D107__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D107__K2"
     ]
   },
@@ -445,9 +325,6 @@
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D109__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D109__K1"
     ]
   },
   {
@@ -455,9 +332,6 @@
     "question": "Người lao động làm việc liên tục 8 tiếng thì được nghỉ giữa giờ bao lâu?",
     "category": "nghi_phep",
     "gold_provision_ids": [
-      "45_2019_QH14__D109__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D109__K1"
     ]
   },
@@ -467,9 +341,6 @@
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D109__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D109__K1"
     ]
   },
   {
@@ -477,9 +348,6 @@
     "question": "Nghỉ hằng tuần có thể được sắp xếp vào ngày khác ngoài Chủ nhật không?",
     "category": "nghi_phep",
     "gold_provision_ids": [
-      "45_2019_QH14__D111__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D111__K2"
     ]
   },
@@ -489,9 +357,6 @@
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D112__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D112__K2"
     ]
   },
   {
@@ -499,9 +364,6 @@
     "question": "Người lao động làm công việc nặng nhọc, độc hại có được cộng thêm ngày nghỉ phép không?",
     "category": "nghi_phep",
     "gold_provision_ids": [
-      "45_2019_QH14__D113__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D113__K1"
     ]
   },
@@ -511,9 +373,6 @@
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D113__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D113__K2"
     ]
   },
   {
@@ -521,9 +380,6 @@
     "question": "Nghỉ thai sản có tính vào ngày nghỉ phép hằng năm không?",
     "category": "nghi_phep",
     "gold_provision_ids": [
-      "145_2020_NDCP__D65__K7"
-    ],
-    "gold_provision_ids_relaxed": [
       "145_2020_NDCP__D65__K7"
     ]
   },
@@ -533,9 +389,6 @@
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D114"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D114"
     ]
   },
   {
@@ -543,9 +396,6 @@
     "question": "Người lao động con kết hôn thì được nghỉ mấy ngày hưởng nguyên lương?",
     "category": "nghi_phep",
     "gold_provision_ids": [
-      "45_2019_QH14__D115__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D115__K1"
     ]
   },
@@ -555,9 +405,6 @@
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D113__K6"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D113__K6"
     ]
   },
   {
@@ -565,9 +412,6 @@
     "question": "Lao động nữ trong thời gian hành kinh được nghỉ bao lâu mỗi ngày?",
     "category": "nghi_phep",
     "gold_provision_ids": [
-      "45_2019_QH14__D137__K4"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D137__K4"
     ]
   },
@@ -577,9 +421,6 @@
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D137__K4"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D137__K4"
     ]
   },
   {
@@ -587,9 +428,6 @@
     "question": "Người lao động nữ mang thai được giảm bớt giờ làm hay chuyển công việc nhẹ hơn không?",
     "category": "nghi_phep",
     "gold_provision_ids": [
-      "45_2019_QH14__D137__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D137__K2"
     ]
   },
@@ -599,9 +437,6 @@
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D35__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D35__K1"
     ]
   },
   {
@@ -609,9 +444,6 @@
     "question": "Có được đơn phương chấm dứt hợp đồng khi bị quấy rối tình dục tại nơi làm việc không?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D35__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D35__K2"
     ]
   },
@@ -621,9 +453,6 @@
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D36__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D36__K2"
     ]
   },
   {
@@ -631,9 +460,6 @@
     "question": "Có được sa thải lao động nữ đang mang thai vì lý do thu hẹp sản xuất không?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D37__K3"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D37__K3"
     ]
   },
@@ -643,9 +469,6 @@
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D36__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D36__K1"
     ]
   },
   {
@@ -653,9 +476,6 @@
     "question": "Người lao động nghỉ ốm do bệnh thì có bị chấm dứt hợp đồng lao động không?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D37__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D37__K1"
     ]
   },
@@ -665,9 +485,6 @@
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D40__K3"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D40__K3"
     ]
   },
   {
@@ -675,9 +492,6 @@
     "question": "Công ty đơn phương chấm dứt hợp đồng trái luật thì người lao động được bồi thường thế nào?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D41__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D41__K1"
     ]
   },
@@ -687,9 +501,6 @@
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D44__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D44__K1"
     ]
   },
   {
@@ -697,9 +508,6 @@
     "question": "Khi công ty sáp nhập thì người sử dụng lao động kế tiếp có trách nhiệm gì với người lao động?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D43__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D43__K1"
     ]
   },
@@ -709,9 +517,6 @@
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D45__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D45__K1"
     ]
   },
   {
@@ -719,9 +524,6 @@
     "question": "Tiền lương để tính trợ cấp thôi việc là bình quân của bao nhiêu tháng cuối?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D46__K3"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D46__K3"
     ]
   },
@@ -731,9 +533,6 @@
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
       "45_2019_QH14__D47__K2"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D47__K2"
     ]
   },
   {
@@ -741,9 +540,6 @@
     "question": "Khi chấm dứt hợp đồng, nếu có tranh chấp tiền lương thì thời hạn thanh toán kéo dài bao lâu?",
     "category": "cham_dut_hop_dong",
     "gold_provision_ids": [
-      "45_2019_QH14__D48__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D48__K1"
     ]
   },
@@ -753,9 +549,6 @@
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D2__K4"
-    ],
-    "gold_provision_ids_relaxed": [
-      "58_VBHN-VPQH__D2__K4"
     ]
   },
   {
@@ -763,9 +556,6 @@
     "question": "Người lao động có quyền gì khi tham gia bảo hiểm xã hội?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D10__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "58_VBHN-VPQH__D10__K1"
     ]
   },
@@ -775,9 +565,6 @@
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D43__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "58_VBHN-VPQH__D43__K1"
     ]
   },
   {
@@ -785,9 +572,6 @@
     "question": "Được nghỉ tối đa bao nhiêu ngày để chăm sóc con đau ốm?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D44__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "58_VBHN-VPQH__D44__K1"
     ]
   },
@@ -797,9 +581,6 @@
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D46__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "58_VBHN-VPQH__D46__K1"
     ]
   },
   {
@@ -807,9 +588,6 @@
     "question": "Lao động nữ được nghỉ nghỉ để đi khám thai bao nhiêu lần?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D51__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "58_VBHN-VPQH__D51__K1"
     ]
   },
@@ -819,9 +597,6 @@
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D61__K5"
-    ],
-    "gold_provision_ids_relaxed": [
-      "58_VBHN-VPQH__D61__K5"
     ]
   },
   {
@@ -830,9 +605,6 @@
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D56__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "58_VBHN-VPQH__D56__K1"
     ]
   },
   {
@@ -840,10 +612,7 @@
     "question": "Trợ cấp một lần khi sinh con hoặc nhận con nuôi bằng bao nhiêu tháng lương cơ sở?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D58__4"
-    ],
-    "gold_provision_ids_relaxed": [
-      "58_VBHN-VPQH__D58__4"
+      "58_VBHN-VPQH__D58__K1"
     ]
   },
   {
@@ -851,9 +620,6 @@
     "question": "Người lao động đủ tuổi nghỉ hưu nhưng chưa đủ thời gian đóng bảo hiểm xã hội thì được hưởng gì?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D23__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "58_VBHN-VPQH__D23__K1"
     ]
   },
@@ -863,9 +629,6 @@
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D33__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "58_VBHN-VPQH__D33__K1"
     ]
   },
   {
@@ -873,9 +636,6 @@
     "question": "Điều kiện hưởng trợ cấp thất nghiệp là gì?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "74_2025_QH15__D38__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "74_2025_QH15__D38__K1"
     ]
   },
@@ -885,9 +645,6 @@
     "category": "bao_hiem",
     "gold_provision_ids": [
       "74_2025_QH15__D39__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "74_2025_QH15__D39__K1"
     ]
   },
   {
@@ -895,9 +652,6 @@
     "question": "Nội quy lao động phải có những nội dung chủ yếu nào?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "45_2019_QH14__D118__K2"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D118__K2"
     ]
   },
@@ -907,9 +661,6 @@
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "45_2019_QH14__D121"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D121"
     ]
   },
   {
@@ -917,9 +668,6 @@
     "question": "Người sử dụng lao động sử dụng bao nhiêu người lao động thì phải đăng ký nội quy lao động?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "45_2019_QH14__D119__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D119__K1"
     ]
   },
@@ -929,9 +677,6 @@
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "45_2019_QH14__D122__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D122__K1"
     ]
   },
   {
@@ -939,9 +684,6 @@
     "question": "Trường hợp nào không được xử lý kỷ luật lao động?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "45_2019_QH14__D122__K4"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D122__K4"
     ]
   },
@@ -951,9 +693,6 @@
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "45_2019_QH14__D123__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "45_2019_QH14__D123__K1"
     ]
   },
   {
@@ -961,9 +700,6 @@
     "question": "Các hình thức kỷ luật lao động bao gồm những gì?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "45_2019_QH14__D124__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "45_2019_QH14__D124__K1"
     ]
   },
@@ -973,9 +709,6 @@
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "84_2015_QH13__D14__K4"
-    ],
-    "gold_provision_ids_relaxed": [
-      "84_2015_QH13__D14__K4"
     ]
   },
   {
@@ -983,9 +716,6 @@
     "question": "Người lao động có quyền rời khỏi nơi làm việc khi thấy nguy hiểm không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "84_2015_QH13__D6__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "84_2015_QH13__D6__K1"
     ]
   },
@@ -995,9 +725,6 @@
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "84_2015_QH13__D34__K1"
-    ],
-    "gold_provision_ids_relaxed": [
-      "84_2015_QH13__D34__K1"
     ]
   },
   {
@@ -1005,9 +732,6 @@
     "question": "Người sử dụng lao động có trách nhiệm bồi thường tai nạn lao động cho người lao động không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "84_2015_QH13__D38__K4"
-    ],
-    "gold_provision_ids_relaxed": [
       "84_2015_QH13__D38__K4"
     ]
   },
@@ -1017,9 +741,6 @@
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "50_2024_QH15__D21__K7"
-    ],
-    "gold_provision_ids_relaxed": [
-      "50_2024_QH15__D21__K7"
     ]
   },
   {
@@ -1027,9 +748,6 @@
     "question": "Người sử dụng lao động có trách nhiệm gì đối với Công đoàn?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "50_2024_QH15__D25__K1"
-    ],
-    "gold_provision_ids_relaxed": [
       "50_2024_QH15__D25__K1"
     ]
   },
@@ -1039,359 +757,306 @@
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
       "91_2025_QH15__D2__K3"
-    ],
-    "gold_provision_ids_relaxed": [
-      "91_2025_QH15__D2__K3"
     ]
   },
   {
     "id": "v2_oos_01",
     "question": "Đăng ký kết hôn đồng giới ở Việt Nam có được pháp luật công nhận không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_02",
     "question": "Lãi suất cho vay tín chấp của ngân hàng hiện nay bao nhiêu phần trăm?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_03",
     "question": "Nồng độ cồn bao nhiêu thì bị tước giấy phép lái xe?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_04",
     "question": "Quy trình kê khai thuế thu nhập cá nhân trực tuyến như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_05",
     "question": "Thủ tục xin cấp giấy phép xây dựng nhà ở riêng lẻ cần giấy tờ gì?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_06",
     "question": "Thủ tục sang tên xe máy cần những gì?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_07",
     "question": "Điều kiện để được nhận thừa kế theo di chúc là gì?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_08",
     "question": "Công ty yêu cầu tôi ký thỏa thuận chấm dứt hợp đồng ngay trong hôm nay, tôi nên xử lý thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_09",
     "question": "Nếu muốn khởi kiện công ty cũ thì tôi nên chọn Tòa án nào để giải quyết?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_10",
     "question": "Lương tôi 15 triệu, bạn lập kế hoạch tài chính cho tôi xem nên chi tiêu thế nào.",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_11",
     "question": "Tôi bị công ty cho nghỉ việc, theo bạn tôi có nên yêu cầu họ bồi thường hay không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_12",
     "question": "Tôi muốn chuyển việc sang ngành IT, bạn tư vấn nên học trường nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_13",
     "question": "Viết cho tôi email xin tăng lương thật thuyết phục gửi sếp.",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_14",
     "question": "Kể cho tôi một câu chuyện cười hay.",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_15",
     "question": "Bạn có thể chơi cờ vua với tôi được không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_16",
     "question": "abc xyz 123 456",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_17",
     "question": "Sáng nay trời mưa to quá, bạn có ô không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_18",
     "question": "Hello, how are you?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_19",
     "question": "Hãy dịch câu 'I love my job' sang tiếng Nhật.",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_20",
     "question": "Người nước ngoài mua nhà ở Việt Nam cần điều kiện gì?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_21",
     "question": "Thuế thu nhập cá nhân đối với khoản tiền thưởng cuối năm được tính như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_22",
     "question": "Công chức nhà nước xin thôi việc thì thủ tục khác gì so với người lao động thường?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_23",
     "question": "Doanh nghiệp cổ phần hóa thì người lao động có được mua cổ phần ưu đãi không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_24",
     "question": "Bảo hiểm y tế chi trả bao nhiêu phần trăm khi khám bệnh?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_25",
     "question": "Thuế thu nhập cá nhân phải đóng bao nhiêu nếu lương 20 triệu một tháng?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_26",
     "question": "Theo Luật Bảo hiểm xã hội năm 2014, điều kiện hưởng lương hưu của người lao động là gì?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_27",
     "question": "Theo Luật Bảo hiểm xã hội năm 2014, người lao động đóng bảo hiểm xã hội bao nhiêu năm thì được hưởng lương hưu?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_28",
     "question": "Theo quy định bảo hiểm xã hội trước đây, mức hưởng bảo hiểm xã hội một lần được tính như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_29",
     "question": "Luật Bảo hiểm xã hội năm 2014 quy định chế độ thai sản cho lao động nữ như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_30",
     "question": "Theo quy định bảo hiểm xã hội cũ, người lao động nghỉ ốm được hưởng chế độ trong bao lâu?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_31",
     "question": "Mức đóng bảo hiểm xã hội bắt buộc theo quy định cũ được tính như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_32",
     "question": "Theo quy định bảo hiểm xã hội trước đây, người lao động có thể nhận bảo hiểm xã hội một lần trong những trường hợp nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_33",
     "question": "Quy định về trợ cấp thất nghiệp theo pháp luật bảo hiểm xã hội cũ được áp dụng như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_34",
     "question": "Theo Bộ luật Dân sự, hợp đồng vay tài sản giữa hai cá nhân được quy định như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_35",
     "question": "Nếu một người gây thiệt hại cho tài sản của người khác thì trách nhiệm bồi thường được xác định thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_36",
     "question": "Thời hiệu khởi kiện tranh chấp hợp đồng dân sự là bao lâu?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_37",
     "question": "Người thừa kế có quyền từ chối nhận di sản trong trường hợp nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_38",
     "question": "Hợp đồng dân sự vô hiệu thì các bên phải hoàn trả cho nhau những gì?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_39",
     "question": "Một người đủ bao nhiêu tuổi thì có đầy đủ năng lực hành vi dân sự?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_40",
     "question": "Tôi đang có hai công việc với mức lương khác nhau, bạn nghĩ tôi nên chọn công việc nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_41",
     "question": "Công ty đề nghị tôi ký một thỏa thuận mới, theo bạn tôi có nên ký ngay không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_42",
     "question": "Tôi đang tranh chấp với công ty, bạn nghĩ tôi nên thương lượng hay đưa vụ việc ra Tòa án?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_43",
     "question": "Tôi muốn nghỉ việc nhưng chưa biết thời điểm nào là phù hợp nhất, bạn tư vấn giúp tôi.",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_44",
     "question": "Nếu công ty không đồng ý với yêu cầu của tôi thì tôi nên làm gì tiếp theo?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_45",
     "question": "Người lao động bị tai nạn trên đường đi làm thì mức bồi thường dân sự được tính thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_46",
     "question": "Tiền lương của người lao động có được dùng để thế chấp khoản vay ngân hàng không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_47",
     "question": "Người lao động nghỉ việc rồi có được yêu cầu công ty trả lại tài sản cá nhân đã gửi tại nơi làm việc không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_48",
     "question": "Nếu doanh nghiệp phá sản thì thứ tự thanh toán các khoản nợ đối với người lao động được xác định theo luật phá sản như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_49",
     "question": "Người lao động có phải chịu trách nhiệm hình sự nếu làm lộ bí mật kinh doanh của công ty không?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   },
   {
     "id": "v2_oos_50",
     "question": "Khi người lao động làm mất tài sản của công ty thì trách nhiệm bồi thường được xác định theo pháp luật dân sự như thế nào?",
     "category": "out_of_scope",
-    "gold_provision_ids": [],
-    "gold_provision_ids_relaxed": []
+    "gold_provision_ids": []
   }
 ]
