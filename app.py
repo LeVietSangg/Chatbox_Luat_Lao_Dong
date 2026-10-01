@@ -11,6 +11,11 @@ from generator import LegalGenerator
 
 DATA_DIR          = os.path.join(os.path.dirname(__file__), "data")
 TOP_K             = 10
+RRF_K = 5
+ALPHA = 0.5
+RETRIEVAL_DEPTH = 50
+EXPAND_SIBLINGS = True
+HIEU_LUC_FILTER = "con_hieu_luc"
 MAX_CONTEXT_CHARS = 10_000  # Giới hạn tổng ký tự context đưa vào LLM
 MODEL             = "gemini-3.5-flash-lite"
 
@@ -340,6 +345,75 @@ details > summary::-webkit-details-marker { display: none; }
     padding:12px 15px; font-size:.86rem; color:#8B2020; line-height:1.55;
 }
 
+/* Disclaimer under bot response */
+.bot-disclaimer {
+    margin-top: 4px;
+    margin-bottom: 8px;
+    padding: 7px 11px;
+    background: #FFFDF9;
+    border: 1px dashed #E5D5C5;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    color: #8C6D58;
+    line-height: 1.45;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+}
+.bot-disclaimer-icon { font-size: 0.82rem; flex-shrink: 0; margin-top: 1px; }
+
+/* Intro disclaimer box (Empty state) */
+.intro-disclaimer-box {
+    margin: 16px 0 20px;
+    padding: 12px 15px;
+    background: #FFF;
+    border: 1px solid #EAE0D5;
+    border-left: 4px solid #7B1A1A;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    max-width: 560px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.idb-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: #4A3020;
+    line-height: 1.5;
+}
+.idb-icon { font-size: 0.95rem; flex-shrink: 0; }
+
+/* Sidebar disclaimer */
+.sb-disclaimer {
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 9px 10px;
+    margin-top: 6px;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+.sb-disc-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+.sb-disc-note {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.65) !important;
+    line-height: 1.4;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 5px;
+    margin-top: 4px;
+}
+
 /* Chat input */
 [data-testid="stChatInput"] {
     border:1.5px solid #DDD5C8 !important;
@@ -643,8 +717,11 @@ with st.sidebar:
     # ── Bottom ────────────────────────────────────
     st.markdown('<hr class="sb-divider">', unsafe_allow_html=True)
     st.markdown("""
-
-
+    <div class="sb-disclaimer">
+      <div class="sb-disc-row"><span style="font-size:0.85rem"></span> <span>Chốt dữ liệu: <strong>01/08/2026</strong></span></div>
+      <div class="sb-disc-row"><span style="font-size:0.85rem"></span> <span>Nguồn: <strong>vbpl.vn/chinhphu.vn</strong></span></div>
+      <div class="sb-disc-note">⚠️ Chỉ mang tính tham khảo, không thay thế tư vấn pháp lý chính thức.</div>
+    </div>
     """, unsafe_allow_html=True)
 
 
@@ -675,7 +752,7 @@ with col_chat:
         <div class="chat-hd-av">⚖️</div>
         <div>
           <div class="chat-hd-name">Chatbot hỗ trợ tra cứu một số quy định về pháp luật về lao động</div>
-          <div class="chat-hd-status"><span class="dot-green"></span>Đang hoạt động</div>
+          <div class="chat-hd-status"><span class="dot-green"></span>Đang hoạt động · CSDL chốt: 01/08/2026</div>
         </div>
       </div>
 
@@ -702,6 +779,16 @@ with col_chat:
           <p>Đặt câu hỏi về <strong>hợp đồng lao động</strong>, <strong>tiền lương</strong>,
              <strong>BHXH</strong>, <strong>nghỉ phép</strong>, <strong>sa thải</strong>
              và các vấn đề pháp luật lao động khác.</p>
+          <div class="intro-disclaimer-box">
+            <div class="idb-item">
+              <span class="idb-icon"></span>
+              <div><strong>Ngày chốt dữ liệu:</strong> 01/08/2026 (Nguồn chính thống: CSDL Quốc gia VBPL — <em>vbpl.vn</em>).</div>
+            </div>
+            <div class="idb-item">
+              <span class="idb-icon"></span>
+              <div><strong>Khuyến cáo pháp lý:</strong> Hệ thống AI phục vụ nghiên cứu và hỗ trợ tra cứu nhanh. Nội dung trả lời chỉ mang tính chất tham khảo, không thay thế văn bản quy phạm pháp luật hoặc ý kiến tư vấn chính thức của luật sư.</div>
+            </div>
+          </div>
         </div>""", unsafe_allow_html=True)
 
         c1, c2 = st.columns(2)
@@ -732,12 +819,17 @@ with col_chat:
                 chunks  = msg.get("chunks", [])
                 t       = msg.get("time", "")
 
+                disc_html = """<div class="bot-disclaimer">
+  <span class="bot-disclaimer-icon">⚠️</span>
+  <span><strong>Lưu ý:</strong> Thông tin do Chatbox tổng hợp tự động từ CSDL văn bản pháp luật (chốt ngày 01/08/2026), chỉ mang tính chất tham khảo, không thay thế ý kiến tư vấn pháp lý chính thức.</span>
+</div>"""
+
                 if api_e:
                     body = '<div class="refusal">Hệ thống AI đang quá tải hoặc gặp lỗi kết nối. Vui lòng thử lại sau.</div>'
                 elif is_ref:
-                    body = '<div class="refusal">Xin lỗi, tôi không tìm thấy thông tin phù hợp trong cơ sở dữ liệu pháp luật.</div>'
+                    body = f'<div class="refusal">Xin lỗi, tôi không tìm thấy thông tin phù hợp trong cơ sở dữ liệu pháp luật.</div>{disc_html}'
                 else:
-                    body = f'<div class="msg-ans">{ans}</div>'
+                    body = f'<div class="msg-ans">{ans}</div>{disc_html}'
                     cited_c = [c for c in chunks if c.get("provision_id") in cits]
                     if cited_c:
                         rows = ""
@@ -830,7 +922,7 @@ with col_chat:
             with thinking_placeholder:
                 with st.spinner("Đang tìm kiếm điều khoản và soạn câu trả lời..."):
                     search_q = expand_legal_query(prompt_to_gen)
-                    raw_chunks = retriever.search_hybrid(search_q, top_k=15, expand_siblings=True)
+                    raw_chunks = retriever.search_hybrid(search_q, top_k=TOP_K, rrf_k=RRF_K, alpha=ALPHA, retrieval_depth=RETRIEVAL_DEPTH, expand_siblings=EXPAND_SIBLINGS, hieu_luc_filter=HIEU_LUC_FILTER)
                     valid_chunks = retriever.filter_by_hieu_luc(raw_chunks, "con_hieu_luc")
                     chunks = valid_chunks[:TOP_K] if valid_chunks else raw_chunks[:TOP_K]
 
