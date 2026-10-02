@@ -200,27 +200,49 @@ CONTEXT
 
     def verify_citations(self, answer, valid_ids):
         """
-        Kiểm tra citation do LLM sinh ra.
+        Kiểm tra và chuẩn hóa citation do LLM sinh ra.
 
-        Hiện tại verifier thực hiện:
-        1. Tìm các citation dạng [provision_id].
-        2. Kiểm tra ID có tồn tại trong context hay không.
-        3. Xóa citation không hợp lệ khỏi final answer.
-
-        Lưu ý:
-        Hàm này chưa đánh giá semantic entailment
-        (citation có thực sự hỗ trợ nội dung câu hay không).
+        - Citation tồn tại trong valid_ids: giữ nguyên.
+        - Citation con (__a, __b, ...): nếu citation cha tồn tại
+        trong valid_ids thì chuẩn hóa về citation cha.
+        - Citation không tồn tại và không có citation cha hợp lệ:
+        loại bỏ và ghi nhận là hallucinated.
         """
 
         citations = []
         hallucinated = []
         valid_citations = []
 
-        # Hàm thay thế để chuẩn hóa và kiểm tra citation
+        # Hàm tìm citation cha
+        def normalize_citation(pid):
+            # Citation đã hợp lệ
+            if pid in valid_ids:
+                return pid
+
+            # Ví dụ:
+            # 145_2020_NDCP__D10__K2__a
+            #              ↓
+            # 145_2020_NDCP__D10__K2
+            #
+            # 45_2019_QH14__D103__A
+            #            ↓
+            # 45_2019_QH14__D103
+
+            candidate = pid
+
+            while "__" in candidate:
+                candidate = candidate.rsplit("__", 1)[0]
+
+                if candidate in valid_ids:
+                    return candidate
+
+            return None
+
         def repl_fn(match):
             raw_text = match.group(1)
 
-            # Tách các provision_id bằng dấu phẩy, chấm phẩy hoặc |
+            # Tách các provision_id bằng dấu phẩy,
+            # chấm phẩy hoặc |
             parts = re.split(r"[,;|]+", raw_text.strip())
             parts = [p.strip() for p in parts if p.strip()]
 
@@ -232,18 +254,22 @@ CONTEXT
                 if pid not in citations:
                     citations.append(pid)
 
-                if pid not in valid_ids:
+                # Tìm ID hợp lệ hoặc ID cha hợp lệ
+                normalized_pid = normalize_citation(pid)
 
-                    # Tránh duplicate hallucination
+                if normalized_pid is None:
+
+                    # Citation không hợp lệ
                     if pid not in hallucinated:
                         hallucinated.append(pid)
 
                 else:
 
-                    if pid not in valid_citations:
-                        valid_citations.append(pid)
+                    if normalized_pid not in valid_citations:
+                        valid_citations.append(normalized_pid)
 
-                    valid_parts.append(pid)
+                    if normalized_pid not in valid_parts:
+                        valid_parts.append(normalized_pid)
 
             if not valid_parts:
                 return ""
@@ -254,17 +280,13 @@ CONTEXT
             # [D10_K2][D11_K2]
             return "[" + "][".join(valid_parts) + "]"
 
-
         verified_answer = re.sub(
             r"\[([^\[\]]+)\]",
             repl_fn,
             answer
         )
 
-        # ------------------------------------------------------------
         # Làm sạch khoảng trắng
-        # ------------------------------------------------------------
-
         verified_answer = re.sub(
             r"[ \t]+",
             " ",

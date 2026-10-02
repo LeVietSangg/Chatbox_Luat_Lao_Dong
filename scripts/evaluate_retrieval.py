@@ -1,14 +1,15 @@
 """
 evaluate_retrieval.py
-Đánh giá hiệu suất của BM25, Dense và Hybrid Retrieval trên dev set.
+Đánh giá hiệu suất của BM25, Dense và Hybrid Retrieval trên tập dữ liệu kiểm thử.
 
 Các chỉ số đo lường:
   - Recall@k (k=1, 3, 5): tỷ lệ gold provisions xuất hiện trong top-k.
   - MRR@10 (Mean Reciprocal Rank): trung bình nghịch đảo hạng đầu tiên đúng (trong top-10).
+  - Latency (Latency_p50, Latency_p95): thời gian phản hồi của bước truy xuất.
 
-Hỗ trợ 2 chế độ:
-  - strict : gold_provision_ids (chỉ những provision trả lời trực tiếp).
-  - relaxed: gold_provision_ids_relaxed (bao gồm cả các provision liên quan).
+Tiêu chuẩn đánh giá:
+  - Đánh giá nghiêm ngặt ở cấp Khoản (Clause-level Strict Evaluation):
+    Chỉ những provision_id trực tiếp trả lời câu hỏi mới được tính điểm.
 """
 
 import os
@@ -17,10 +18,22 @@ import json
 import time
 import numpy as np
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 # Thêm thư mục scripts vào path
 sys.path.insert(0, os.path.dirname(__file__))
 from retriever import LegalRetriever
-
+# Cấu hình Hybrid RRF được chọn từ quá trình tuning trên Dev Set
+SELECTED_RRF_K = 5
+SELECTED_ALPHA = 0.5
+RETRIEVAL_DEPTH = 50
+TOP_K = 10
+HIEU_LUC_FILTER = "con_hieu_luc"
+EXPAND_SIBLINGS = True
 
 # ======================================================================
 # Các hàm tính metric
@@ -54,13 +67,12 @@ def hit_at_k(retrieved_ids, gold_ids, k):
 # Hàm chạy đánh giá
 # ======================================================================
 
-def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
-    """Chạy đánh giá trên dev set.
+def evaluate(retriever, dev_set, top_k_values=None):
+    """Chạy đánh giá trên dev set theo chuẩn Strict (Cấp Khoản).
 
     Args:
         retriever: LegalRetriever instance.
         dev_set: list of dicts, mỗi dict chứa question, gold_provision_ids, v.v.
-        mode: 'strict' hoặc 'relaxed'.
         top_k_values: list các giá trị k cần đánh giá. Mặc định [1, 3, 5].
 
     Returns:
@@ -69,11 +81,29 @@ def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
     if top_k_values is None:
         top_k_values = [1, 3, 5]
 
-    max_k = max(max(top_k_values), 10)  # Luôn lấy top-10 để tính MRR@10
+    max_k = max(max(top_k_values), TOP_K)  # Luôn lấy top-10 để tính MRR@10
     methods = {
-        "BM25": lambda q: retriever.search_bm25(q, top_k=max_k),
-        "Dense": lambda q: retriever.search_dense(q, top_k=max_k),
-        "Hybrid_RRF": lambda q: retriever.search_hybrid(q, top_k=max_k),
+        "BM25": lambda q: retriever.search_bm25(
+            q,
+            top_k=max_k,
+            hieu_luc_filter=HIEU_LUC_FILTER
+        ),
+
+        "Dense": lambda q: retriever.search_dense(
+            q,
+            top_k=max_k,
+            hieu_luc_filter=HIEU_LUC_FILTER
+        ),
+
+        "Hybrid_RRF": lambda q: retriever.search_hybrid(
+            q,
+            top_k=max_k,
+            rrf_k=SELECTED_RRF_K,
+            alpha=SELECTED_ALPHA,
+            retrieval_depth=RETRIEVAL_DEPTH,
+            expand_siblings=EXPAND_SIBLINGS,
+            hieu_luc_filter=HIEU_LUC_FILTER
+        ),
     }
 
     # Khởi tạo accumulators
@@ -87,12 +117,10 @@ def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
             "per_query": [],
         }
 
-    gold_key = "gold_provision_ids" if mode == "strict" else "gold_provision_ids_relaxed"
-
     for item in dev_set:
         qid = item["id"]
         question = item["question"]
-        gold_ids = item.get(gold_key, item["gold_provision_ids"])
+        gold_ids = item.get("gold_provision_ids", [])
 
         for method_name, search_fn in methods.items():
             t0 = time.time()
@@ -148,13 +176,13 @@ def evaluate(retriever, dev_set, mode="strict", top_k_values=None):
 # In kết quả dạng bảng
 # ======================================================================
 
-def print_summary_table(summary, mode, top_k_values=None):
-    """In bảng tổng hợp kết quả."""
+def print_summary_table(summary, top_k_values=None):
+    """In bảng tổng hợp kết quả đánh giá (Strict - Cấp Khoản)."""
     if top_k_values is None:
         top_k_values = [1, 3, 5]
 
     print(f"\n{'='*80}")
-    print(f"KET QUA DANH GIA RETRIEVAL (mode={mode})")
+    print("KET QUA DANH GIA RETRIEVAL (Tieu chuan nghiem ngat cap Khoan - Strict)")
     print(f"{'='*80}")
 
     # Header: chỉ hiển thị Recall@1/3/5 và MRR@10
@@ -197,39 +225,38 @@ def main():
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     eval_dir = os.path.join(data_dir, "eval")
 
-    # Load dev set
-    dev_set_path = os.path.join(eval_dir, "dev_set.json")
-    print(f"Loading dev set from {dev_set_path}...")
-    with open(dev_set_path, "r", encoding="utf-8") as f:
-        dev_set = json.load(f)
-    # Filter out out_of_scope questions for pure retrieval evaluation
-    dev_set = [q for q in dev_set if q["category"] != "out_of_scope"]
-    print(f"Loaded {len(dev_set)} in-scope questions for retrieval evaluation.\n")
+    # Ưu tiên load test_set_v2.json nếu có, nếu không thì dev_set_v2.json
+    eval_path = os.path.join(eval_dir, "test_set_v2.json")
+    if not os.path.exists(eval_path):
+        eval_path = os.path.join(eval_dir, "dev_set_v2.json")
+
+    print(f"Loading evaluation set from {eval_path}...")
+    with open(eval_path, "r", encoding="utf-8") as f:
+        eval_set = json.load(f)
+    # Lọc bỏ câu out_of_scope cho phần đánh giá retrieval
+    eval_set = [q for q in eval_set if q.get("category") != "out_of_scope"]
+    print(f"Loaded {len(eval_set)} in-scope questions for retrieval evaluation.\n")
 
     # Load retriever
     retriever = LegalRetriever(data_dir=data_dir)
 
-    # Đánh giá cả 2 mode
-    for mode in ["strict", "relaxed"]:
-        summary = evaluate(retriever, dev_set, mode=mode)
-        print_summary_table(summary, mode)
+    # Chạy đánh giá
+    summary = evaluate(retriever, eval_set)
+    print_summary_table(summary)
 
-        # Chi tiết cho các câu hỏi bị miss ở Hybrid
-        print_per_query_detail(summary, "Hybrid_RRF")
+    # Chi tiết cho các câu hỏi bị miss ở Hybrid
+    print_per_query_detail(summary, "Hybrid_RRF")
 
     # Lưu kết quả đánh giá
     output_path = os.path.join(eval_dir, "eval_results.json")
-    # Lưu bản tổng hợp (không bao gồm per_query để file nhỏ gọn)
-    save_summary = {}
-    for mode in ["strict", "relaxed"]:
-        summary = evaluate(retriever, dev_set, mode=mode)
-        save_summary[mode] = {}
-        for method_name, data in summary.items():
-            save_summary[mode][method_name] = {
-                k: v for k, v in data.items() if k != "per_query"
-            }
+    save_summary = {
+        method_name: {k: v for k, v in data.items() if k != "per_query"}
+        for method_name, data in summary.items()
+    }
+
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(save_summary, f, ensure_ascii=False, indent=2)
+
     print(f"\nĐã lưu kết quả đánh giá: {output_path}")
 
 

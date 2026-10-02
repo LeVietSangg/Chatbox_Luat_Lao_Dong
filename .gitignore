@@ -39,3 +39,7 @@ env/
 # Project specific
 data/index/
 .env
+
+# Runtime logs and test chat history
+*.jsonl
+data/chat_history.json

@@ -13,15 +13,12 @@ import os
 
 questions = []
 
-def add_q(q_id, text, cat, gold, gold_relaxed=None):
-    if not gold_relaxed:
-        gold_relaxed = gold
+def add_q(q_id, text, cat, gold, *args):
     questions.append({
         "id": q_id,
         "question": text,
         "category": cat,
-        "gold_provision_ids": gold,
-        "gold_provision_ids_relaxed": gold_relaxed
+        "gold_provision_ids": gold
     })
 
 # --- 1. Hợp đồng lao động (13 câu) ---
@@ -144,12 +141,11 @@ add_q("t8_06", "Cách đăng ký nhãn hiệu hàng hóa độc quyền?", "out_
 add_q("t8_07", "Điều kiện thành lập công ty cổ phần?", "out_of_scope", [])
 
 # 8.2 Tư vấn cá nhân (6 câu)
-add_q("t8_08", "Công ty ép tôi làm OT không trả tiền, tôi có nên kiện ra tòa án không?", "out_of_scope", [])
-add_q("t8_09", "Sếp hay mắng chửi tôi thậm tệ, tôi muốn nghỉ việc ngay lập tức thì làm sao để lấy lại lương?", "out_of_scope", [])
-add_q("t8_10", "Tôi bị sếp đuổi việc vô lý, hãy tính toán xem tôi được bồi thường chính xác bao nhiêu tiền nếu kiện?", "out_of_scope", [])
+add_q("t8_08", "Tôi đang rất bực vì công việc, bạn nghĩ tôi nên nói chuyện với sếp hay nghỉ việc?", "out_of_scope", [])
+add_q("t8_10", "Tôi bị mất việc và muốn bạn dự đoán chính xác tôi sẽ nhận được bao nhiêu tiền trong tương lai.", "out_of_scope", [])
 add_q("t8_11", "Tôi sắp sinh con, bạn tư vấn giúp tôi mua loại sữa nào tốt cho bé được không?", "out_of_scope", [])
-add_q("t8_12", "Năm nay kinh tế khó khăn, theo bạn tôi có nên nghỉ việc để ra làm riêng kinh doanh không?", "out_of_scope", [])
-add_q("t8_13", "Viết cho tôi một lá đơn xin nghỉ việc thật lâm li bi đát để sếp cảm động.", "out_of_scope", [])
+add_q("t8_12", "Tôi không thích công việc hiện tại, bạn nghĩ tôi nên chuyển sang nghề nào?", "out_of_scope", [])
+add_q("t8_13", "Hãy viết giúp tôi một lời nhắn chia tay đồng nghiệp thật cảm động.", "out_of_scope", [])
 
 # 8.3 Vô nghĩa/Conversational (6 câu)
 add_q("t8_14", "Chào bạn, hôm nay thời tiết thế nào?", "out_of_scope", [])
@@ -166,6 +162,7 @@ add_q("t8_22", "Công ty bị phạt 50 triệu do vi phạm an toàn lao độn
 add_q("t8_23", "Khi đi khám bệnh, tôi được bảo hiểm y tế chi trả bao nhiêu phần trăm tiền thuốc?", "out_of_scope", [])
 add_q("t8_24", "Giám đốc công ty TNHH MTV có được ký hợp đồng lao động với chính mình không?", "out_of_scope", [])
 add_q("t8_25", "Người lao động nghỉ hưu có phải nộp thuế thu nhập cá nhân đối với lương hưu không?", "out_of_scope", [])
+add_q("t8_26", "Tôi đang có mâu thuẫn với đồng nghiệp, bạn nghĩ tôi nên làm gì để giải quyết?", "out_of_scope", [])
 
 output_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'eval', 'dev_set_v2.json')
 with open(output_path, 'w', encoding='utf-8') as f:

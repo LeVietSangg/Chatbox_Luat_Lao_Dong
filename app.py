@@ -8,6 +8,12 @@ import streamlit as st
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "scripts"))
 from retriever import LegalRetriever
 from generator import LegalGenerator
+from rag_pipeline import (
+    DOC_NAMES, doc_name, parse_pid, strip_cit,
+    expand_legal_query, execute_rag_pipeline,
+    load_chat_history, save_chat_history,
+    new_conv, hm
+)
 
 DATA_DIR          = os.path.join(os.path.dirname(__file__), "data")
 TOP_K             = 10
@@ -515,129 +521,13 @@ def get_generator():
     return LegalGenerator(model_name=MODEL, temperature=0.0)
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
-DOC_NAMES = {
-    "45_2019_QH14":  "Bộ luật Lao động 2019",
-    "145_2020_NDCP": "Nghị định 145/2020/NĐ-CP",
-    "58_VBHN-VPQH":  "Luật BHXH (VBHN)",
-    "84_2015_QH13":  "Luật ATVSLĐ 2015",
-    "10_2012_QH13":  "Bộ luật Lao động 2012",
-    "50_2024_QH15":  "Luật Công đoàn 2024",
-}
+# ── Quản lý phiên hội thoại & Lưu trữ lịch sử (Session & Persistence) ───────
+HISTORY_FILE = os.path.join(DATA_DIR, "chat_history.json")
 
-def doc_name(code: str) -> str:
-    for k, v in DOC_NAMES.items():
-        if k in code: return v
-    return code.replace("_", "/")
-
-def parse_pid(pid: str) -> dict:
-    parts = pid.split("__")
-    code  = parts[0]
-    dieu  = next((p[1:] for p in parts[1:] if p.startswith("D") and p[1:].isdigit()), "")
-    khoan = next((p[1:] for p in parts[1:] if p.startswith("K")), "")
-    clause = ("Điều " + dieu if dieu else "") + (", Khoản " + khoan if khoan else "")
-    return {"doc": doc_name(code), "clause": clause.strip(", ") or pid, "pid": pid}
-
-def strip_cit(text: str) -> str:
-    return re.sub(r'\[[^\[\]]+\]', '', text).strip()
-
-def hm() -> str:
-    t = time.localtime(); return f"{t.tm_hour:02d}:{t.tm_min:02d}"
-
-def new_conv() -> dict:
-    return {"title": "Cuộc trò chuyện mới", "time": hm(), "messages": [], "chunks": None}
-
-# Từ viết tắt pháp lý & teencode thường gặp
-ABBREVIATIONS = {
-    r"\bnlđ\b": "người lao động",
-    r"\bnsdlđ\b": "người sử dụng lao động",
-    r"\bhđlđ\b": "hợp đồng lao động",
-    r"\bhđ\b": "hợp đồng",
-    r"\bbhxh\b": "bảo hiểm xã hội",
-    r"\bbhtn\b": "bảo hiểm thất nghiệp",
-    r"\bbhyt\b": "bảo hiểm y tế",
-    r"\bcty\b": "công ty",
-    r"\bnv\b": "nhân viên",
-    r"\b(k|ko|kh|khg)\b": "không",
-    r"\b(đc|dc)\b": "được",
-    r"\bot\b": "làm thêm giờ",
-}
-
-def expand_legal_query(q: str) -> str:
-    """Mở rộng câu hỏi đời thường sang thuật ngữ pháp lý chuẩn xác, tránh gây nhiễu."""
-    q_low = q.lower()
-
-    # 0. Nếu là câu hỏi ngoài phạm vi rõ rệt (luật khác, thơ văn, tư vấn kiện tụng cụ thể) -> Giữ nguyên để LLM từ chối
-    if re.search(r"\b(tôi\s+có\s+nên\s+kiện|kiện\s+ra\s+tòa|tính\s+toán\s+xem\s+tôi|tư\s+vấn\s+giúp\s+tôi\s+mua|viết\s+cho\s+tôi|soạn\s+cho\s+tôi|làm\s+thơ|thời\s+tiết|sữa\s+nào|làm\s+riêng\s+kinh\s+doanh)\b", q_low):
-        return q
-
-    # Chuẩn hóa viết tắt
-    norm_q = q_low
-    for pattern, repl in ABBREVIATIONS.items():
-        norm_q = re.sub(pattern, repl, norm_q)
-
-    additions = []
-
-    # 1. Nghỉ trước hạn / xin nghỉ việc / muốn nghỉ việc
-    if re.search(r"nghỉ\s+(việc\s+)?trước\s+hạn|xin\s+nghỉ\s+việc|muốn\s+nghỉ\s+việc|đơn\s+phương\s+chấm\s+dứt\s+hợp\s+đồng", norm_q):
-        additions.append("quyền đơn phương chấm dứt hợp đồng lao động của người lao động thời hạn báo trước Điều 35")
-
-    # 2. Nghỉ ngang / tự ý bỏ việc / không báo trước / nghỉ việc ngang
-    elif re.search(r"nghỉ\s+(việc\s+)?ngang|tự\s+(ý\s+)?(nghỉ|bỏ)\s*(việc)?|bỏ\s+việc|nghỉ\s+(không|k|ko)\s*(phép|xin|báo)|nghỉ\s+đùng|thôi\s+việc\s+không", norm_q):
-        additions.append("đơn phương chấm dứt hợp đồng lao động trái pháp luật nghĩa vụ bồi thường Điều 39 Điều 40")
-
-    # 3. Cho nghỉ việc đột ngột / đuổi đột ngột (không báo trước)
-    if re.search(r"nghỉ\s+việc\s+đột\s+ngột|đuổi\s+đột\s+ngột|nghỉ\s+đột\s+ngột|đuổi\s+(việc\s+)?ngay|thôi\s+việc\s+ngay", norm_q):
-        additions.append("người sử dụng lao động đơn phương chấm dứt hợp đồng lao động thời hạn báo trước trái pháp luật Điều 36 Điều 39 Điều 41")
-    elif re.search(r"sa\s*thải|kỷ\s*luật\s*sa\s*thải", norm_q):
-        additions.append("kỷ luật sa thải xử lý kỷ luật lao động Điều 125")
-
-    # 4. Hết hạn hợp đồng (chỉ khi không phải nghỉ trước hạn)
-    if re.search(r"hết\s+(hạn\s+)?hợp\s+đồng|hết\s+hđ", norm_q) and not re.search(r"trước\s+hạn", norm_q):
-        additions.append("chấm dứt hợp đồng lao động hết hạn Điều 34")
-
-    # 5. Ép buộc / cưỡng bức lao động
-    if re.search(r"\b(bắt|ép|cưỡng\s*bức|bắt\s*buộc|cưỡng\s*ép)\b", norm_q):
-        additions.append("cưỡng bức lao động hành vi bị nghiêm cấm Điều 8 Điều 17")
-
-    # 6. Tiền lương / nợ lương / chậm lương
-    if re.search(r"quỵt\s*lương|nợ\s*lương|chậm\s*lương|bùng\s*lương|không\s*trả\s*lương", norm_q):
-        additions.append("tiền lương chậm trả lương đền bù tiền lãi quyền đơn phương chấm dứt Điều 97 Điều 35")
-    elif re.search(r"tiền\s*lương|trả\s*lương|lương\s*tối\s*thiểu", norm_q):
-        additions.append("tiền lương kỳ hạn trả lương Điều 97")
-
-    # 7. Làm thêm giờ / tăng ca
-    if re.search(r"làm\s*thêm|tăng\s*ca|ngoài\s*giờ|làm\s*đêm", norm_q):
-        additions.append("làm thêm giờ thời giờ làm việc sự đồng ý của người lao động Điều 107")
-
-    # 8. Nghỉ phép năm (tách riêng khỏi nghỉ lễ tết để không làm nhiễu)
-    if re.search(r"nghỉ\s*phép\s*năm|nghỉ\s*phép|nghỉ\s*hằng\s*năm", norm_q):
-        additions.append("nghỉ hằng năm hưởng nguyên lương tiền lương ngày nghỉ thanh toán ngày chưa nghỉ Điều 113")
-    elif re.search(r"nghỉ\s*lễ|nghỉ\s*tết|lễ\s*tết", norm_q):
-        additions.append("nghỉ lễ tết hưởng nguyên lương Điều 112")
-
-    # 9. Chủ / Sếp
-    if re.search(r"\b(chủ|sếp)\b", norm_q):
-        additions.append("người sử dụng lao động")
-
-    # 10. Thử việc
-    if re.search(r"thử\s*việc", norm_q):
-        additions.append("thời gian thử việc tiền lương thử việc Điều 25 Điều 26")
-
-    # 11. Thai sản
-    if re.search(r"thai\s*sản|nghỉ\s*đẻ|sinh\s*con", norm_q):
-        additions.append("chế độ thai sản lao động nữ Điều 137 Điều 139")
-
-    if additions:
-        return q + " " + " ".join(additions)
-    return q
-
-
-# ── Session state — multi-conversation ────────────────────────────────────────
 if "convs" not in st.session_state:
-    st.session_state.convs = {0: new_conv()}
+    st.session_state.convs = load_chat_history(HISTORY_FILE)
 if "active" not in st.session_state:
-    st.session_state.active = 0
+    st.session_state.active = max(st.session_state.convs.keys()) if st.session_state.convs else 0
 if "pending_q" not in st.session_state:
     st.session_state.pending_q = None
 
@@ -673,9 +563,10 @@ with st.sidebar:
             )
             conv["title"] = first_q
         # Tạo conversation mới
-        new_id = max(st.session_state.convs.keys()) + 1
+        new_id = (max(st.session_state.convs.keys()) + 1) if st.session_state.convs else 0
         st.session_state.convs[new_id] = new_conv()
         st.session_state.active = new_id
+        save_chat_history(st.session_state.convs, HISTORY_FILE)
         st.rerun()
 
     # ── Conversation hiện tại ─────────────────────
@@ -911,6 +802,8 @@ with col_chat:
             conv["title"] = prompt[:40]
             conv["time"]  = t
 
+        save_chat_history(st.session_state.convs, HISTORY_FILE)
+
         # Đánh dấu cần generate câu trả lời và rerun ngay để hiển thị câu hỏi của user
         conv["needs_response"] = prompt
         st.rerun()
@@ -921,25 +814,21 @@ with col_chat:
         try:
             with thinking_placeholder:
                 with st.spinner("Đang tìm kiếm điều khoản và soạn câu trả lời..."):
-                    search_q = expand_legal_query(prompt_to_gen)
-                    raw_chunks = retriever.search_hybrid(search_q, top_k=TOP_K, rrf_k=RRF_K, alpha=ALPHA, retrieval_depth=RETRIEVAL_DEPTH, expand_siblings=EXPAND_SIBLINGS, hieu_luc_filter=HIEU_LUC_FILTER)
-                    valid_chunks = retriever.filter_by_hieu_luc(raw_chunks, "con_hieu_luc")
-                    chunks = valid_chunks[:TOP_K] if valid_chunks else raw_chunks[:TOP_K]
-
-                    # Giới hạn theo tổng ký tự để tránh prompt quá lớn gây overload API
-                    budget = 0
-                    capped = []
-                    for ch in chunks:
-                        noi_dung = ch.get("content", {}).get("noi_dung", "")
-                        if budget + len(noi_dung) > MAX_CONTEXT_CHARS and capped:
-                            break
-                        capped.append(ch)
-                        budget += len(noi_dung)
-                    chunks = capped
-
-                    res = generator.generate(prompt_to_gen, chunks)
+                    res = execute_rag_pipeline(
+                        prompt_to_gen,
+                        retriever,
+                        generator,
+                        top_k=TOP_K,
+                        rrf_k=RRF_K,
+                        alpha=ALPHA,
+                        retrieval_depth=RETRIEVAL_DEPTH,
+                        expand_siblings=EXPAND_SIBLINGS,
+                        hieu_luc_filter=HIEU_LUC_FILTER,
+                        max_context_chars=MAX_CONTEXT_CHARS
+                    )
 
             t_bot = hm()
+            chunks = res["chunks"]
             conv["chunks"] = chunks
             conv["messages"].append({
                 "role":       "assistant",
@@ -950,6 +839,7 @@ with col_chat:
                 "chunks":     chunks,
                 "time":       t_bot,
             })
+            save_chat_history(st.session_state.convs, HISTORY_FILE)
         except Exception as ex:
             conv["messages"].append({
                 "role":       "assistant",
@@ -960,6 +850,7 @@ with col_chat:
                 "chunks":     [],
                 "time":       hm(),
             })
+            save_chat_history(st.session_state.convs, HISTORY_FILE)
         finally:
             if "needs_response" in conv:
                 del conv["needs_response"]
@@ -1040,4 +931,3 @@ with col_src:
 
     html_src += "</div>"
     st.markdown(html_src, unsafe_allow_html=True)
-

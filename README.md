@@ -165,6 +165,28 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 ---
 
+### Bước 5: Xây dựng chỉ mục tìm kiếm (BM25 & FAISS Vector Index)
+Do thư mục `data/index/` có dung lượng lớn và nằm trong `.gitignore`, khi thiết lập trên máy mới hoặc clone repo, bạn cần chạy script sau **một lần** để xây dựng chỉ mục tìm kiếm:
+```bash
+python scripts/build_index.py
+```
+*(Script sẽ tự động đọc `corpus.json`, xây dựng chỉ mục BM25 lưu tại `data/index/bm25_index.pkl` và mô hình hóa vector Dense lưu tại `data/index/faiss_index.bin` trong khoảng 1–2 phút).*
+
+---
+
+### 💡 Khởi chạy nhanh bằng một dòng lệnh (One-command Setup):
+Sau khi đã cấu hình file `.env`, bạn có thể thực hiện toàn bộ quy trình chỉ bằng một câu lệnh:
+- **Trên Windows (PowerShell):**
+  ```powershell
+  pip install -r requirements.txt; python scripts/build_index.py; streamlit run app.py
+  ```
+- **Trên Linux / macOS (Bash):**
+  ```bash
+  pip install -r requirements.txt && python scripts/build_index.py && streamlit run app.py
+  ```
+
+---
+
 ## 6. HƯỚNG DẪN CHẠY ỨNG DỤNG GIAO DIỆN WEB (STREAMLIT)
 
 ### Khởi chạy ứng dụng:
@@ -226,5 +248,5 @@ Kết quả tổng hợp sẽ tự động được ghi lại tại: `data/eval/
 
 ##  TÁC GIẢ & BẢN QUYỀN
 - **Đề tài:** Hệ thống Chatbot hỗ trợ tra cứu một số quy định về pháp luật về lao động.
-- **Nguồn dữ liệu pháp luật:** Cổng thông tin điện tử Cơ sở dữ liệu Quốc gia về Văn bản Pháp luật ([vbpl.vn](https://vbpl.vn)).
+- **Nguồn dữ liệu pháp luật:** Cổng thông tin điện tử Cơ sở dữ liệu Quốc gia về Văn bản Pháp luật (vbpl.vn / chinhphu.vn).
 - **Mã nguồn:** Dự án phục vụ mục đích học tập và nghiên cứu khoa học.

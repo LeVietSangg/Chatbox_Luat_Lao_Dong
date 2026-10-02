@@ -11,7 +11,7 @@ DOC_REGISTRY = {
         "doc_name": "Bộ luật Lao động",
         "doc_type": "Bộ luật",
         "so_hieu": "45/2019/QH14",
-        "ngay_hieu_luc": "2026-01-01",
+        "ngay_hieu_luc": "2021-01-01",
         "trang_thai_chung": "con_hieu_luc",
         "ghi_chu": "VBHN, sửa đổi bởi Luật 71/2025/QH15",
     },

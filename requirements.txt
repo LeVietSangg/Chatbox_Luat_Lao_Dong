@@ -1,24 +1,32 @@
 # ==============================================================================
 # REQUIREMENTS.TXT — Chatbot Tra Cứu Pháp Luật Lao Động
+# Phiên bản thư viện đã được kiểm thử và khóa cứng (Pinned Dependencies)
+# Python 3.10 / 3.11 (Khuyến nghị 3.11)
 # ==============================================================================
 
 # --- Giao diện Web (Streamlit) ---
-streamlit>=1.35.0
-python-dotenv>=1.0.0
+streamlit==1.63.0
+python-dotenv==1.0.0
 
 # --- LLM Generation (Google Gemini SDK) ---
-google-genai>=1.0.0
+google-genai==2.20.0
+# Model sử dụng: gemini-3.5-flash-lite
 
 # --- Tiền xử lý & Tách từ tiếng Việt (Sparse Retrieval) ---
-pyvi>=0.1.1
-rank-bm25>=0.2.2
+pyvi==0.1.1
+rank-bm25==0.2.2
 
 # --- Mô hình Embedding & Vector Search (Dense Retrieval) ---
-torch>=2.0.0
-sentence-transformers>=2.2.0
-faiss-cpu>=1.7.4
+torch==2.9.1
+sentence-transformers==5.7.0
+faiss-cpu==1.15.0
 
-# --- Xử lý dữ liệu & Công cụ hỗ trợ ---
-numpy>=1.24.0
-pandas>=2.0.0
-tqdm>=4.65.0
+# --- Trích xuất PDF & Xử lý dữ liệu ---
+PyMuPDF==1.28.0
+pdfplumber==0.11.10
+numpy==2.2.6
+pandas==2.3.3
+tqdm==4.70.0
+
+# --- Kiểm thử tự động (Unit Test / Regression) ---
+pytest==7.4.4

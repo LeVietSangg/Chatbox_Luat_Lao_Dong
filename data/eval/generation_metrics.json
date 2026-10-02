@@ -1,0 +1,47 @@
+{
+  "BM25": {
+    "total_questions": 145,
+    "valid_questions": 145,
+    "api_error_count": 0,
+    "in_scope_count": 95,
+    "out_scope_count": 50,
+    "answered_in_scope_count": 83,
+    "refusal_accuracy": 0.96,
+    "false_refusal_rate": 0.12631578947368421,
+    "false_acceptance_rate": 0.04,
+    "citation_validity": 0.9879518072289156,
+    "citation_exact_match": 0.891566265060241,
+    "generation_latency_p50_s": 1.6857349872589111,
+    "generation_latency_p95_s": 14.208713245391843
+  },
+  "Dense": {
+    "total_questions": 145,
+    "valid_questions": 145,
+    "api_error_count": 0,
+    "in_scope_count": 95,
+    "out_scope_count": 50,
+    "answered_in_scope_count": 82,
+    "refusal_accuracy": 0.94,
+    "false_refusal_rate": 0.1368421052631579,
+    "false_acceptance_rate": 0.06,
+    "citation_validity": 0.9878048780487805,
+    "citation_exact_match": 0.8780487804878049,
+    "generation_latency_p50_s": 1.9788305759429932,
+    "generation_latency_p95_s": 9.226570081710815
+  },
+  "Hybrid_RRF": {
+    "total_questions": 145,
+    "valid_questions": 145,
+    "api_error_count": 0,
+    "in_scope_count": 95,
+    "out_scope_count": 50,
+    "answered_in_scope_count": 88,
+    "refusal_accuracy": 0.92,
+    "false_refusal_rate": 0.07368421052631578,
+    "false_acceptance_rate": 0.08,
+    "citation_validity": 0.9772727272727273,
+    "citation_exact_match": 0.9090909090909091,
+    "generation_latency_p50_s": 1.7129542827606201,
+    "generation_latency_p95_s": 10.26067566871643
+  }
+}

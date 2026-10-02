@@ -64,42 +64,74 @@ class LegalRetriever:
     # ------------------------------------------------------------------
     # Sparse Retrieval (BM25)
     # ------------------------------------------------------------------
-    def search_bm25(self, query, top_k=5):
-        """Tìm kiếm bằng BM25 (sparse, keyword-based)."""
+    def search_bm25(self, query, top_k=10, hieu_luc_filter="con_hieu_luc"):
+        """Tìm kiếm bằng BM25 và lọc theo hiệu lực trước khi lấy Top-K."""
         tokenized_query = ViTokenizer.tokenize(query).lower().split()
         scores = self.bm25.get_scores(tokenized_query)
-        top_n = np.argsort(scores)[::-1][:top_k]
+
+        # Xếp hạng toàn bộ corpus theo điểm BM25
+        ranked_indices = np.argsort(scores)[::-1]
 
         results = []
-        for idx in top_n:
+
+        for idx in ranked_indices:
             prov_id = self.provision_ids[idx]
+            content = self.corpus_dict[prov_id]
+
+            # Lọc hiệu lực trước khi lấy Top-K
+            if hieu_luc_filter is not None:
+                if content.get("hieu_luc") != hieu_luc_filter:
+                    continue
+
             results.append({
                 "provision_id": prov_id,
                 "score": float(scores[idx]),
-                "content": self.corpus_dict[prov_id],
+                "content": content,
             })
+
+            if len(results) >= top_k:
+                break
+
         return results
 
     # ------------------------------------------------------------------
     # Dense Retrieval (FAISS + Bi-Encoder)
     # ------------------------------------------------------------------
-    def search_dense(self, query, top_k=5):
-        """Tìm kiếm bằng Dense Retrieval (semantic, bi-encoder + FAISS)."""
+    def search_dense(self, query, top_k=10, hieu_luc_filter="con_hieu_luc"):
+        """Tìm kiếm bằng Dense Retrieval và lọc theo hiệu lực trước khi lấy Top-K."""
         query_embedding = self.model.encode([query], normalize_embeddings=True)
         query_embedding = np.array(query_embedding).astype("float32")
 
-        scores, indices = self.faiss_index.search(query_embedding, top_k)
+        # Lấy nhiều candidate hơn top_k để có đủ kết quả sau khi lọc
+        search_k = max(top_k * 10, 50)
+
+        scores, indices = self.faiss_index.search(query_embedding, search_k)
 
         results = []
-        for i in range(top_k):
+
+        for i in range(search_k):
             idx = indices[0][i]
-            if idx != -1:
-                prov_id = self.provision_ids[idx]
-                results.append({
-                    "provision_id": prov_id,
-                    "score": float(scores[0][i]),
-                    "content": self.corpus_dict[prov_id],
-                })
+
+            if idx == -1:
+                continue
+
+            prov_id = self.provision_ids[idx]
+            content = self.corpus_dict[prov_id]
+
+            # Lọc hiệu lực trước khi lấy Top-K
+            if hieu_luc_filter is not None:
+                if content.get("hieu_luc") != hieu_luc_filter:
+                    continue
+
+            results.append({
+                "provision_id": prov_id,
+                "score": float(scores[0][i]),
+                "content": content,
+            })
+
+            if len(results) >= top_k:
+                break
+
         return results
 
     # ------------------------------------------------------------------
@@ -231,26 +263,47 @@ class LegalRetriever:
     # ------------------------------------------------------------------
     # Hybrid Retrieval – Reciprocal Rank Fusion (RRF)
     # ------------------------------------------------------------------
-    def search_hybrid(self, query, top_k=5, rrf_k=10, retrieval_depth=100, alpha=0.5, expand_siblings=False):
+    def search_hybrid(
+        self,
+        query,
+        top_k=10,
+        rrf_k=10,
+        retrieval_depth=50,
+        alpha=0.5,
+        expand_siblings=False,
+        hieu_luc_filter="con_hieu_luc"
+    ):
         """Kết hợp BM25 và Dense Retrieval bằng Reciprocal Rank Fusion.
 
         Công thức RRF:
-            score_rrf(d) = alpha * (1 / (k + rank_bm25(d))) + (1 - alpha) * (1 / (k + rank_dense(d)))
-        với k là hằng số (mặc định 60, theo bài báo gốc của Cormack et al.).
+            score_rrf(d) = alpha * (1 / (k + rank_bm25(d)))
+                        + (1 - alpha) * (1 / (k + rank_dense(d)))
+
+        Trong đó:
+            rrf_k: hằng số k trong công thức RRF.
+            alpha: trọng số của BM25; Dense có trọng số (1 - alpha).
 
         Args:
             query: Câu hỏi tìm kiếm.
             top_k: Số kết quả trả về cuối cùng.
-            rrf_k: Hằng số k trong công thức RRF (giá trị lớn hơn giảm
-                   ảnh hưởng của thứ hạng cao; 60 là giá trị phổ biến).
-            retrieval_depth: Số lượng kết quả lấy từ mỗi phương pháp trước
-                             khi gộp (nên >= top_k, thường gấp 2-3 lần).
-            alpha: Trọng số cho BM25 (từ 0.0 đến 1.0). Dense sẽ có trọng số (1 - alpha).
-            expand_siblings: Có tự động mở rộng các khoản anh em của cùng Điều hay không.
+            rrf_k: Hằng số k trong công thức RRF.
+            retrieval_depth: Số candidate lấy từ mỗi phương pháp trước khi RRF.
+            alpha: Trọng số cho BM25.
+            expand_siblings: Có mở rộng các khoản cùng Điều hay không.
+            hieu_luc_filter: Chỉ giữ các văn bản có trạng thái hiệu lực này.
         """
         # Lấy kết quả từ cả hai phương pháp với retrieval_depth lớn hơn top_k
-        bm25_results = self.search_bm25(query, top_k=retrieval_depth)
-        dense_results = self.search_dense(query, top_k=retrieval_depth)
+        bm25_results = self.search_bm25(
+            query,
+            top_k=retrieval_depth,
+            hieu_luc_filter=hieu_luc_filter
+        )
+
+        dense_results = self.search_dense(
+            query,
+            top_k=retrieval_depth,
+            hieu_luc_filter=hieu_luc_filter
+        )
 
         # Tính điểm RRF cho từng provision_id
         rrf_scores = {}  # provision_id -> rrf_score
@@ -357,10 +410,18 @@ def main():
 
         # --- Hybrid RRF ---
         t0 = time.time()
-        hybrid_results = retriever.search_hybrid(query, top_k=5, rrf_k=60)
+        hybrid_results = retriever.search_hybrid(
+    query,
+    top_k=10,
+    rrf_k=10,
+    alpha=0.5,
+    retrieval_depth=50,
+    expand_siblings=False,
+    hieu_luc_filter="con_hieu_luc"
+    )
         hybrid_time = time.time() - t0
         print(f"[Hybrid RRF] ({hybrid_time:.4f}s)")
-        print_results(hybrid_results, "Hybrid (RRF k=60)")
+        print_results(hybrid_results, "Hybrid (RRF)")
 
         # --- Hybrid RRF + chỉ còn hiệu lực ---
         filtered = retriever.filter_by_hieu_luc(hybrid_results, "con_hieu_luc")

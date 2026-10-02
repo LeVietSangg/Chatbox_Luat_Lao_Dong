@@ -13,19 +13,24 @@ import os
 import sys
 import json
 import time
-import numpy as np
 
 sys.path.insert(0, os.path.dirname(__file__))
 
 from retriever import LegalRetriever
 from generator import LegalGenerator
 from evaluate_retrieval import evaluate as eval_retrieval, print_summary_table as print_ret_summary
-from evaluate_generation import compute_metrics as comp_gen_metrics, print_report as print_gen_report
+from evaluate_generation import compute_metrics as comp_gen_metrics
 
 def main():
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     eval_dir = os.path.join(data_dir, "eval")
-    test_set_path = os.path.join(eval_dir, "test_set_v1.json")
+    test_set_path = os.path.join(eval_dir, "test_set_v2.json")
+    TOP_K = 10
+    RRF_K = 5
+    ALPHA = 0.5
+    RETRIEVAL_DEPTH = 50
+    EXPAND_SIBLINGS = True
+    HIEU_LUC_FILTER = "con_hieu_luc"
     
     print("=" * 80)
     print("BẮT ĐẦU CHẠY THỬ NGHIỆM CHÍNH THỨC - TUẦN 6")
@@ -51,10 +56,10 @@ def main():
     # Lọc các câu in_scope để tính retrieval
     in_scope_test = [q for q in test_set if q["category"] != "out_of_scope"]
     
-    retrieval_results = eval_retrieval(retriever, in_scope_test, mode="strict")
-    print_ret_summary(retrieval_results, mode="strict")
+    retrieval_results = eval_retrieval(retriever, in_scope_test)
+    print_ret_summary(retrieval_results)
     
-    ret_output_path = os.path.join(eval_dir, "week6_retrieval_results.json")
+    ret_output_path = os.path.join(eval_dir, "retrieval_results.json")
     with open(ret_output_path, "w", encoding="utf-8") as f:
         # Chỉ lưu metric, bỏ qua per_query cho nhẹ
         summary_to_save = {method: {k: v for k,v in data.items() if k != 'per_query'} for method, data in retrieval_results.items()}
@@ -70,12 +75,30 @@ def main():
     print("=" * 80)
 
     methods = {
-        "BM25": lambda q: retriever.search_bm25(q, top_k=5),
-        "Dense": lambda q: retriever.search_dense(q, top_k=5),
-        "Hybrid_RRF": lambda q: retriever.search_hybrid(q, top_k=5, rrf_k=60),
+        "BM25": lambda q: retriever.search_bm25(
+            q,
+            top_k=TOP_K,
+            hieu_luc_filter=HIEU_LUC_FILTER
+        ),
+
+        "Dense": lambda q: retriever.search_dense(
+            q,
+            top_k=TOP_K,
+            hieu_luc_filter=HIEU_LUC_FILTER
+        ),
+
+        "Hybrid_RRF": lambda q: retriever.search_hybrid(
+            q,
+            top_k=TOP_K,
+            rrf_k=RRF_K,
+            alpha=ALPHA,
+            retrieval_depth=RETRIEVAL_DEPTH,
+            expand_siblings=EXPAND_SIBLINGS,
+            hieu_luc_filter=HIEU_LUC_FILTER
+        ),
     }
 
-    gen_output_path = os.path.join(eval_dir, "week6_generation_results.json")
+    gen_output_path = os.path.join(eval_dir, "generation_results.json")
     
     # Đọc kết quả đã chạy trước đó để resume (nếu có)
     if os.path.exists(gen_output_path):
@@ -110,8 +133,7 @@ def main():
             
             # Retrieval Step
             t0 = time.time()
-            search_results = search_fn(query)
-            filtered = retriever.filter_by_hieu_luc(search_results, "con_hieu_luc")
+            filtered = search_fn(query)
             retrieval_time = time.time() - t0
             
             # Generation Step
@@ -163,7 +185,7 @@ def main():
         print(f"  - Citation Exact Match: {metrics['citation_exact_match']:.2%}" if metrics['citation_exact_match'] is not None else "  - Citation Exact Match: N/A")
 
     # Lưu metrics tổng hợp ra file JSON riêng để tiện theo dõi và báo cáo
-    gen_metrics_path = os.path.join(eval_dir, "week6_generation_metrics.json")
+    gen_metrics_path = os.path.join(eval_dir, "generation_metreek6_ics.json")
     all_metrics = {m: comp_gen_metrics(res) for m, res in all_gen_results.items()}
     with open(gen_metrics_path, "w", encoding="utf-8") as f:
         json.dump(all_metrics, f, ensure_ascii=False, indent=2)
