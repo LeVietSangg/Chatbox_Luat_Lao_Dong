@@ -1,8 +1,8 @@
 """
 create_test_set_v2.py
 =====================
-Tạo Test Set V2 (Held-out) – 120 câu hỏi mới hoàn toàn.
-Cấu trúc giống test_set_v1.json:
+Tạo Test Set V2 (Held-out) – 120 câu hỏi 
+Cấu trúc:
   - 13 câu hop_dong_lao_dong
   - 14 câu tien_luong
   - 13 câu lam_them_gio
@@ -12,8 +12,7 @@ Cấu trúc giống test_set_v1.json:
   - 14 câu quyen_loi_khac
   - 25 câu out_of_scope (7 luật khác + 6 tư vấn cá nhân + 6 vô nghĩa + 6 cận biên)
 
-KHÔNG trùng câu hỏi hay gold provision với test_set_v1 hoặc dev_set.
-Phong cách: tình huống thực tế, khác v1 (hỏi trực tiếp điều khoản).
+Do vi phạm tính độc lập trùng gold với dev set nên bộ test này sẽ bị bỏ và dc thay thế bằng tes_set_v3.json
 """
 
 import json
