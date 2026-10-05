@@ -1,0 +1,982 @@
+[
+  {
+    "id": "v3_01_01",
+    "question": "Ai có thẩm quyền giao kết hợp đồng lao động với người lao động bên phía công ty?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D18__K3"
+    ]
+  },
+  {
+    "id": "v3_01_02",
+    "question": "Người lao động từ đủ 18 tuổi trở lên có thể tự mình ký hợp đồng lao động không?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D18__K1"
+    ]
+  },
+  {
+    "id": "v3_01_03",
+    "question": "Hợp đồng lao động là gì?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D13__K1"
+    ]
+  },
+  {
+    "id": "v3_01_04",
+    "question": "Hợp đồng lao động có hiệu lực từ khi nào?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D23"
+    ]
+  },
+  {
+    "id": "v3_01_05",
+    "question": "Công việc và địa điểm làm việc của người lao động được thực hiện như thế nào theo hợp đồng lao động?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D28"
+    ]
+  },
+  {
+    "id": "v3_01_06",
+    "question": "Nguyên tắc giao kết hợp đồng lao động là gì?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D15__K1"
+    ]
+  },
+  {
+    "id": "v3_01_07",
+    "question": "Phụ lục hợp đồng lao động là gì",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D22__K1"
+    ]
+  },
+  {
+    "id": "v3_01_08",
+    "question": "Nếu chỉ giao kết hợp đồng lao đồng dưới 1 tháng thì có cần thử việc không?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D24__K3"
+    ]
+  },
+  {
+    "id": "v3_01_09",
+    "question": "Nếu hai bên không thỏa thuận được việc sửa đổi, bổ sung hợp đồng lao động thì hợp đồng đã ký được xử lý như thế nào?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D33__K3"
+    ]
+  },
+  {
+    "id": "v3_01_10",
+    "question": "Người sử dụng lao động có được yêu cầu người lao động đặt cọc tiền hoặc tài sản để bảo đảm thực hiện hợp đồng không?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D17__K2"
+    ]
+  },
+  {
+    "id": "v3_01_11",
+    "question": "Hợp đồng lao động xác định thời hạn hết hạn nhưng người lao động vẫn tiếp tục làm việc thì được xử lý như thế nào?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D20__K2"
+    ]
+  },
+  {
+    "id": "v3_01_12",
+    "question": "Hợp đồng thử việc có những nội dung chủ yếu nào?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D24__K2"
+    ]
+  },
+  {
+    "id": "v3_01_13",
+    "question": "Người lao động làm việc bán thời gian được hưởng những quyền lợi gì?",
+    "category": "hop_dong_lao_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D32__K3"
+    ]
+  },
+  {
+    "id": "v3_02_01",
+    "question": "Mức lương tối thiểu là gì",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D91__K1"
+    ]
+  },
+  {
+    "id": "v3_02_02",
+    "question": "Mức lương tối thiểu được xác lập dựa trên yếu tố nào?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D91__K2"
+    ]
+  },
+  {
+    "id": "v3_02_03",
+    "question": "Cơ quan nào quyết định và công bố mức lương tối thiểu",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D91__K4"
+    ]
+  },
+  {
+    "id": "v3_02_04",
+    "question": "Hội đồng tiền lương quốc gia có chức năng gì trong chính sách tiền lương?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D92__K1"
+    ]
+  },
+  {
+    "id": "v3_02_05",
+    "question": "Hội đồng tiền lương quốc gia gồm đại diện của những tổ chức, cơ quan và thành phần nào?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D92__K2"
+    ]
+  },
+  {
+    "id": "v3_02_06",
+    "question": "Cơ quan nào quy định chức năng, nhiệm vụ và cơ cấu tổ chức của Hội đồng tiền lương quốc gia?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D92__K3"
+    ]
+  },
+  {
+    "id": "v3_02_07",
+    "question": "Thang lương, bảng lương và định mức lao động được xây dựng để làm gì?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D93__K1"
+    ]
+  },
+  {
+    "id": "v3_02_08",
+    "question": "Mức lao động phải đáp ứng những yêu cầu gì?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D93__K2"
+    ]
+  },
+  {
+    "id": "v3_02_09",
+    "question": "Người sử dụng lao động phải trả lương cho người lao động như thế nào?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D95__K1"
+    ]
+  },
+  {
+    "id": "v3_02_10",
+    "question": "Người lao động hưởng lương theo sản phẩm hoặc theo khoán được trả lương như thế nào?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D97__K3"
+    ]
+  },
+  {
+    "id": "v3_02_11",
+    "question": "Nếu người cai thầu không trả đủ lương và quyền lợi cho người lao động thì ai phải chịu trách nhiệm?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D100__K2"
+    ]
+  },
+  {
+    "id": "v3_02_12",
+    "question": "Người lao động nhập ngũ có được tạm ứng tiền lương không?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D101__K2"
+    ]
+  },
+  {
+    "id": "v3_02_13",
+    "question": "Khi nghỉ phép năm, người lao động có được tạm ứng tiền lương không?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D101__K3"
+    ]
+  },
+  {
+    "id": "v3_02_14",
+    "question": "Người sử dụng lao động được khấu trừ tối đa bao nhiêu phần trăm tiền lương của người lao động mỗi tháng?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D102__K3"
+    ]
+  },
+  {
+    "id": "v3_02_15",
+    "question": "Tiền tàu xe và tiền lương trong những ngày đi đường khi nghỉ phép năm được quy định như thế nào?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D67__K1"
+    ]
+  },
+  {
+    "id": "v3_02_16",
+    "question": "Tiền lương làm căn cứ trả cho những ngày nghỉ lễ, Tết, nghỉ hằng năm và nghỉ việc riêng được xác định như thế nào?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D67__K2"
+    ]
+  },
+  {
+    "id": "v3_02_17",
+    "question": "Tiền lương làm căn cứ trả cho những ngày nghỉ hằng năm chưa nghỉ khi người lao động thôi việc được xác định như thế nào?",
+    "category": "tien_luong",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D67__K3"
+    ]
+  },
+  {
+    "id": "v3_03_01",
+    "question": "Khi tổ chức làm thêm giờ, người sử dụng lao động có phải được sự đồng ý của người lao động về gì?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D59__K1"
+    ]
+  },
+  {
+    "id": "v3_03_02",
+    "question": "Nếu người lao động đồng ý làm thêm giờ bằng văn bản riêng thì sử dụng mẫu nào?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D59__K2"
+    ]
+  },
+  {
+    "id": "v3_03_03",
+    "question": "Số giờ làm thêm trong ngày làm việc bình thường được giới hạn như thế nào?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D60__K1"
+    ]
+  },
+  {
+    "id": "v3_03_04",
+    "question": "Nếu áp dụng thời giờ làm việc bình thường theo tuần thì tổng thời gian làm việc và làm thêm trong một ngày tối đa là bao nhiêu giờ?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D60__K2"
+    ]
+  },
+  {
+    "id": "v3_03_05",
+    "question": "Đối với người lao động làm việc không trọn thời gian, tổng số giờ làm việc và làm thêm trong một ngày tối đa là bao nhiêu?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D60__K3"
+    ]
+  },
+  {
+    "id": "v3_03_06",
+    "question": "Khi làm thêm vào ngày nghỉ lễ, tết hoặc ngày nghỉ hằng tuần, tổng số giờ làm thêm trong một ngày tối đa là bao nhiêu giờ?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D60__K4"
+    ]
+  },
+  {
+    "id": "v3_03_07",
+    "question": "Thời gian nào được giảm trừ khi tính tổng số giờ làm thêm trong tháng và trong năm?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D60__K5"
+    ]
+  },
+  {
+    "id": "v3_03_08",
+    "question": "Những trường hợp nào thuộc hoạt động công vụ được tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D61__K1"
+    ]
+  },
+  {
+    "id": "v3_03_09",
+    "question": "Thời giờ làm việc bình thường của người lao động trực tiếp sản xuất, kinh doanh tại doanh nghiệp tối đa bao nhiêu giờ một tuần?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D61__K3"
+    ]
+  },
+  {
+    "id": "v3_03_10",
+    "question": "Khi tổ chức làm thêm từ trên 200 đến 300 giờ trong một năm, người sử dụng lao động phải thông báo cho cơ quan nào và ở đâu?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D62__K1"
+    ]
+  },
+  {
+    "id": "v3_03_11",
+    "question": "Người sử dụng lao động phải thông báo việc làm thêm từ trên 200 đến 300 giờ trong năm trong thời hạn bao lâu?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D62__K2"
+    ]
+  },
+  {
+    "id": "v3_03_12",
+    "question": "Thế nào được xem là làm thêm giờ?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "45_2019_QH14__D107__K1"
+    ]
+  },
+  {
+    "id": "v3_03_13",
+    "question": "Thông báo về việc làm thêm giờ được lập theo mẫu nào?",
+    "category": "lam_them_gio",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D62__K3"
+    ]
+  },
+  {
+    "id": "v3_04_01",
+    "question": "Nếu nghỉ phép năm trước kỳ trả lương thì người lao động có được tạm ứng tiền lương không?",
+    "category": "nghi_phep",
+    "gold_provision_ids": [
+      "45_2019_QH14__D113__K5"
+    ]
+  },
+  {
+    "id": "v3_04_02",
+    "question": "Thời gian được coi là thời gian làm việc để tính số ngày nghỉ hằng năm là thời gian nào?",
+    "category": "nghi_phep",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D65__K1"
+    ]
+  },
+  {
+    "id": "v3_04_03",
+    "question": "Người lao động làm việc chưa đủ 12 tháng được tính số ngày nghỉ hằng năm như thế nào?",
+    "category": "nghi_phep",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D66__K1"
+    ]
+  },
+  {
+    "id": "v3_04_04",
+    "question": "Nếu người lao động chưa làm việc đủ tháng thì trong trường hợp nào được tính là 1 tháng làm việc để tính ngày nghỉ hằng năm?",
+    "category": "nghi_phep",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D66__K2"
+    ]
+  },
+  {
+    "id": "v3_04_05",
+    "question": "Thời gian làm việc tại cơ quan nhà nước và doanh nghiệp nhà nước có được tính để tăng thêm ngày nghỉ hằng năm không?",
+    "category": "nghi_phep",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D66__K3"
+    ]
+  },
+  {
+    "id": "v3_05_01",
+    "question": "Thời hạn báo trước khi đơn phương chấm dứt hợp đồng lao động đối với các ngành nghề đặc thù là bao lâu?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D7__K1"
+    ]
+  },
+  {
+    "id": "v3_05_02",
+    "question": "Các trường hợp bị chấm dứt hợp đồng lao động là?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D34__K1"
+    ]
+  },
+  {
+    "id": "v3_05_03",
+    "question": "Người sử dụng lao động không phải báo trước cho người lao động khi nào",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D36__K3"
+    ]
+  },
+  {
+    "id": "v3_05_04",
+    "question": "Nếu người lao động nghỉ việc riêng hoặc trường hợp khác thì có bị đơn phương chấm dứt hợp đồng lao động không?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D37__K2"
+    ]
+  },
+  {
+    "id": "v3_05_05",
+    "question": "Khi đơn phương chấm dứt hợp đồng lao động trái pháp luật thì có được hưởng trợ cấp không?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D40__K1"
+    ]
+  },
+  {
+    "id": "v3_05_06",
+    "question": "Nếu người lao động không muốn tiếp tục làm việc thì người sử dụng lao động phải trả những khoản tiền gì để chấm dứt hợp đồng lao động?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D41__K2"
+    ]
+  },
+  {
+    "id": "v3_05_07",
+    "question": "Nếu người sử dụng lao động không muốn nhận lại người lao động thì phải bồi thường thêm ít nhất bao nhiêu tháng tiền lương để chấm dứt hợp đồng lao động?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D41__K3"
+    ]
+  },
+  {
+    "id": "v3_05_08",
+    "question": "Khi người sử dụng lao động không phải là cá nhân chấm dứt hoạt động thì thời điểm chấm dứt hợp đồng lao động tính từ khi nào?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D45__K2"
+    ]
+  },
+  {
+    "id": "v3_05_09",
+    "question": "Khi doanh nghiệp, hợp tác xã chấm dứt hoạt động, giải thể hoặc phá sản, các khoản tiền và quyền lợi của người lao động có được ưu tiên thanh toán không?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "45_2019_QH14__D48__K2"
+    ]
+  },
+  {
+    "id": "v3_05_10",
+    "question": "Nếu hợp đồng lao động bị tuyên bố vô hiệu từng phần mà hai bên không thống nhất sửa đổi, bổ sung thì giải quyết như thế nào?",
+    "category": "cham_dut_hop_dong",
+    "gold_provision_ids": [
+      "145_2020_NDCP__D9__K3"
+    ]
+  },
+  {
+    "id": "v3_06_01",
+    "question": "Người lao động nước ngoài làm việc tại Việt Nam có phải tham gia bảo hiểm xã hội bắt buộc không?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D2__K2"
+    ]
+  },
+  {
+    "id": "v3_06_02",
+    "question": "Những người sử dụng lao động nào thuộc đối tượng tham gia bảo hiểm xã hội bắt buộc?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D2__K3"
+    ]
+  },
+  {
+    "id": "v3_06_03",
+    "question": "Người thụ hưởng chế độ bảo hiểm xã hội có những quyền gì?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D10__K2"
+    ]
+  },
+  {
+    "id": "v3_06_04",
+    "question": "Người tham gia bảo hiểm xã hội có những trách nhiệm gì?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D11__K1"
+    ]
+  },
+  {
+    "id": "v3_06_05",
+    "question": "Người thụ hưởng chế độ bảo hiểm xã hội có những trách nhiệm gì?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D11__K2"
+    ]
+  },
+  {
+    "id": "v3_06_06",
+    "question": "Giao dịch điện tử trong lĩnh vực bảo hiểm xã hội có giá trị pháp lý như thế nào so với giao dịch bằng bản giấy?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D26__K2"
+    ]
+  },
+  {
+    "id": "v3_06_07",
+    "question": "Cơ quan bảo hiểm xã hội phải bảo đảm điều kiện thực hiện giao dịch điện tử chậm nhất khi nào?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D26__K3"
+    ]
+  },
+  {
+    "id": "v3_06_08",
+    "question": "Cơ quan nào quy định chi tiết việc chuyển hồ sơ, thủ tục bảo hiểm xã hội từ bản giấy sang giao dịch điện tử?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D26__K4"
+    ]
+  },
+  {
+    "id": "v3_06_09",
+    "question": "Hồ sơ đăng ký tham gia bảo hiểm xã hội bắt buộc gồm những gì?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D27__K1"
+    ]
+  },
+  {
+    "id": "v3_06_10",
+    "question": "Hồ sơ đăng ký tham gia bảo hiểm xã hội tự nguyện gồm những gì?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D27__K3"
+    ]
+  },
+  {
+    "id": "v3_06_11",
+    "question": "Cơ quan bảo hiểm xã hội phải cấp sổ bảo hiểm xã hội trong thời hạn bao lâu kể từ khi nhận đủ hồ sơ?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D28__K4"
+    ]
+  },
+  {
+    "id": "v3_06_12",
+    "question": "Khi thông tin đăng ký tham gia bảo hiểm xã hội thay đổi thì cần làm thủ tục gì?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D29__K1"
+    ]
+  },
+  {
+    "id": "v3_06_13",
+    "question": "Cơ quan bảo hiểm xã hội phải điều chỉnh thông tin tham gia bảo hiểm xã hội trong thời hạn bao lâu kể từ khi nhận đủ hồ sơ?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D29__K2"
+    ]
+  },
+  {
+    "id": "v3_06_14",
+    "question": "Tỷ lệ đóng bảo hiểm xã hội bắt buộc gồm những khoản nào?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D32__K1"
+    ]
+  },
+  {
+    "id": "v3_06_15",
+    "question": "Tỷ lệ đóng bảo hiểm xã hội tự nguyện là bao nhiêu?",
+    "category": "bao_hiem",
+    "gold_provision_ids": [
+      "58_VBHN-VPQH__D32__K2"
+    ]
+  },
+  {
+    "id": "v3_07_01",
+    "question": "Những người làm công tác an toàn, vệ sinh lao động trong cơ sở sản xuất, kinh doanh có phải tham gia huấn luyện không?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "84_2015_QH13__D14__K1"
+    ]
+  },
+  {
+    "id": "v3_07_02",
+    "question": "Chi phí khám sức khỏe và điều trị bệnh nghề nghiệp cho người lao động do ai chi trả?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "84_2015_QH13__D21__K6"
+    ]
+  },
+  {
+    "id": "v3_07_03",
+    "question": "Cơ quan, tổ chức có thẩm quyền có trách nhiệm gì khi tiếp nhận tin báo về tai nạn lao động?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "84_2015_QH13__D34__K2"
+    ]
+  },
+  {
+    "id": "v3_07_04",
+    "question": "Người lao động bị tai nạn lao động do lỗi của chính họ thì được trợ cấp ít nhất bao nhiêu?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "84_2015_QH13__D38__K5"
+    ]
+  },
+  {
+    "id": "v3_07_05",
+    "question": "Người lao động bị tai nạn lao động hoặc bệnh nghề nghiệp sau điều trị, phục hồi chức năng được bố trí công việc như thế nào?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "84_2015_QH13__D38__K8"
+    ]
+  },
+  {
+    "id": "v3_07_06",
+    "question": "Việc huấn luyện an toàn, vệ sinh lao động phải được tổ chức như thế nào để phù hợp với đặc điểm của cơ sở sản xuất, kinh doanh?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "84_2015_QH13__D14__K5"
+    ]
+  },
+  {
+    "id": "v3_07_07",
+    "question": "Hợp đồng của cán bộ công đoàn không chuyên trách hết hạn trong nhiệm kỳ công đoàn thì có được gia hạn không?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "50_2024_QH15__D28__K1"
+    ]
+  },
+  {
+    "id": "v3_07_08",
+    "question": "Người sử dụng lao động có được đơn phương chấm dứt hợp đồng hoặc sa thải cán bộ công đoàn không chuyên trách không?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "50_2024_QH15__D28__K2"
+    ]
+  },
+  {
+    "id": "v3_07_09",
+    "question": "Công đoàn có trách nhiệm gì khi cán bộ công đoàn không chuyên trách bị chấm dứt hợp đồng hoặc sa thải trái pháp luật?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "50_2024_QH15__D28__K3"
+    ]
+  },
+  {
+    "id": "v3_07_10",
+    "question": "Quyền của người sử dụng lao động là gì?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "45_2019_QH14__D6__K1"
+    ]
+  },
+  {
+    "id": "v3_07_11",
+    "question": "Ngoài thời gian nghỉ theo quy định, người lao động có được nghỉ giải lao thêm trong giờ làm việc không?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "45_2019_QH14__D109__K2"
+    ]
+  },
+  {
+    "id": "v3_07_12",
+    "question": "Người lao động có được tham gia đối thoại tại nơi làm việc không?",
+    "category": "quyen_loi_khac",
+    "gold_provision_ids": [
+      "45_2019_QH14__D63__K1"
+    ]
+  },
+  {
+    "id": "v3_oos_01",
+    "question": "Điều kiện để được cấp hộ chiếu phổ thông tại Việt Nam là gì?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_02",
+    "question": "Người dân muốn đăng ký thường trú tại một địa phương cần những điều kiện gì?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_03",
+    "question": "Hành vi lấn chiếm lòng lề đường, vỉa hè để kinh doanh bị xử phạt hành chính thế nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_04",
+    "question": "Người điều khiển xe máy đi vào đường cao tốc bị tước bằng lái xe bao lâu?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_05",
+    "question": "Thủ tục đăng ký khai sinh cho trẻ em cần những giấy tờ nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_06",
+    "question": "Hành vi cá độ bóng đá qua mạng có thể bị truy cứu trách nhiệm hình sự ở khung hình phạt nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_07",
+    "question": "Hồ sơ xin cấp giấy phép thành lập trường mầm non tư thục gồm những gì?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_08",
+    "question": "Khối lượng công việc tại phòng ban quá tải, tôi nên đề xuất phương án tuyển thêm người với trưởng phòng ra sao?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_09",
+    "question": "Tôi chuẩn bị bước vào vòng phỏng vấn với giám đốc điều hành, bạn có mẹo nào giúp tôi tự tin hơn không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_10",
+    "question": "Tôi cảm thấy áp lực vì công việc, bạn có thể tư vấn cho tôi cách cân bằng cuộc sống không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_11",
+    "question": "Đồng nghiệp trong nhóm thường xuyên chậm tiến độ bàn giao việc, tôi nên xử lý tình huống này thế nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_12",
+    "question": "Tôi muốn học thêm chứng chỉ quản lý dự án để thăng tiến, bạn có lời khuyên gì không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_13",
+    "question": "Tôi vừa nhận được lời mời làm việc mới, bạn có thể giúp tôi cân nhắc ưu nhược điểm không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_14",
+    "question": "Bạn hôm nay có khỏe không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_15",
+    "question": "Loài cá voi sát thủ có phải là loài cá heo không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_16",
+    "question": "qwerty 9876 asdfgh",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_17",
+    "question": "Hãy tóm tắt ngắn gọn nội dung và ý nghĩa của tác phẩm văn học Lão Hạc.",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_18",
+    "question": "Bạn thích uống cà phê hay trà?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_19",
+    "question": "What is your favorite movie?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_20",
+    "question": "Khoản tiền thưởng Tết Nguyên đán của nhân viên có phải tính vào thu nhập chịu thuế TNCN không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_21",
+    "question": "Nhân viên công ty tư nhân nghỉ việc thì có phải làm thủ tục chốt thuế thu nhập cá nhân không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_22",
+    "question": "Người lao động bị tai nạn giao thông trên đường về nhà thì quỹ BHYT hay quỹ tai nạn lao động chi trả?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_23",
+    "question": "Thủ tục xin cấp thẻ tạm trú cho chuyên gia nước ngoài sang làm việc tại Việt Nam gồm hồ sơ gì?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_24",
+    "question": "Làm việc theo chế độ hợp đồng trong doanh nghiệp nhà nước thì có được phong ngạch viên chức không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_25",
+    "question": "Thẻ bảo hiểm y tế hộ gia đình có thể dùng chung giữa các thành viên trong sổ hộ khẩu không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_26",
+    "question": "Lao động nữ mang thai hộ được hưởng chế độ thai sản như thế nào theo Luật BHXH 2014 trước đây?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_27",
+    "question": "Chính sách tham gia bảo hiểm xã hội tự nguyện theo Luật BHXH 2014 bao gồm những chế độ nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_28",
+    "question": "Trước ngày 01/7/2025, người lao động bị suy giảm khả năng lao động từ bao nhiêu % thì đủ điều kiện nghỉ hưu sớm?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_29",
+    "question": "Thời gian nghỉ việc khi thực hiện biện pháp triệt sản theo quy định BHXH năm 2014 là bao nhiêu ngày?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_30",
+    "question": "Mắc bệnh thuộc danh mục chữa trị dài ngày thì thời gian nghỉ hưởng chế độ ốm đau theo Luật 2014 tối đa là bao lâu?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_31",
+    "question": "Hồ sơ đề nghị hưởng chế độ tử tuất theo quy định bảo hiểm xã hội cũ gồm các loại giấy tờ bắt buộc nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_32",
+    "question": "Trường hợp người lao động vừa đủ điều kiện lương hưu vừa đủ điều kiện BHXH một lần theo luật cũ xử lý ra sao?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_33",
+    "question": "Trợ cấp khu vực một lần khi thanh toán chế độ hưu trí theo quy định bảo hiểm xã hội trước đây được tính thế nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_34",
+    "question": "Quy định về tiền đặt cọc và mức bồi thường khi một bên hủy hợp đồng đặt cọc theo Bộ luật Dân sự là gì?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_35",
+    "question": "Nghĩa vụ của bên vay tài sản không có lãi được Bộ luật Dân sự quy định cụ thể ra sao?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_36",
+    "question": "Khi sức khỏe bị người khác xâm phạm thì mức bồi thường tổn thất về tinh thần được pháp luật dân sự giới hạn tối đa bao nhiêu?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_37",
+    "question": "Hợp đồng ủy quyền chấm dứt hiệu lực trong những trường hợp cụ thể nào theo Bộ luật Dân sự?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_38",
+    "question": "Giao dịch dân sự do người chưa đủ 15 tuổi thực hiện có bắt buộc phải được người đại diện đồng ý không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_39",
+    "question": "Một người mất năng lực hành vi dân sự thì ai là người đại diện theo pháp luật?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_40",
+    "question": "Di chúc của người bị hạn chế về thể chất hoặc người không biết chữ cần đáp ứng điều kiện gì để được xem là hợp pháp?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_41",
+    "question": "Người lập di chúc có quyền sửa đổi hoặc hủy bỏ di chúc đã lập không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_42",
+    "question": "Khi ly hôn, nguyên tắc chia tài sản chung của vợ chồng gắn liền với quyền sử dụng đất được giải quyết thế nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_43",
+    "question": "Thời hạn thực hiện nghĩa vụ trả tiền trong hợp đồng dân sự được xác định như thế nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_44",
+    "question": "Bên mua nhà không thanh toán đúng hạn theo hợp đồng thì có thể phải chịu trách nhiệm gì?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_45",
+    "question": "Hậu quả pháp lý khi một giao dịch dân sự bị Tòa án tuyên vô hiệu do bị lừa dối hoặc đe dọa là gì?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_46",
+    "question": "Người chiếm hữu tài sản không có căn cứ pháp luật có phải hoàn trả tài sản cho chủ sở hữu không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_47",
+    "question": "Theo pháp luật dân sự, người thừa kế có được thỏa thuận phân chia di sản khác với nội dung di chúc không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_48",
+    "question": "Hợp đồng mua bán tài sản bị vô hiệu thì số tiền đã thanh toán được xử lý như thế nào?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_49",
+    "question": "Thời hiệu yêu cầu người thừa kế thực hiện nghĩa vụ về tài sản do người chết để lại được quy định là mấy năm?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  },
+  {
+    "id": "v3_oos_50",
+    "question": "Người gây thiệt hại cho người khác trong tình trạng mất khả năng nhận thức có phải bồi thường không?",
+    "category": "out_of_scope",
+    "gold_provision_ids": []
+  }
+]
