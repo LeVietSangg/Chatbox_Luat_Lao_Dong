@@ -1,15 +1,7 @@
 import json
 import os
 
-# 7 nhóm chủ đề chính (trong phạm vi)
-# 1. Hợp đồng lao động
-# 2. Tiền lương
-# 3. Làm thêm giờ
-# 4. Nghỉ phép
-# 5. Chấm dứt hợp đồng
-# 6. Bảo hiểm
-# 7. Các quyền lợi cơ bản khác
-# + Nhóm ngoài phạm vi
+# Bộ dev bị sai nhãn nên sẽ sửa và commit lại lên git
 
 questions = []
 
@@ -34,36 +26,46 @@ add_q("t1_09", "Quyền của người lao động khi hợp đồng lao động
 add_q("t1_10", "Chuyển người lao động làm công việc khác so với hợp đồng lao động được không?", "hop_dong_lao_dong", ["45_2019_QH14__D29__K1"])
 add_q("t1_11", "Phụ lục hợp đồng lao động có được sửa đổi thời hạn hợp đồng không?", "hop_dong_lao_dong", ["45_2019_QH14__D22__K2"])
 add_q("t1_12", "Người lao động có được giao kết nhiều hợp đồng lao động với nhiều công ty không?", "hop_dong_lao_dong", ["45_2019_QH14__D19__K1"])
-add_q("t1_13", "Hợp đồng lao động bằng miệng có giá trị pháp lý không?", "hop_dong_lao_dong", ["45_2019_QH14__D14__K2"], ["45_2019_QH14__D18__K2", "45_2019_QH14__D145__K1", "45_2019_QH14__D162__K1"])
+add_q("t1_13", "Hợp đồng lao động bằng miệng có giá trị pháp lý không?", "hop_dong_lao_dong", ["45_2019_QH14__D14__K2"])
 
 # --- 2. Tiền lương (14 câu) ---
 add_q("t2_01", "Mức lương tối thiểu vùng hiện nay là bao nhiêu?", "tien_luong", ["293_2025_NDCP__D3__K1"])
-add_q("t2_02", "Hình thức trả lương cho người lao động gồm những gì?", "tien_luong", ["45_2019_QH14__D96__K1"], ["45_2019_QH14__D96__K2", "45_2019_QH14__D96__K3"])
+add_q("t2_02", "Hình thức trả lương cho người lao động gồm những gì?", "tien_luong", ["45_2019_QH14__D96__K1"])
 add_q("t2_03", "Kỳ hạn trả lương theo giờ được quy định ra sao?", "tien_luong", ["45_2019_QH14__D97__K1"])
 add_q("t2_04", "Nguyên tắc trả lương cho người lao động là gì?", "tien_luong", ["45_2019_QH14__D94__K1"])
 add_q("t2_05", "Công ty có được khấu trừ lương của người lao động không?", "tien_luong", ["45_2019_QH14__D102__K1"])
 add_q("t2_06", "Tiền thưởng cho người lao động dựa trên tiêu chí nào?", "tien_luong", ["45_2019_QH14__D104__K1"])
 add_q("t2_07", "Người lao động có được tạm ứng tiền lương không?", "tien_luong", ["45_2019_QH14__D101__K1"])
 add_q("t2_08", "Tiền lương ngừng việc do lỗi của người sử dụng lao động trả bao nhiêu?", "tien_luong", ["45_2019_QH14__D99__K1"])
-add_q("t2_09", "Chế độ phụ cấp, trợ cấp được ghi ở đâu?", "tien_luong", ["45_2019_QH14__D103__K1"])
+add_q("t2_09", "Chế độ phụ cấp, trợ cấp được ghi ở đâu?", "tien_luong", ["45_2019_QH14__D103"])
 add_q("t2_10", "Tiền lương khi làm việc vào ban đêm tính như thế nào?", "tien_luong", ["45_2019_QH14__D98__K2"])
 add_q("t2_11", "Trường hợp trả lương qua thẻ ngân hàng thì ai chịu phí mở thẻ?", "tien_luong", ["45_2019_QH14__D96__K2"])
 add_q("t2_12", "Tiền lương ngừng việc do sự cố điện nước tính thế nào?", "tien_luong", ["45_2019_QH14__D99__K3"])
 add_q("t2_13", "Quy chế thưởng do ai quyết định?", "tien_luong", ["45_2019_QH14__D104__K2"])
-add_q("t2_14", "Khi thay đổi hình thức trả lương công ty phải báo trước bao lâu?", "tien_luong", ["10_2012_QH13__D94__K1"]) # Placeholder
+# add_q("t2_14", "Khi thay đổi hình thức trả lương công ty phải báo trước bao lâu?", "tien_luong", ["10_2012_QH13__D94__K1"]) 
+# câu này kh có gold nên đổi câu khác
+add_q("t2_14",
+      "Người sử dụng lao động phải làm gì khi người cai thầu không trả đủ tiền lương cho người lao động?",
+      "tien_luong",
+      ["45_2019_QH14__D100__K1"])
 
 # --- 3. Làm thêm giờ (13 câu) ---
 add_q("t3_01", "Tiền lương làm thêm giờ vào ngày nghỉ lễ được tính thế nào?", "lam_them_gio", ["45_2019_QH14__D98__K1"])
 add_q("t3_02", "Làm thêm giờ tối đa trong một năm là bao nhiêu?", "lam_them_gio", ["45_2019_QH14__D107__K2"])
 add_q("t3_03", "Làm thêm giờ tối đa trong một tháng là bao nhiêu giờ?", "lam_them_gio", ["45_2019_QH14__D107__K2"])
-add_q("t3_04", "Công ty bắt tôi làm thêm giờ mà tôi không đồng ý thì có sao không?", "lam_them_gio", ["45_2019_QH14__D107__K2"])
+# add_q("t3_04", "Công ty bắt tôi làm thêm giờ mà tôi không đồng ý thì có sao không?", "lam_them_gio", ["45_2019_QH14__D107__K2"])
+#câu này bị sai nhóm
+add_q("t3_04",
+      "Thời gian làm việc tiếp xúc với yếu tố nguy hiểm, yếu tố có hại phải tuân theo quy định nào?",
+      "lam_them_gio",
+      ["45_2019_QH14__D105__K3"])
 add_q("t3_05", "Tiền lương làm thêm giờ vào ngày thường là bao nhiêu %?", "lam_them_gio", ["45_2019_QH14__D98__K1"])
 add_q("t3_06", "Làm thêm giờ vào ngày nghỉ hằng tuần được trả lương bao nhiêu?", "lam_them_gio", ["45_2019_QH14__D98__K1"])
 add_q("t3_07", "Người lao động làm thêm giờ ban đêm thì tiền lương tính như thế nào?", "lam_them_gio", ["45_2019_QH14__D98__K3"])
 add_q("t3_08", "Phụ nữ mang thai tháng thứ 7 có được làm thêm giờ không?", "lam_them_gio", ["45_2019_QH14__D137__K1"])
 add_q("t3_09", "Lao động chưa thành niên có được làm thêm giờ không?", "lam_them_gio", ["45_2019_QH14__D146__K2"])
 add_q("t3_10", "Công ty huy động làm thêm giờ trong trường hợp khẩn cấp thiên tai thì có quyền từ chối không?", "lam_them_gio", ["45_2019_QH14__D108__K2"])
-add_q("t3_11", "Khi tổ chức làm thêm giờ, người sử dụng lao động phải thông báo cho người lao động như thế nào?", "lam_them_gio", ["45_2019_QH14__D107__K4"], ["45_2019_QH14__D107__K3"])
+add_q("t3_11", "Khi tổ chức làm thêm giờ, người sử dụng lao động phải thông báo cho người lao động như thế nào?", "lam_them_gio", ["45_2019_QH14__D107__K4"])
 add_q("t3_12", "Giờ làm thêm được giới hạn tối đa bao nhiêu phần trăm số giờ làm việc bình thường trong ngày?", "lam_them_gio", ["45_2019_QH14__D107__K2"])
 add_q("t3_13", "Trường hợp đặc biệt nào được làm thêm đến 300 giờ một năm?", "lam_them_gio", ["45_2019_QH14__D107__K3"])
 
@@ -77,7 +79,9 @@ add_q("t4_06", "Thời gian đi đường có được cộng vào ngày nghỉ 
 add_q("t4_07", "Có được gộp ngày nghỉ phép của nhiều năm không?", "nghi_phep", ["45_2019_QH14__D113__K4"])
 add_q("t4_08", "Nghỉ hằng tuần tối thiểu bao nhiêu giờ?", "nghi_phep", ["45_2019_QH14__D111__K1"])
 add_q("t4_09", "Nếu ngày nghỉ lễ trùng ngày nghỉ hằng tuần thì sao?", "nghi_phep", ["45_2019_QH14__D111__K3"])
-add_q("t4_10", "Nghỉ việc riêng không hưởng lương thì phải báo trước mấy ngày?", "nghi_phep", ["45_2019_QH14__D115__K2"])
+#add_q("t4_10", "Nghỉ việc riêng không hưởng lương thì phải báo trước mấy ngày?", "nghi_phep", ["45_2019_QH14__D115__K2"])
+#câu này bị không có gold nên bị sai
+add_q("t4_10", "Người lao động được nghỉ không hưởng lương trong những trường hợp nào?", "nghi_phep", ["45_2019_QH14__D115__K2"])
 add_q("t4_11", "Làm việc lâu năm có được tăng ngày nghỉ phép không?", "nghi_phep", ["45_2019_QH14__D114"])
 add_q("t4_12", "Chưa nghỉ hết phép năm thì có được thanh toán tiền không?", "nghi_phep", ["45_2019_QH14__D113__K3"])
 add_q("t4_13", "Lao động nữ trong thời gian hành kinh được nghỉ bao lâu?", "nghi_phep", ["45_2019_QH14__D137__K4"])
@@ -101,18 +105,27 @@ add_q("t5_14", "Người lao động bị kết án phạt tù thì hợp đồn
 
 # --- 6. Bảo hiểm (13 câu) ---
 add_q("t6_01", "Đối tượng nào phải tham gia BHXH bắt buộc?", "bao_hiem", ["58_VBHN-VPQH__D2__K1"])
-add_q("t6_02", "Điều kiện hưởng lương hưu hằng tháng là gì?", "bao_hiem", ["58_VBHN-VPQH__D54__K1"])
-add_q("t6_03", "Doanh nghiệp phải đóng BHXH theo tỷ lệ bao nhiêu?", "bao_hiem", ["58_VBHN-VPQH__D86__K1"])
+#add_q("t6_02", "Điều kiện hưởng lương hưu hằng tháng là gì?", "bao_hiem", ["58_VBHN-VPQH__D54__K1"])
+#câu này bị sai câu hỏi lẫn gold
+add_q("t6_02", "Đối tượng nào thuộc diện tham gia bảo hiểm xã hội tự nguyện?", "bao_hiem", ["58_VBHN-VPQH__D2__K4"])
+add_q("t6_03", "Những trường hợp nào thân nhân của người tham gia bảo hiểm xã hội được hưởng tiền tuất hằng tháng?", "bao_hiem", ["58_VBHN-VPQH__D86__K1"])
 add_q("t6_04", "Lao động nữ nghỉ thai sản được bao nhiêu tháng?", "bao_hiem", ["45_2019_QH14__D139__K1"])
-add_q("t6_05", "Điều kiện hưởng chế độ thai sản khi sinh con?", "bao_hiem", ["58_VBHN-VPQH__D31__K1"])
-add_q("t6_06", "Mức hưởng chế độ thai sản là bao nhiêu?", "bao_hiem", ["58_VBHN-VPQH__D39__K1"])
-add_q("t6_07", "Lao động nam có vợ sinh con được nghỉ thai sản mấy ngày?", "bao_hiem", ["58_VBHN-VPQH__D34__K2"])
-add_q("t6_08", "Người lao động ốm đau được nghỉ bao nhiêu ngày một năm?", "bao_hiem", ["58_VBHN-VPQH__D26__K1"])
-add_q("t6_09", "Mức hưởng chế độ ốm đau tính như thế nào?", "bao_hiem", ["58_VBHN-VPQH__D28__K1"])
-add_q("t6_10", "Thời gian nghỉ dưỡng sức sau thai sản là bao lâu?", "bao_hiem", ["58_VBHN-VPQH__D41__K1"])
-add_q("t6_11", "Rút BHXH một lần được thực hiện trong điều kiện nào?", "bao_hiem", ["58_VBHN-VPQH__D60__K1"])
+#add_q("t6_05", "Điều kiện hưởng chế độ thai sản khi sinh con?", "bao_hiem", ["58_VBHN-VPQH__D31__K1"]) : sai câu hỏi
+add_q("t6_05", "Tiền lương làm căn cứ đóng bảo hiểm xã hội bắt buộc được quy định như nào?", "bao_hiem", ["58_VBHN-VPQH__D31__K1"])
+#add_q("t6_06", "Mức hưởng chế độ thai sản là bao nhiêu?", "bao_hiem", ["58_VBHN-VPQH__D39__K1"]) : sai câu hỏi 
+add_q("t6_06", "Những hành vi nào của người sử dụng lao động được xác định là trốn đóng bảo hiểm xã hội bắt buộc và bảo hiểm thất nghiệp?", "bao_hiem", ["58_VBHN-VPQH__D39__K1"])
+#add_q("t6_07", "Lao động nam có vợ sinh con được nghỉ thai sản mấy ngày?", "bao_hiem", ["58_VBHN-VPQH__D34__K2"])
+add_q("t6_07", "Người sử dụng lao động phải đóng bao nhiêu phần trăm tiền lương vào quỹ hưu trí và tử tuất cho một số đối tượng?", "bao_hiem", ["58_VBHN-VPQH__D34__K2"])
+#add_q("t6_08", "Người lao động ốm đau được nghỉ bao nhiêu ngày một năm?", "bao_hiem", ["58_VBHN-VPQH__D26__K1"])
+add_q("t6_08", "Cơ quan, tổ chức, cá nhân có đủ điều kiện thực hiện giao dịch điện tử với cơ quan bảo hiểm xã hội như thế nào?", "bao_hiem", ["58_VBHN-VPQH__D26__K1"])
+#add_q("t6_09", "Mức hưởng chế độ ốm đau tính như thế nào?", "bao_hiem", ["58_VBHN-VPQH__D28__K1"])
+add_q("t6_09", "Người sử dụng lao động phải nộp hồ sơ tham gia bảo hiểm xã hội bắt buộc cho người lao động trong thời hạn bao lâu?", "bao_hiem", ["58_VBHN-VPQH__D28__K1"])
+add_q("t6_10", "Thời gian nghỉ dưỡng sức sau thai sản là bao lâu?", "bao_hiem", ["58_VBHN-VPQH__D60__K1"])
+#add_q("t6_11", "Rút BHXH một lần được thực hiện trong điều kiện nào?", "bao_hiem", ["58_VBHN-VPQH__D41__K1"])
+add_q("t6_11", "Mức tiền phải nộp thêm khi trốn đóng bảo hiểm xã hội, bảo hiểm thất nghiệp là bao nhiêu mỗi ngày?","bao_hiem", ["58_VBHN-VPQH__D41__K1"])
 add_q("t6_12", "Trợ cấp mai táng phí được bao nhiêu tháng lương cơ sở?", "bao_hiem", ["58_VBHN-VPQH__D85__K2"])
-add_q("t6_13", "Mức bình quân tiền lương tháng đóng BHXH tính hưu trí ra sao?", "bao_hiem", ["58_VBHN-VPQH__D62__K1"])
+#add_q("t6_13", "Mức bình quân tiền lương tháng đóng BHXH tính hưu trí ra sao?", "bao_hiem", ["58_VBHN-VPQH__D62__K1"])
+add_q("t6_13", "Sau khi nhận đủ hồ sơ hưởng chế độ thai sản, người sử dụng lao động phải nộp hồ sơ cho cơ quan bảo hiểm xã hội trong thời hạn bao lâu?", "bao_hiem", ["58_VBHN-VPQH__D62__K1"])
 
 # --- 7. Các quyền lợi cơ bản khác (14 câu) ---
 add_q("t7_01", "Người sử dụng lao động có trách nhiệm gì trong việc bảo đảm an toàn tại nơi làm việc?", "quyen_loi_khac", ["84_2015_QH13__D16__K1"])
@@ -126,9 +139,21 @@ add_q("t7_08", "Xóa kỷ luật lao động sau bao lâu?", "quyen_loi_khac", [
 add_q("t7_09", "Người lao động làm hư hỏng dụng cụ phải bồi thường bao nhiêu?", "quyen_loi_khac", ["45_2019_QH14__D129__K1"])
 add_q("t7_10", "Đoàn viên công đoàn có được hỗ trợ pháp lý miễn phí không?", "quyen_loi_khac", ["50_2024_QH15__D21__K6"])
 add_q("t7_11", "Công đoàn có quyền đại diện cho tập thể người lao động thương lượng tập thể không?", "quyen_loi_khac", ["50_2024_QH15__D11__K2"])
-add_q("t7_12", "Độ tuổi lao động tối thiểu là bao nhiêu?", "quyen_loi_khac", ["45_2019_QH14__D3__K1"])
-add_q("t7_13", "Việc thu thập dữ liệu cá nhân có cần đồng ý không?", "quyen_loi_khac", ["91_2025_QH15__D11__K1"])
-add_q("t7_14", "Quyền của chủ thể dữ liệu đối với dữ liệu của mình?", "quyen_loi_khac", ["91_2025_QH15__D3__K3"])
+#add_q("t7_12", "Độ tuổi lao động tối thiểu là bao nhiêu?", "quyen_loi_khac", ["45_2019_QH14__D3__K1"]): sai câu hỏi và gold
+add_q("t7_12",
+      "Người thử việc có cần phải được huấn luyện vệ sinh an toàn, thực phẩm không?",
+      "quyen_loi_khac",
+      ["84_2015_QH13__D14__K4"])
+#add_q("t7_13", "Việc thu thập dữ liệu cá nhân có cần đồng ý không?", "quyen_loi_khac", ["91_2025_QH15__D11__K1"])
+add_q("t7_13",
+      "Đoàn viên công đoàn có quyền được Công đoàn hỗ trợ tìm việc làm không?",
+      "quyen_loi_khac",
+      ["50_2024_QH15__D21__K7"])
+#add_q("t7_14", "Quyền của chủ thể dữ liệu đối với dữ liệu của mình?", "quyen_loi_khac", ["91_2025_QH15__D3__K3"])
+add_q("t7_14",
+      "Người sử dụng lao động có trách nhiệm bồi thường tai nạn lao động cho người lao động không?",
+      "quyen_loi_khac",
+      ["84_2015_QH13__D38__K4"])
 
 # --- 8. Ngoài phạm vi (25 câu) ---
 # 8.1 Luật khác (7 câu)

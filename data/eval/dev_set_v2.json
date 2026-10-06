@@ -172,7 +172,7 @@
     "question": "Chế độ phụ cấp, trợ cấp được ghi ở đâu?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "45_2019_QH14__D103__K1"
+      "45_2019_QH14__D103"
     ]
   },
   {
@@ -209,10 +209,10 @@
   },
   {
     "id": "t2_14",
-    "question": "Khi thay đổi hình thức trả lương công ty phải báo trước bao lâu?",
+    "question": "Người sử dụng lao động phải làm gì khi người cai thầu không trả đủ tiền lương cho người lao động?",
     "category": "tien_luong",
     "gold_provision_ids": [
-      "10_2012_QH13__D94__K1"
+      "45_2019_QH14__D100__K1"
     ]
   },
   {
@@ -241,10 +241,10 @@
   },
   {
     "id": "t3_04",
-    "question": "Công ty bắt tôi làm thêm giờ mà tôi không đồng ý thì có sao không?",
+    "question": "Thời gian làm việc tiếp xúc với yếu tố nguy hiểm, yếu tố có hại phải tuân theo quy định nào?",
     "category": "lam_them_gio",
     "gold_provision_ids": [
-      "45_2019_QH14__D107__K2"
+      "45_2019_QH14__D105__K3"
     ]
   },
   {
@@ -393,7 +393,7 @@
   },
   {
     "id": "t4_10",
-    "question": "Nghỉ việc riêng không hưởng lương thì phải báo trước mấy ngày?",
+    "question": "Người lao động được nghỉ không hưởng lương trong những trường hợp nào?",
     "category": "nghi_phep",
     "gold_provision_ids": [
       "45_2019_QH14__D115__K2"
@@ -553,15 +553,15 @@
   },
   {
     "id": "t6_02",
-    "question": "Điều kiện hưởng lương hưu hằng tháng là gì?",
+    "question": "Đối tượng nào thuộc diện tham gia bảo hiểm xã hội tự nguyện?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D54__K1"
+      "58_VBHN-VPQH__D2__K4"
     ]
   },
   {
     "id": "t6_03",
-    "question": "Doanh nghiệp phải đóng BHXH theo tỷ lệ bao nhiêu?",
+    "question": "Những trường hợp nào thân nhân của người tham gia bảo hiểm xã hội được hưởng tiền tuất hằng tháng?",
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D86__K1"
@@ -577,7 +577,7 @@
   },
   {
     "id": "t6_05",
-    "question": "Điều kiện hưởng chế độ thai sản khi sinh con?",
+    "question": "Tiền lương làm căn cứ đóng bảo hiểm xã hội bắt buộc được quy định như nào?",
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D31__K1"
@@ -585,7 +585,7 @@
   },
   {
     "id": "t6_06",
-    "question": "Mức hưởng chế độ thai sản là bao nhiêu?",
+    "question": "Những hành vi nào của người sử dụng lao động được xác định là trốn đóng bảo hiểm xã hội bắt buộc và bảo hiểm thất nghiệp?",
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D39__K1"
@@ -593,7 +593,7 @@
   },
   {
     "id": "t6_07",
-    "question": "Lao động nam có vợ sinh con được nghỉ thai sản mấy ngày?",
+    "question": "Người sử dụng lao động phải đóng bao nhiêu phần trăm tiền lương vào quỹ hưu trí và tử tuất cho một số đối tượng?",
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D34__K2"
@@ -601,7 +601,7 @@
   },
   {
     "id": "t6_08",
-    "question": "Người lao động ốm đau được nghỉ bao nhiêu ngày một năm?",
+    "question": "Cơ quan, tổ chức, cá nhân có đủ điều kiện thực hiện giao dịch điện tử với cơ quan bảo hiểm xã hội như thế nào?",
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D26__K1"
@@ -609,7 +609,7 @@
   },
   {
     "id": "t6_09",
-    "question": "Mức hưởng chế độ ốm đau tính như thế nào?",
+    "question": "Người sử dụng lao động phải nộp hồ sơ tham gia bảo hiểm xã hội bắt buộc cho người lao động trong thời hạn bao lâu?",
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D28__K1"
@@ -620,15 +620,15 @@
     "question": "Thời gian nghỉ dưỡng sức sau thai sản là bao lâu?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D41__K1"
+      "58_VBHN-VPQH__D60__K1"
     ]
   },
   {
     "id": "t6_11",
-    "question": "Rút BHXH một lần được thực hiện trong điều kiện nào?",
+    "question": "Mức tiền phải nộp thêm khi trốn đóng bảo hiểm xã hội, bảo hiểm thất nghiệp là bao nhiêu mỗi ngày?",
     "category": "bao_hiem",
     "gold_provision_ids": [
-      "58_VBHN-VPQH__D60__K1"
+      "58_VBHN-VPQH__D41__K1"
     ]
   },
   {
@@ -641,7 +641,7 @@
   },
   {
     "id": "t6_13",
-    "question": "Mức bình quân tiền lương tháng đóng BHXH tính hưu trí ra sao?",
+    "question": "Sau khi nhận đủ hồ sơ hưởng chế độ thai sản, người sử dụng lao động phải nộp hồ sơ cho cơ quan bảo hiểm xã hội trong thời hạn bao lâu?",
     "category": "bao_hiem",
     "gold_provision_ids": [
       "58_VBHN-VPQH__D62__K1"
@@ -737,26 +737,26 @@
   },
   {
     "id": "t7_12",
-    "question": "Độ tuổi lao động tối thiểu là bao nhiêu?",
+    "question": "Người thử việc có cần phải được huấn luyện vệ sinh an toàn, thực phẩm không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "45_2019_QH14__D3__K1"
+      "84_2015_QH13__D14__K4"
     ]
   },
   {
     "id": "t7_13",
-    "question": "Việc thu thập dữ liệu cá nhân có cần đồng ý không?",
+    "question": "Đoàn viên công đoàn có quyền được Công đoàn hỗ trợ tìm việc làm không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "91_2025_QH15__D11__K1"
+      "50_2024_QH15__D21__K7"
     ]
   },
   {
     "id": "t7_14",
-    "question": "Quyền của chủ thể dữ liệu đối với dữ liệu của mình?",
+    "question": "Người sử dụng lao động có trách nhiệm bồi thường tai nạn lao động cho người lao động không?",
     "category": "quyen_loi_khac",
     "gold_provision_ids": [
-      "91_2025_QH15__D3__K3"
+      "84_2015_QH13__D38__K4"
     ]
   },
   {
