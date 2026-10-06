@@ -3,7 +3,7 @@ evaluate_retrieval.py
 Đánh giá hiệu suất của BM25, Dense và Hybrid Retrieval trên tập dữ liệu kiểm thử.
 
 Các chỉ số đo lường:
-  - Recall@k (k=1, 3, 5): tỷ lệ gold provisions xuất hiện trong top-k.
+  - Recall@k (k=1, 3, 5, 10): tỷ lệ gold provisions xuất hiện trong top-k.
   - MRR@10 (Mean Reciprocal Rank): trung bình nghịch đảo hạng đầu tiên đúng (trong top-10).
   - Latency (Latency_p50, Latency_p95): thời gian phản hồi của bước truy xuất.
 
@@ -73,13 +73,13 @@ def evaluate(retriever, dev_set, top_k_values=None):
     Args:
         retriever: LegalRetriever instance.
         dev_set: list of dicts, mỗi dict chứa question, gold_provision_ids, v.v.
-        top_k_values: list các giá trị k cần đánh giá. Mặc định [1, 3, 5].
+        top_k_values: list các giá trị k cần đánh giá. Mặc định [1, 3, 5, 10].
 
     Returns:
         dict chứa kết quả đánh giá theo từng phương pháp.
     """
     if top_k_values is None:
-        top_k_values = [1, 3, 5]
+        top_k_values = [1, 3, 5, 10]
 
     max_k = max(max(top_k_values), TOP_K)  # Luôn lấy top-10 để tính MRR@10
     methods = {
@@ -179,7 +179,7 @@ def evaluate(retriever, dev_set, top_k_values=None):
 def print_summary_table(summary, top_k_values=None):
     """In bảng tổng hợp kết quả đánh giá (Strict - Cấp Khoản)."""
     if top_k_values is None:
-        top_k_values = [1, 3, 5]
+        top_k_values = [1, 3, 5, 10]
 
     print(f"\n{'='*80}")
     print("KET QUA DANH GIA RETRIEVAL (Tieu chuan nghiem ngat cap Khoan - Strict)")
@@ -206,7 +206,7 @@ def print_summary_table(summary, top_k_values=None):
 def print_per_query_detail(summary, method_name, top_k_values=None):
     """In chi tiết từng câu hỏi cho một phương pháp."""
     if top_k_values is None:
-        top_k_values = [1, 3, 5]
+        top_k_values = [1, 3, 5, 10]
 
     print(f"\n--- Chi tiết {method_name} ---")
     for q in summary[method_name]["per_query"]:
