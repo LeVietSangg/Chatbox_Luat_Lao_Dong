@@ -5,6 +5,9 @@
 # Đảm bảo doc_code duy nhất cho mỗi văn bản
 # ============================================================
 
+# ĐÃ THỬ TẠO TEST ĐỐI CHIẾU VĂN BẢN GỐC CỦA 49 CÂU GHI TAY NHƯNG KHÔNG LÀM ĐƯỢC, 49 MỤC CHÉP TAY ĐỀU CÓ ĐỂ PHẦN ĐƯỢC SỬA ĐỔI TỪ ĐIỀU KHOẢN TÊN CỦA VĂN BẢN. CÓ THỂ ĐỐI CHIẾU THỦ CÔNG BẰNG CÁCH TRA TRÊN WEB
+
+
 DOC_REGISTRY = {
     "VBHN-BoLuatLaoDong": {
         "doc_code": "45_2019_QH14",
