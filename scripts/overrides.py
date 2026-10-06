@@ -180,7 +180,8 @@ Sở Lao động - Thương binh và Xã hội có trách nhiệm tổng hợp t
         "ghi_chu_v1": "Điều khoản sửa đổi, bổ sung",
         "ngay_het_hieu_luc": "",
         "van_ban_sua_doi": "Khoản 2, Điều 73, Chương VIII Nghị định số 35/2022/NĐ-CP Quy định về quản lý khu công nghiệp và khu kinh tế",
-        "noi_dung_v2": """Điều 4. Báo cáo sử dụng lao động\n2. Định kỳ 06 tháng và hằng năm, báo cáo tình hình hoạt động cho thuê lại lao động theo Mẫu số 09/PLIII Phụ lục III ban hành kèm theo Nghị định này, gửi Chủ tịch Ủy ban nhân dân cấp tỉnh, Sở Lao động - Thương binh và Xã hội và Ban quản lý khu công nghiệp, khu kinh tế nơi doanh nghiệp đặt trụ sở chính; đồng thời báo cáo Sở Lao động - Thương binh và Xã hội và Ban quản lý khu công nghiệp, khu kinh tế nơi doanh nghiệp đến hoạt động cho thuê lại lao động về tình hình hoạt động cho thuê lại lao động trên địa bàn đó đối với trường hợp doanh nghiệp cho thuê lại sang địa bàn cấp tỉnh khác hoạt động. Báo cáo 06 tháng gửi trước ngày 20 tháng 6 và báo cáo năm gửi trước ngày 20 tháng 12""",
+        "noi_dung_v2": """Điều 31. Trách nhiệm của doanh nghiệp cho thuê lại
+        Định kỳ 06 tháng và hằng năm, báo cáo tình hình hoạt động cho thuê lại lao động theo Mẫu số 09/PLIII Phụ lục III ban hành kèm theo Nghị định này, gửi Chủ tịch Ủy ban nhân dân cấp tỉnh, Sở Lao động - Thương binh và Xã hội và Ban quản lý khu công nghiệp, khu kinh tế nơi doanh nghiệp đặt trụ sở chính; đồng thời báo cáo Sở Lao động - Thương binh và Xã hội và Ban quản lý khu công nghiệp, khu kinh tế nơi doanh nghiệp đến hoạt động cho thuê lại lao động về tình hình hoạt động cho thuê lại lao động trên địa bàn đó đối với trường hợp doanh nghiệp cho thuê lại sang địa bàn cấp tỉnh khác hoạt động. Báo cáo 06 tháng gửi trước ngày 20 tháng 6 và báo cáo năm gửi trước ngày 20 tháng 12""",
         "ngay_hieu_luc_v2": "2022-07-15",
         "ghi_chu_v2": "Sửa đổi, bổ sung bởi điểm a khoản 1 Điều 9 Nghị định 128/2025/NĐ-CP",
     },
@@ -333,7 +334,7 @@ t) Bãi bỏ cụm từ "thanh tra," tại điểm i khoản 2 Điều 90; bãi 
 u) Bãi bỏ khoản 1 và khoản 2 Điều 7 của Nghị quyết số 190/2025/QH15.""",
         "ngay_hieu_luc_v2": "2026-07-01",
         "ghi_chu_v2": "Bãi bỏ điểm b khoản 1 điều 62",
-    },  
+    },
 
     "152_2020_NDCP__D3__K3": {
         "ghi_chu_v1": "Điều khoản sửa đổi, bổ sung",
@@ -780,7 +781,7 @@ b) Ban quản lý khu công nghệ cao có trách nhiệm cập nhật đầy đ
     },
 
     {
-        "provision_id": "145_2020_NDCP__D31__5",
+        "provision_id": "145_2020_NDCP__D31__K5",
         "van_ban": "Nghị định 145/2020/NĐ-CP (145/2020/NĐ-CP)",
         "doc_code": "145_2020_NDCP",
         "chuong": "Chương IV",
@@ -800,7 +801,7 @@ b) Ban quản lý khu công nghệ cao có trách nhiệm cập nhật đầy đ
     },
 
     {
-        "provision_id": "145_2020_NDCP__D62__4",
+        "provision_id": "145_2020_NDCP__D62__K4",
         "van_ban": "Nghị định 145/2020/NĐ-CP (145/2020/NĐ-CP)",
         "doc_code": "145_2020_NDCP",
         "chuong": "Chương VII",
