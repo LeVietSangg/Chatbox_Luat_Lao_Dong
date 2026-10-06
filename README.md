@@ -11,7 +11,8 @@
 5. [Hướng dẫn Cài đặt Chi tiết (Từng bước)](#5-hướng-dẫn-cài-đặt-chi-tiết-từng-bước)
 6. [Hướng dẫn Chạy Ứng dụng Giao diện Web (Streamlit)](#6-hướng-dẫn-chạy-ứng-dụng-giao-diện-web-streamlit)
 7. [Hướng dẫn Chạy Thực nghiệm & Đánh giá (Benchmark)](#7-hướng-dẫn-chạy-thực-nghiệm--đánh-giá-benchmark)
-8. [Xử lý Sự cố Thường gặp (Troubleshooting)](#8-xử-lý-sự-cố-thường-gặp-troubleshooting)
+8. [Hướng dẫn Đóng gói Nộp bài An toàn](#8-hướng-dẫn-đóng-gói-nộp-bài-an-toàn)
+9. [Xử lý Sự cố Thường gặp (Troubleshooting)](#9-xử-lý-sự-cố-thường-gặp-troubleshooting)
 
 ---
 
@@ -76,7 +77,7 @@ project/
 │
 ├── app.py                      # Ứng dụng Web Chatbot (Streamlit)
 ├── requirements.txt            # Danh sách thư viện phụ thuộc của toàn bộ dự án
-├── .env                        # File chứa biến môi trường (GEMINI_API_KEY)
+├── .env.example                # File mẫu cấu hình biến môi trường (không chứa khóa thật)
 ├── README.md                   # Tài liệu hướng dẫn cài đặt và sử dụng
 │
 ├── data/                       # Thư mục dữ liệu và chỉ mục tìm kiếm
@@ -93,7 +94,8 @@ project/
     ├── retriever.py            # Module tìm kiếm Hybrid (BM25 + FAISS + RRF + Sibling Expansion)
     ├── generator.py            # Module tạo câu trả lời với LLM & Citation Verification
     ├── create_test_set.py      # Script sinh bộ câu hỏi kiểm thử chuẩn (155 câu)
-    └── run_experiments.py      # Script chạy thực nghiệm tự động đánh giá các chỉ số
+    ├── run_experiments.py      # Script chạy thực nghiệm tự động đánh giá các chỉ số
+    └── package_submission.py   # Script đóng gói nộp bài an toàn (tự động loại trừ .env & history)
 ```
 
 ---
@@ -156,12 +158,21 @@ pip install -r requirements.txt
 
 ### Bước 4: Thiết lập Khóa API (Google Gemini API Key)
 Mô hình sử dụng `gemini-3.5-flash-lite` thông qua Google GenAI SDK.
-1. Truy cập [Google AI Studio](https://aistudio.google.com/) để tạo API Key miễn phí.
-2. Trong thư mục `project/`, tạo hoặc kiểm tra file `.env` có nội dung:
+1. Truy cập [Google AI Studio](https://aistudio.google.com/app/apikey) để tạo API Key miễn phí.
+2. Sao chép file `.env.example` thành file `.env` cá nhân:
+   - **Trên Windows (PowerShell / CMD):**
+     ```powershell
+     copy .env.example .env
+     ```
+   - **Trên Linux / macOS:**
+     ```bash
+     cp .env.example .env
+     ```
+3. Mở file `.env` vừa tạo và điền API Key thực tế của bạn:
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
-*(Thay thế `your_gemini_api_key_here` bằng mã API Key thực tế của bạn).*
+> ⚠️ **Lưu ý an toàn:** File `.env` chứa khóa bí mật cá nhân và đã được đưa vào `.gitignore`. Tuyệt đối không commit file này lên Git hoặc chia sẻ cho người khác.
 
 ---
 
@@ -230,15 +241,31 @@ Chạy toàn bộ pipeline kiểm thử để đo lường các chỉ số: Reca
 ```bash
 python scripts/run_experiments.py
 ```
-Kết quả tổng hợp sẽ tự động được ghi lại tại: `data/eval/week6_generation_metrics.json`.
+Kết quả tổng hợp sẽ tự động được ghi lại tại: `data/eval/generation_metrics.json`.
 
 ---
 
-## 8. XỬ LÝ SỰ CỐ THƯỜNG GẶP (TROUBLESHOOTING)
+## 8. HƯỚNG DẪN ĐÓNG GÓI NỘP BÀI AN TOÀN
+
+Để nộp bài chấm đồ án mà **không bị lộ khóa bí mật API** và **không kèm lịch sử thử nghiệm rác**:
+Chạy script đóng gói tự động:
+```bash
+python scripts/package_submission.py
+```
+Script sẽ tự động:
+- Loại bỏ toàn bộ file cấu hình chứa API Key thật (`.env`, `.env.*`).
+- Loại bỏ lịch sử chat cá nhân khi thử nghiệm (`data/chat_history.json`).
+- Loại bỏ thư mục ảo `venv/`, cache `__pycache__/`, thư mục `.git/`.
+- Tự động đính kèm file template chuẩn `.env.example`.
+- Quét kiểm tra bảo mật (Secret Scanning) và xuất file zip nộp bài sạch sẽ tại: `../Chatbox_Luat_Lao_Dong_Submission.zip`.
+
+---
+
+## 9. XỬ LÝ SỰ CỐ THƯỜNG GẶP (TROUBLESHOOTING)
 
 | Hiện tượng / Lỗi | Nguyên nhân | Hướng khắc phục |
 |---|---|---|
-| `GEMINI_API_KEY không tìm thấy` | Chưa có file `.env` hoặc file `.env` đặt sai thư mục. | Đảm bảo file `.env` nằm ngay trong thư mục `project/` và chứa dòng `GEMINI_API_KEY=...`. |
+| `GEMINI_API_KEY không tìm thấy` | Chưa có file `.env` hoặc file `.env` đặt sai thư mục. | Đảm bảo copy `.env.example` thành `.env` nằm ngay trong thư mục `project/` và chứa dòng `GEMINI_API_KEY=...`. |
 | `Port 8501 is already in use` | Có một tiến trình Streamlit khác đang chạy ngầm. | Chạy lệnh chỉ định cổng khác: `streamlit run app.py --server.port 8502`. |
 | Lỗi mã hóa font chữ Tiếng Việt trên Windows cmd | Bảng mã mặc định của Windows console là CP1252. | Chạy lệnh `chcp 65001` trước khi chạy script hoặc sử dụng PowerShell / Windows Terminal. |
 | Quá trình nạp mô hình mất nhiều thời gian ở lần chạy đầu | Mô hình `vietnamese-bi-encoder` đang được tải tự động từ HuggingFace (~500MB). | Chờ hoàn tất tải về; từ lần chạy thứ hai trở đi mô hình sẽ được nạp trực tiếp từ cache cục bộ (mất ~5-10 giây). |

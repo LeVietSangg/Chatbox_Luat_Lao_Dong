@@ -20,6 +20,7 @@ from retriever import LegalRetriever
 from generator import LegalGenerator
 from evaluate_retrieval import evaluate as eval_retrieval, print_summary_table as print_ret_summary
 from evaluate_generation import compute_metrics as comp_gen_metrics
+from rag_pipeline import execute_rag_pipeline
 
 def main():
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -31,6 +32,7 @@ def main():
     RETRIEVAL_DEPTH = 50
     EXPAND_SIBLINGS = True
     HIEU_LUC_FILTER = "con_hieu_luc"
+    MAX_CONTEXT_CHARS = 10_000
     
     print("=" * 80)
     print("BẮT ĐẦU CHẠY THỬ NGHIỆM CHÍNH THỨC - TUẦN 6")
@@ -74,29 +76,7 @@ def main():
     print("LƯU Ý: Quá trình này sẽ mất khoảng 1.5 tiếng do giới hạn Rate Limit của Gemini (5 req/min)")
     print("=" * 80)
 
-    methods = {
-        "BM25": lambda q: retriever.search_bm25(
-            q,
-            top_k=TOP_K,
-            hieu_luc_filter=HIEU_LUC_FILTER
-        ),
-
-        "Dense": lambda q: retriever.search_dense(
-            q,
-            top_k=TOP_K,
-            hieu_luc_filter=HIEU_LUC_FILTER
-        ),
-
-        "Hybrid_RRF": lambda q: retriever.search_hybrid(
-            q,
-            top_k=TOP_K,
-            rrf_k=RRF_K,
-            alpha=ALPHA,
-            retrieval_depth=RETRIEVAL_DEPTH,
-            expand_siblings=EXPAND_SIBLINGS,
-            hieu_luc_filter=HIEU_LUC_FILTER
-        ),
-    }
+    methods = ["BM25", "Dense", "Hybrid_RRF"]
 
     gen_output_path = os.path.join(eval_dir, "generation_results.json")
     
@@ -107,7 +87,7 @@ def main():
     else:
         all_gen_results = {method: [] for method in methods}
 
-    for method_name, search_fn in methods.items():
+    for method_name in methods:
         print(f"\n---> Bắt đầu đánh giá Generation cho pipeline: {method_name}")
         
         results_for_method = all_gen_results.get(method_name, [])
@@ -131,17 +111,23 @@ def main():
 
             print(f"  [{method_name}] [{i+1}/{len(test_set)}] {qid}: {query[:50]}...")
             
-            # Retrieval Step
-            t0 = time.time()
-            filtered = search_fn(query)
-            retrieval_time = time.time() - t0
+            # Thực thi chuỗi RAG qua đúng execute_rag_pipeline đồng bộ với app.py
+            # (bao gồm query expansion, lọc hiệu lực với nhánh dự phòng khi rỗng, và giới hạn context 10.000 ký tự)
+            res = execute_rag_pipeline(
+                query=query,
+                retriever=retriever,
+                generator=generator,
+                top_k=TOP_K,
+                rrf_k=RRF_K,
+                alpha=ALPHA,
+                retrieval_depth=RETRIEVAL_DEPTH,
+                expand_siblings=EXPAND_SIBLINGS,
+                hieu_luc_filter=HIEU_LUC_FILTER,
+                max_context_chars=MAX_CONTEXT_CHARS,
+                retrieval_method=method_name,
+            )
             
-            # Generation Step
-            t0 = time.time()
-            gen_result = generator.generate(query, filtered)
-            generation_time = time.time() - t0
-            
-            retrieved_ids = [r["provision_id"] for r in filtered]
+            retrieved_ids = [r["provision_id"] for r in res.get("chunks", [])]
             
             res_dict = {
                 "qid": qid,
@@ -150,21 +136,21 @@ def main():
                 "is_out_of_scope": is_out_of_scope,
                 "gold_ids": gold_ids,
                 "retrieved_ids": retrieved_ids,
-                "answer": gen_result["answer"],
-                "citations": gen_result["citations"],
-                "hallucinated_ids": gen_result["hallucinated_ids"],
-                "is_refusal": gen_result["is_refusal"],
-                "api_error": gen_result.get("api_error", False),
-                "error": gen_result.get("error"),
-                "retrieval_time": retrieval_time,
-                "generation_time": generation_time,
+                "answer": res["answer"],
+                "citations": res["citations"],
+                "hallucinated_ids": res["hallucinated_ids"],
+                "is_refusal": res["is_refusal"],
+                "api_error": res.get("api_error", False),
+                "error": res.get("error"),
+                "retrieval_time": res.get("retrieval_time", 0.0),
+                "generation_time": res.get("generation_time", 0.0),
             }
             
             results_for_method.append(res_dict)
             all_gen_results[method_name] = results_for_method
             
-            status = "REFUSE" if gen_result["is_refusal"] else "ANSWER"
-            halluc = f" [HALLUC: {gen_result['hallucinated_ids']}]" if gen_result["hallucinated_ids"] else ""
+            status = "REFUSE" if res["is_refusal"] else "ANSWER"
+            halluc = f" [HALLUC: {res['hallucinated_ids']}]" if res['hallucinated_ids'] else ""
             print(f"         → {status}{halluc}")
             
             # Lưu ngay sau mỗi request để không mất dữ liệu
@@ -182,16 +168,17 @@ def main():
         print(f"  - Refusal Accuracy: {metrics['refusal_accuracy']:.2%}" if metrics['refusal_accuracy'] is not None else "  - Refusal Accuracy: N/A")
         print(f"  - False Refusal Rate: {metrics['false_refusal_rate']:.2%}" if metrics['false_refusal_rate'] is not None else "  - False Refusal Rate: N/A")
         print(f"  - Citation Validity: {metrics['citation_validity']:.2%}" if metrics['citation_validity'] is not None else "  - Citation Validity: N/A")
-        print(f"  - Citation Exact Match: {metrics['citation_exact_match']:.2%}" if metrics['citation_exact_match'] is not None else "  - Citation Exact Match: N/A")
+        print(f"  - Citation Accuracy: {metrics['citation_accuracy']:.2%}" if metrics.get('citation_accuracy') is not None else "  - Citation Accuracy: N/A")
+        print(f"  - Citation Precision: {metrics['citation_precision']:.2%}" if metrics.get('citation_precision') is not None else "  - Citation Precision: N/A")
 
     # Lưu metrics tổng hợp ra file JSON riêng để tiện theo dõi và báo cáo
-    gen_metrics_path = os.path.join(eval_dir, "generation_metreek6_ics.json")
+    gen_metrics_path = os.path.join(eval_dir, "generation_metrics.json")
     all_metrics = {m: comp_gen_metrics(res) for m, res in all_gen_results.items()}
     with open(gen_metrics_path, "w", encoding="utf-8") as f:
         json.dump(all_metrics, f, ensure_ascii=False, indent=2)
 
     print("\n" + "=" * 80)
-    print("ĐÃ HOÀN THÀNH TOÀN BỘ THỰC NGHIỆM TUẦN 6!")
+    print("ĐÃ HOÀN THÀNH TOÀN BỘ THỰC NGHIỆM")
     print(f"Kết quả chi tiết lưu tại: {gen_output_path}")
     print(f"Kết quả metrics lưu tại:   {gen_metrics_path}")
     print("=" * 80)

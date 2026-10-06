@@ -5,8 +5,9 @@ evaluate_generation.py
 Các chỉ số đo lường:
   - Refusal Accuracy: Tỷ lệ câu out_of_scope bị từ chối đúng.
   - False Refusal Rate: Tỷ lệ câu in_scope bị từ chối sai.
-  - Citation Validity: Tỷ lệ citation hợp lệ (không bị hallucinate).
-  - Citation Exact Match: Tỷ lệ câu mà citation khớp đúng gold_provision_ids.
+  - Citation Accuracy: Tỷ lệ câu có citation vừa có thật vừa đúng nội dung (khớp gold_id và không bị hallucinate).
+  - Citation Precision: Tỷ lệ citation đúng trên tổng số citation mà LLM sinh ra.
+  - Citation Validity: Tỷ lệ câu citation hợp lệ (không bị hallucinate).
 """
 
 import os
@@ -18,6 +19,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from retriever import LegalRetriever
 from generator import LegalGenerator
+from rag_pipeline import execute_rag_pipeline
 
 
 def run_evaluation(retriever, generator, eval_set, top_k=5):
@@ -34,19 +36,16 @@ def run_evaluation(retriever, generator, eval_set, top_k=5):
 
         print(f"  [{i+1}/{len(eval_set)}] {qid}: {query[:60]}...")
 
-        # Retrieval
-        t0 = time.time()
-        search_results = retriever.search_hybrid(query, top_k=top_k)
-        filtered = retriever.filter_by_hieu_luc(search_results, "con_hieu_luc")
-        retrieval_time = time.time() - t0
-
-        # Generation
-        t0 = time.time()
-        gen_result = generator.generate(query, filtered)
-        generation_time = time.time() - t0
+        # Thực thi qua execute_rag_pipeline đồng bộ với app.py
+        res = execute_rag_pipeline(
+            query=query,
+            retriever=retriever,
+            generator=generator,
+            top_k=top_k,
+        )
 
         # Thu thập kết quả
-        retrieved_ids = [r["provision_id"] for r in filtered]
+        retrieved_ids = [r["provision_id"] for r in res.get("chunks", [])]
         results.append({
             "qid": qid,
             "question": query,
@@ -54,19 +53,19 @@ def run_evaluation(retriever, generator, eval_set, top_k=5):
             "is_out_of_scope": is_out_of_scope,
             "gold_ids": gold_ids,
             "retrieved_ids": retrieved_ids,
-            "answer": gen_result["answer"],
-            "citations": gen_result["citations"],
-            "hallucinated_ids": gen_result["hallucinated_ids"],
-            "is_refusal": gen_result["is_refusal"],
-            "api_error": gen_result.get("api_error", False),
-            "error": gen_result.get("error"),
-            "retrieval_time": retrieval_time,
-            "generation_time": generation_time,
+            "answer": res["answer"],
+            "citations": res["citations"],
+            "hallucinated_ids": res["hallucinated_ids"],
+            "is_refusal": res["is_refusal"],
+            "api_error": res.get("api_error", False),
+            "error": res.get("error"),
+            "retrieval_time": res.get("retrieval_time", 0.0),
+            "generation_time": res.get("generation_time", 0.0),
         })
 
         # Trạng thái nhanh
-        status = "REFUSE" if gen_result["is_refusal"] else "ANSWER"
-        halluc = f" [HALLUC: {gen_result['hallucinated_ids']}]" if gen_result["hallucinated_ids"] else ""
+        status = "REFUSE" if res["is_refusal"] else "ANSWER"
+        halluc = f" [HALLUC: {res['hallucinated_ids']}]" if res["hallucinated_ids"] else ""
         print(f"         → {status}{halluc}")
 
         # Chờ giữa các request để tránh rate limit (5 req/min free tier)
@@ -134,16 +133,33 @@ def compute_metrics(results):
     else:
         citation_validity = None
 
-    # Citation Exact Match: Tỷ lệ câu mà ít nhất 1 citation khớp gold_id
+    # Citation Accuracy: Tỷ lệ câu có citation vừa có thật (không hallucinate) vừa đúng nội dung (khớp gold_id)
+    # Citation Precision: Tỷ lệ citation đúng trên tổng số citation sinh ra (|Cits ∩ Golds| / |Cits|)
     if answered_in_scope:
-        exact_matches = 0
+        accurate_count = 0
+        precisions = []
+
         for r in answered_in_scope:
-            if r["gold_ids"] and r["citations"]:
-                if set(r["citations"]) & set(r["gold_ids"]):
-                    exact_matches += 1
-        citation_exact_match = exact_matches / len(answered_in_scope)
+            cits = set(r.get("citations", []))
+            golds = set(r.get("gold_ids", []))
+            hallucs = r.get("hallucinated_ids", [])
+
+            # Citation Accuracy: vừa có thật (không bịa đặt) vừa đúng nội dung
+            if cits and golds and (cits & golds) and not hallucs:
+                accurate_count += 1
+
+            # Citation Precision cho câu này
+            if cits:
+                prec = len(cits & golds) / len(cits)
+                precisions.append(prec)
+            else:
+                precisions.append(0.0)
+
+        citation_accuracy = accurate_count / len(answered_in_scope)
+        citation_precision = sum(precisions) / len(precisions) if precisions else 0.0
     else:
-        citation_exact_match = None
+        citation_accuracy = None
+        citation_precision = None
 
     # =================================================================
     # 3. LATENCY
@@ -172,7 +188,8 @@ def compute_metrics(results):
         "false_acceptance_rate": false_acceptance_rate,
 
         "citation_validity": citation_validity,
-        "citation_exact_match": citation_exact_match,
+        "citation_accuracy": citation_accuracy,
+        "citation_precision": citation_precision,
 
         "generation_latency_p50_s": float(np.percentile(gen_times, 50)),
         "generation_latency_p95_s": float(np.percentile(gen_times, 95)),
@@ -203,10 +220,12 @@ def print_report(metrics, results):
         print(f"  False Acceptance Rate:  {metrics['false_acceptance_rate']:.2%}")
 
     print(f"\n--- Citation Metrics ---")
-    if metrics["citation_validity"] is not None:
+    if metrics.get("citation_accuracy") is not None:
+        print(f"  Citation Accuracy:      {metrics['citation_accuracy']:.2%}")
+    if metrics.get("citation_precision") is not None:
+        print(f"  Citation Precision:     {metrics['citation_precision']:.2%}")
+    if metrics.get("citation_validity") is not None:
         print(f"  Citation Validity:      {metrics['citation_validity']:.2%}")
-    if metrics["citation_exact_match"] is not None:
-        print(f"  Citation Exact Match:   {metrics['citation_exact_match']:.2%}")
 
     print(f"\n--- Latency ---")
     print(f"  Generation p50:         {metrics['generation_latency_p50_s']:.2f}s")

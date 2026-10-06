@@ -2,7 +2,7 @@
 app.py — Chatbot Pháp luật Lao động
 Fixes: sidebar toggle, example-q pipeline, multi-conversation, visual separation
 """
-import os, sys, re, time
+import os, sys, re, time, uuid, html
 import streamlit as st
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "scripts"))
@@ -11,7 +11,8 @@ from generator import LegalGenerator
 from rag_pipeline import (
     DOC_NAMES, doc_name, parse_pid, strip_cit,
     expand_legal_query, execute_rag_pipeline,
-    load_chat_history, save_chat_history,
+    load_chat_history, save_chat_history, delete_chat_history,
+    safe_escape, safe_render_llm_answer,
     new_conv, hm
 )
 
@@ -521,13 +522,15 @@ def get_generator():
     return LegalGenerator(model_name=MODEL, temperature=0.0)
 
 
-# ── Quản lý phiên hội thoại & Lưu trữ lịch sử (Session & Persistence) ───────
-HISTORY_FILE = os.path.join(DATA_DIR, "chat_history.json")
-
+# ── Quản lý phiên hội thoại (Dùng thuần session_state để cách ly người dùng) ──
+# Mỗi người dùng / tab trình duyệt có một st.session_state độc lập trong RAM:
+# - Hoàn toàn không chia sẻ hay thấy dữ liệu hội thoại của người dùng khác.
+# - Hai phiên song song không bao giờ xung đột hay ghi đè nhau.
+# - Không tạo file rác trên đĩa gây nặng gói bài nộp.
 if "convs" not in st.session_state:
-    st.session_state.convs = load_chat_history(HISTORY_FILE)
+    st.session_state.convs = {0: new_conv()}
 if "active" not in st.session_state:
-    st.session_state.active = max(st.session_state.convs.keys()) if st.session_state.convs else 0
+    st.session_state.active = 0
 if "pending_q" not in st.session_state:
     st.session_state.pending_q = None
 
@@ -562,11 +565,10 @@ with st.sidebar:
                 "Cuộc trò chuyện"
             )
             conv["title"] = first_q
-        # Tạo conversation mới
+        # Tạo conversation mới trong session_state
         new_id = (max(st.session_state.convs.keys()) + 1) if st.session_state.convs else 0
         st.session_state.convs[new_id] = new_conv()
         st.session_state.active = new_id
-        save_chat_history(st.session_state.convs, HISTORY_FILE)
         st.rerun()
 
     # ── Conversation hiện tại ─────────────────────
@@ -574,12 +576,14 @@ with st.sidebar:
     conv = get_conv()
     if conv["messages"]:
         first_q = next((m["content"][:36] for m in conv["messages"] if m["role"] == "user"), "Cuộc trò chuyện")
+        safe_first_q = safe_escape(first_q)
+        safe_conv_time = safe_escape(conv.get("time", ""))
         st.markdown(f"""
         <div class="sb-item active">
           <span class="sb-item-ico">💬</span>
           <div>
-            <div class="sb-item-title">{first_q}...</div>
-            <div class="sb-item-time">Hôm nay, {conv['time']}</div>
+            <div class="sb-item-title">{safe_first_q}...</div>
+            <div class="sb-item-time">Hôm nay, {safe_conv_time}</div>
           </div>
         </div>""", unsafe_allow_html=True)
 
@@ -598,15 +602,21 @@ with st.sidebar:
             # Sử dụng st.button để có thể click chuyển conversation
             col_ico, col_txt = st.columns([1, 5])
             with col_ico:
-                st.markdown('<span style="font-size:.85rem;opacity:.6">🕐</span>', unsafe_allow_html=True)
+                st.markdown("🕐")
             with col_txt:
                 if st.button(f"{title[:34]}...", key=f"hist_{cid}", use_container_width=True):
                     switch_conv(cid)
                     st.rerun()
-            st.markdown(f'<div style="font-size:.64rem;color:rgba(255,255,255,.35);padding:0 0 4px 28px;">Hôm nay, {c["time"]}</div>', unsafe_allow_html=True)
+            safe_c_time = safe_escape(c.get("time", ""))
+            st.markdown(f'<div style="font-size:.64rem;color:rgba(255,255,255,.35);padding:0 0 4px 28px;">Hôm nay, {safe_c_time}</div>', unsafe_allow_html=True)
 
     # ── Bottom ────────────────────────────────────
     st.markdown('<hr class="sb-divider">', unsafe_allow_html=True)
+    if st.button("🗑️ Làm mới cuộc trò chuyện", key="btn_clear_chat", use_container_width=True):
+        st.session_state.convs = {0: new_conv()}
+        st.session_state.active = 0
+        st.rerun()
+
     st.markdown("""
     <div class="sb-disclaimer">
       <div class="sb-disc-row"><span style="font-size:0.85rem"></span> <span>Chốt dữ liệu: <strong>01/08/2026</strong></span></div>
@@ -695,20 +705,22 @@ with col_chat:
         html_content = '<div class="msg-list">'
         for msg in messages:
             if msg["role"] == "user":
-                msg_text = msg['content'].strip()
+                msg_text = safe_escape(msg['content'].strip())
+                msg_time = safe_escape(str(msg.get('time', '')))
                 html_content += f"""<div class="msg-user">
 <div class="ub">
 {msg_text}
-<div class="ub-time">{msg.get('time','')} ✓✓</div>
+<div class="ub-time">{msg_time} ✓✓</div>
 </div>
 </div>"""
             else:
                 is_ref  = msg.get("is_refusal", False)
                 api_e   = msg.get("api_error", False)
-                ans     = strip_cit(msg["content"])
+                ans     = strip_cit(msg.get("content", ""))
+                safe_ans = safe_render_llm_answer(ans)
                 cits    = msg.get("citations", [])
                 chunks  = msg.get("chunks", [])
-                t       = msg.get("time", "")
+                t       = safe_escape(str(msg.get("time", "")))
 
                 disc_html = """<div class="bot-disclaimer">
   <span class="bot-disclaimer-icon">⚠️</span>
@@ -720,13 +732,17 @@ with col_chat:
                 elif is_ref:
                     body = f'<div class="refusal">Xin lỗi, tôi không tìm thấy thông tin phù hợp trong cơ sở dữ liệu pháp luật.</div>{disc_html}'
                 else:
-                    body = f'<div class="msg-ans">{ans}</div>{disc_html}'
+                    body = f'<div class="msg-ans">{safe_ans}</div>{disc_html}'
                     cited_c = [c for c in chunks if c.get("provision_id") in cits]
                     if cited_c:
                         rows = ""
                         for idx, c in enumerate(cited_c, 1):
                             p = parse_pid(c.get("provision_id",""))
                             noi_dung = c.get("content", {}).get("noi_dung", "Không có nội dung.")
+                            safe_noi_dung = safe_escape(noi_dung)
+                            safe_doc = safe_escape(p.get("doc", ""))
+                            safe_clause = safe_escape(p.get("clause", ""))
+                            safe_pid = safe_escape(p.get("pid", ""))
                             hieu_luc = c.get("content", {}).get("hieu_luc", "")
                             
                             hl_badge = ''
@@ -740,14 +756,14 @@ with col_chat:
 <div class="lbc-row">
 <div class="lbc-n">{idx}</div>
 <div class="lbc-info">
-<div class="lbc-doc">{p['doc']}{hl_badge}</div>
-<div class="lbc-cls">{p['clause']}</div>
-<span class="lbc-id">{p['pid']}</span>
+<div class="lbc-doc">{safe_doc}{hl_badge}</div>
+<div class="lbc-cls">{safe_clause}</div>
+<span class="lbc-id">{safe_pid}</span>
 </div>
 <span class="lbc-link">Xem ▾</span>
 </div>
 </summary>
-<div class="chat-fulltext">{noi_dung}</div>
+<div class="chat-fulltext">{safe_noi_dung}</div>
 </details>"""
                         body += f'<div class="lbc"><div class="lbc-hd">📄 Căn cứ pháp lý ({len(cited_c)})</div>{rows}</div>'
 
@@ -802,8 +818,6 @@ with col_chat:
             conv["title"] = prompt[:40]
             conv["time"]  = t
 
-        save_chat_history(st.session_state.convs, HISTORY_FILE)
-
         # Đánh dấu cần generate câu trả lời và rerun ngay để hiển thị câu hỏi của user
         conv["needs_response"] = prompt
         st.rerun()
@@ -839,7 +853,6 @@ with col_chat:
                 "chunks":     chunks,
                 "time":       t_bot,
             })
-            save_chat_history(st.session_state.convs, HISTORY_FILE)
         except Exception as ex:
             conv["messages"].append({
                 "role":       "assistant",
@@ -850,7 +863,6 @@ with col_chat:
                 "chunks":     [],
                 "time":       hm(),
             })
-            save_chat_history(st.session_state.convs, HISTORY_FILE)
         finally:
             if "needs_response" in conv:
                 del conv["needs_response"]
@@ -888,8 +900,13 @@ with col_src:
             cont = c.get("content", {})
             p    = parse_pid(pid)
             noi  = cont.get("noi_dung", "")
-            prev = noi[:190].replace("<", "&lt;").replace(">", "&gt;")
-            hieu_luc = cont.get("hieu_luc", "")
+            
+            safe_doc    = safe_escape(p.get("doc", ""))
+            safe_clause = safe_escape(p.get("clause", ""))
+            safe_pid    = safe_escape(pid)
+            safe_noi    = safe_escape(noi)
+            safe_prev   = safe_escape(noi[:190])
+            hieu_luc    = cont.get("hieu_luc", "")
             
             hl_badge = ''
             if hieu_luc == "het_hieu_luc":
@@ -898,22 +915,23 @@ with col_src:
                 hl_badge = '<span style="font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; margin-left: 6px; font-weight: 500; display: inline-block; vertical-align: middle;">Còn hiệu lực</span>'
                 
             op   = ' style="opacity:.68"' if dim else ''
+            ellipsis = '...' if len(noi) > 190 else ''
             return f"""
             <div class="src-card"{op}>
               <details>
                 <summary>
                   <div class="src-doc-tag">
-                    <span style="display: inline-block; vertical-align: middle;">📄 {p['doc']}</span>
+                    <span style="display: inline-block; vertical-align: middle;">📄 {safe_doc}</span>
                     {hl_badge}
                   </div>
-                  <div class="src-cls">{p['clause']}</div>
-                  <div class="src-prev">"{prev}{'...' if len(noi)>190 else ''}"</div>
+                  <div class="src-cls">{safe_clause}</div>
+                  <div class="src-prev">"{safe_prev}{ellipsis}"</div>
                   <div class="src-foot">
-                    <span class="src-id">{pid}</span>
+                    <span class="src-id">{safe_pid}</span>
                     <span class="src-link">Xem chi tiết ▾</span>
                   </div>
                 </summary>
-                <div class="src-fulltext">{noi}</div>
+                <div class="src-fulltext">{safe_noi}</div>
               </details>
             </div>"""
 

@@ -8,6 +8,14 @@ import os
 import re
 import json
 import time
+import uuid
+import html
+
+try:
+    from filelock import FileLock, Timeout
+    HAS_FILELOCK = True
+except ImportError:
+    HAS_FILELOCK = False
 
 # ── 1. Danh mục và hàm chuẩn hóa hiển thị văn bản ─────────────────────────────
 DOC_NAMES = {
@@ -38,6 +46,27 @@ def parse_pid(pid: str) -> dict:
 def strip_cit(text: str) -> str:
     """Loại bỏ thẻ [provision_id] khỏi câu trả lời để hiển thị tự nhiên cho người đọc."""
     return re.sub(r'\[[^\[\]]+\]', '', text).strip()
+
+def safe_escape(text: str) -> str:
+    """Escape an toàn mọi nội dung người dùng, điều luật và tham số trước khi chèn HTML."""
+    if not text:
+        return ""
+    return html.escape(str(text), quote=True)
+
+def safe_render_llm_answer(text: str) -> str:
+    """
+    Escape an toàn câu trả lời của LLM trước khi render HTML,
+    chỉ hỗ trợ chuyển đổi an toàn các thẻ in đậm (**) và in nghiêng (*).
+    """
+    if not text:
+        return ""
+    # 1. Escape toàn bộ thẻ HTML nguy hiểm (<script>, <img onerror>, ...)
+    escaped = html.escape(str(text).strip(), quote=True)
+    # 2. Hỗ trợ hiển thị an toàn cú pháp in đậm **text**
+    escaped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', escaped)
+    # 3. Hỗ trợ hiển thị an toàn cú pháp in nghiêng *text*
+    escaped = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', escaped)
+    return escaped
 
 
 # ── 2. Mở rộng câu hỏi đời thường (Query Expansion) ───────────────────────────
@@ -140,26 +169,47 @@ def execute_rag_pipeline(
     retrieval_depth: int = 50,
     expand_siblings: bool = True,
     hieu_luc_filter: str = "con_hieu_luc",
-    max_context_chars: int = 10_000
+    max_context_chars: int = 10_000,
+    retrieval_method: str = "hybrid"
 ) -> dict:
     """
     Thực thi chuỗi RAG hoàn chỉnh cho một câu hỏi:
     1. Query Expansion sang thuật ngữ pháp lý.
-    2. Hybrid Retrieval (BM25 + FAISS Dense + RRF).
-    3. Lọc hiệu lực văn bản & gom cụm Điều (Sibling Expansion).
-    4. Cắt tỉa ngữ cảnh vừa vặn giới hạn ký tự.
+    2. Retrieval theo phương pháp (Hybrid RRF / BM25 / Dense).
+    3. Lọc hiệu lực văn bản & gom cụm Điều (Sibling Expansion), có nhánh dự phòng khi lọc rỗng.
+    4. Cắt tỉa ngữ cảnh vừa vặn giới hạn ký tự (mặc định 10.000 ký tự).
     5. Gọi LLM sinh câu trả lời và xác minh trích dẫn (Citation Verification).
     """
+    t0 = time.time()
     search_q = expand_legal_query(query)
-    raw_chunks = retriever.search_hybrid(
-        search_q,
-        top_k=top_k,
-        rrf_k=rrf_k,
-        alpha=alpha,
-        retrieval_depth=retrieval_depth,
-        expand_siblings=expand_siblings,
-        hieu_luc_filter=hieu_luc_filter
-    )
+
+    method_key = str(retrieval_method).lower() if not callable(retrieval_method) else ""
+    if callable(retrieval_method):
+        raw_chunks = retrieval_method(search_q)
+    elif method_key in ("bm25",):
+        raw_chunks = retriever.search_bm25(
+            search_q,
+            top_k=top_k,
+            hieu_luc_filter=hieu_luc_filter
+        )
+    elif method_key in ("dense",):
+        raw_chunks = retriever.search_dense(
+            search_q,
+            top_k=top_k,
+            hieu_luc_filter=hieu_luc_filter
+        )
+    else:
+        raw_chunks = retriever.search_hybrid(
+            search_q,
+            top_k=top_k,
+            rrf_k=rrf_k,
+            alpha=alpha,
+            retrieval_depth=retrieval_depth,
+            expand_siblings=expand_siblings,
+            hieu_luc_filter=hieu_luc_filter
+        )
+    retrieval_time = time.time() - t0
+
     valid_chunks = retriever.filter_by_hieu_luc(raw_chunks, hieu_luc_filter)
     chunks = valid_chunks[:top_k] if valid_chunks else raw_chunks[:top_k]
 
@@ -175,15 +225,20 @@ def execute_rag_pipeline(
     chunks = capped
 
     # Gọi mô hình sinh câu trả lời
+    t1 = time.time()
     res = generator.generate(query, chunks)
+    generation_time = time.time() - t1
 
     return {
-        "answer": res["answer"],
+        "answer": res.get("answer", ""),
         "citations": res.get("citations", []),
         "hallucinated_ids": res.get("hallucinated_ids", []),
         "is_refusal": res.get("is_refusal", False),
         "api_error": res.get("api_error", False),
+        "error": res.get("error"),
         "chunks": chunks,
+        "retrieval_time": retrieval_time,
+        "generation_time": generation_time,
     }
 
 
@@ -200,25 +255,40 @@ def new_conversation() -> dict:
         "chunks": None
     }
 
+def _get_file_lock(storage_path: str, timeout: float = 10.0):
+    """Khởi tạo context manager khóa tệp chống xung đột ghi đồng thời."""
+    if HAS_FILELOCK and storage_path:
+        lock_path = storage_path + ".lock"
+        return FileLock(lock_path, timeout=timeout)
+    from contextlib import nullcontext
+    return nullcontext()
+
 def load_chat_history(storage_path: str) -> dict:
-    """Nạp lịch sử các cuộc trò chuyện từ file lưu trữ."""
-    if os.path.exists(storage_path):
-        try:
+    """Nạp lịch sử các cuộc trò chuyện từ file lưu trữ có khóa tệp an toàn."""
+    if not storage_path or not os.path.exists(storage_path):
+        return {0: new_conversation()}
+    try:
+        with _get_file_lock(storage_path, timeout=5.0):
+            if not os.path.exists(storage_path):
+                return {0: new_conversation()}
             with open(storage_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 # Chuyển key dạng chuỗi về int
                 convs = {int(k): v for k, v in data.items()}
                 if convs:
                     return convs
-        except Exception:
-            pass
+    except Exception:
+        pass
     return {0: new_conversation()}
 
 def save_chat_history(convs: dict, storage_path: str):
-    """Lưu trữ bền vững lịch sử các cuộc trò chuyện ra file JSON."""
+    """Lưu trữ lịch sử ra file JSON với khóa tệp và cơ chế ghi nguyên tử (atomic write)."""
+    if not storage_path:
+        return
+    temp_path = None
     try:
         os.makedirs(os.path.dirname(storage_path), exist_ok=True)
-        # Chuẩn bị dữ liệu lưu (lọc nhẹ để tránh file quá phình)
+        # Chuẩn bị dữ liệu lưu
         to_save = {}
         for cid, c in convs.items():
             to_save[str(cid)] = {
@@ -228,8 +298,38 @@ def save_chat_history(convs: dict, storage_path: str):
                 # Lưu provision_id của chunks để tải lại nhẹ nhàng
                 "chunks": c.get("chunks", [])
             }
-        with open(storage_path, "w", encoding="utf-8") as f:
-            json.dump(to_save, f, ensure_ascii=False, indent=2)
+
+        with _get_file_lock(storage_path, timeout=10.0):
+            # Ghi ra file tạm thời trước rồi thay thế nguyên tử (atomic replace)
+            temp_path = f"{storage_path}.tmp.{uuid.uuid4().hex[:8]}"
+            with open(temp_path, "w", encoding="utf-8") as f:
+                json.dump(to_save, f, ensure_ascii=False, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temp_path, storage_path)
+    except Exception:
+        pass
+    finally:
+        if temp_path and os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except Exception:
+                pass
+
+def delete_chat_history(storage_path: str):
+    """Xóa tệp lịch sử và tệp khóa liên quan một cách an toàn."""
+    if not storage_path:
+        return
+    try:
+        with _get_file_lock(storage_path, timeout=5.0):
+            if os.path.exists(storage_path):
+                os.remove(storage_path)
+        lock_file = storage_path + ".lock"
+        if os.path.exists(lock_file):
+            try:
+                os.remove(lock_file)
+            except Exception:
+                pass
     except Exception:
         pass
 

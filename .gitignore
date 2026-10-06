@@ -38,8 +38,19 @@ env/
 
 # Project specific
 data/index/
+
+# Environment variables & secrets
 .env
+.env.*
+.env*.local
+!.env.example
 
 # Runtime logs and test chat history
 *.jsonl
 data/chat_history.json
+**/chat_history.json
+chat_history.json
+data/user_sessions/
+**/user_sessions/
+*.lock
+*.tmp.*
