@@ -3,7 +3,7 @@
 scripts/generate_catalog.py
 Sinh catalog văn bản (docs/corpus_catalog.md) và thống kê (data/structured/corpus_stats.json)
 từ nguồn duy nhất: data/structured/corpus.csv.
-Đảm bảo tính nhất quán dữ liệu 100% không chỉnh sửa thủ công.
+Sinh catalog và thống kê tự động từ corpus.csv để tránh sai lệch số liệu do cập nhật thủ công.
 """
 
 import os
@@ -136,7 +136,16 @@ def generate_catalog_and_stats():
 
     # Sắp xếp danh mục: Cốt lõi lao động -> Đối sánh lịch sử -> Đối chứng nhiễu
     doc_summary_rows.sort(key=lambda r: (r["role_order"], -r["chunks"]))
+    # Thống kê chunk theo trạng thái hiệu lực của văn bản
+    partial_expired_chunks = sum(
+        r["het"] for r in doc_summary_rows
+        if r["status_label"] == "⚠️ Hết hiệu lực một phần"
+    )
 
+    fully_expired_chunks = sum(
+        r["het"] for r in doc_summary_rows
+        if r["status_label"] == "❌ Hết hiệu lực"
+    )
     # 1. Ghi corpus_stats.json
     stats_data = {
         "snapshot_date": "2026-08-01",
@@ -202,8 +211,8 @@ def generate_catalog_and_stats():
 |---|---|---|---|
 | **Tổng số đơn vị** | **{total_chunks:,}** | 100% | **{total_van_ban} văn bản** |
 | ✅ **Còn hiệu lực** | {chunk_con_hl:,} | {chunk_con_hl/total_chunks*100:.1f}% | {doc_con_count} văn bản |
-| ⚠️ **Hết hiệu lực một phần** | *(quản lý cấp chunk)* | *(35 chunk bị bãi bỏ)* | {doc_mot_phan_count} văn bản |
-| ❌ **Hết hiệu lực toàn bộ** | {chunk_het_hl:,} | {chunk_het_hl/total_chunks*100:.1f}% | {doc_het_count} văn bản (BLLĐ 2012) |
+| ⚠️ **Hết hiệu lực một phần** | *(quản lý cấp chunk)* | *({partial_expired_chunks:,} chunk bị bãi bỏ)* | {doc_mot_phan_count} văn bản |
+| ❌ **Hết hiệu lực toàn bộ** | {fully_expired_chunks:,} | {fully_expired_chunks/total_chunks*100:.1f}% | {doc_het_count} văn bản (BLLĐ 2012) |
 | **Tổng số Điều** | {total_dieu:,} | - | - |
 | **Chunk có cấp Khoản** | {total_khoan:,} | {total_khoan/total_chunks*100:.1f}% | - |
 | **Chunk có cấp Điểm** | {total_diem:,} | {total_diem/total_chunks*100:.1f}% | - |
@@ -262,7 +271,7 @@ Trong cơ sở dữ liệu tra cứu và chỉ mục (BM25 + FAISS), sự xuất
 ### 3.4. Thống nhất Số lượng Văn bản Toàn Hệ thống
 - **Số văn bản quy phạm pháp luật trong Corpus / Chỉ mục:** **17 văn bản**.
 - **Số đoạn quy định (chunks):** **4,890 đoạn**.
-- **Tính đồng bộ:** Toàn bộ tài liệu (`README.md`, `docs/corpus_catalog.md`), mã nguồn tiền xử lý (`scripts/generate_catalog.py`, `scripts/build_index.py`), và cơ sở dữ liệu (`data/structured/corpus.csv`, `data/structured/corpus.json`, `data/index/`) đều thống nhất tuyệt đối con số 17 văn bản.
+- **Tính đồng bộ:** Toàn bộ tài liệu (`README.md`, `docs/corpus_catalog.md`), mã nguồn tiền xử lý (`scripts/generate_catalog.py`, `scripts/build_index.py`), và cơ sở dữ liệu (`data/structured/corpus.csv`, `data/structured/corpus.json`, `data/index/`) được chuẩn hóa theo số liệu sinh tự động từ `data/structured/corpus.csv`.
 """
 
     os.makedirs(os.path.dirname(catalog_md_path), exist_ok=True)

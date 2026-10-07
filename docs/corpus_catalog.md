@@ -15,8 +15,8 @@
 |---|---|---|---|
 | **Tổng số đơn vị** | **4,890** | 100% | **17 văn bản** |
 | ✅ **Còn hiệu lực** | 4,167 | 85.2% | 11 văn bản |
-| ⚠️ **Hết hiệu lực một phần** | *(quản lý cấp chunk)* | *(35 chunk bị bãi bỏ)* | 5 văn bản |
-| ❌ **Hết hiệu lực toàn bộ** | 723 | 14.8% | 1 văn bản (BLLĐ 2012) |
+| ⚠️ **Hết hiệu lực một phần** | *(quản lý cấp chunk)* | *(49 chunk bị bãi bỏ)* | 5 văn bản |
+| ❌ **Hết hiệu lực toàn bộ** | 674 | 13.8% | 1 văn bản (BLLĐ 2012) |
 | **Tổng số Điều** | 1,397 | - | - |
 | **Chunk có cấp Khoản** | 4,696 | 96.0% | - |
 | **Chunk có cấp Điểm** | 817 | 16.7% | - |
@@ -62,7 +62,7 @@ Trong cơ sở dữ liệu tra cứu và chỉ mục (BM25 + FAISS), sự xuất
 
 1. **Mô phỏng Kho Pháp điển Đa lĩnh vực Thực tế (Anti-Toy Environment):**
    - Trên Cổng thông tin Cơ sở dữ liệu quốc gia về văn bản pháp luật (vbpl.vn), tất cả các văn bản quy phạm pháp luật đều nằm chung trong cùng một hệ thống dữ liệu quốc gia.
-   - Nếu xây dựng một chỉ mục chỉ chứa duy nhất văn bản lao động thuần túy, bài toán truy xuất sẽ trở nên phi thực tế (mọi câu hỏi đều dễ dàng match trúng một điều luật lao động ngẫu nhiên). Việc đưa các văn bản bổ trợ/nhiễu vào cùng chỉ mục giúp đánh giá khả năng hoạt động của hệ thống trong môi trường pháp điển hỗn hợp.
+   - Nếu chỉ xây dựng chỉ mục từ các văn bản lao động, môi trường đánh giá sẽ ít chịu tác động của các văn bản ngoài phạm vi nhưng có mức độ tương đồng về từ vựng hoặc ngữ nghĩa. Việc đưa một số văn bản đối chứng vào cùng chỉ mục giúp đánh giá khả năng phân biệt của hệ thống trong môi trường pháp luật đa lĩnh vực. 
 
 2. **Thử thách Khả năng Chống Nhiễu & Chống Bắt nhầm Từ khóa (Disambiguation Challenge):**
    - **Hiến pháp 2013 (`Hiến pháp 2013`, 290 đoạn):** Đạo luật cơ bản có hiệu lực pháp lý cao nhất, chứa các quy định khái quát về quyền con người, quyền công dân, quyền làm việc (Điều 35, Điều 36...). Đây là **đối chứng nhiễu bậc cao (High-level Semantic Distractor)**. Nếu bộ tìm kiếm Dense hoặc BM25 không đủ năng lực phân giải ngữ nghĩa, câu hỏi của người dùng về tình huống lao động cụ thể rất dễ bị trôi dạt (semantic drift) và trích dẫn nhầm Hiến pháp thay vì quy định trực tiếp trong Bộ luật Lao động 2019.
@@ -72,7 +72,7 @@ Trong cơ sở dữ liệu tra cứu và chỉ mục (BM25 + FAISS), sự xuất
 
 3. **Đo lường Năng lực Từ chối Ngoài Phạm vi (Out-of-Scope Refusal Accuracy):**
    - Bộ dữ liệu kiểm thử (Test Set) có 50 câu hỏi ngoài phạm vi (OOD), bao gồm các câu hỏi thuộc thẩm quyền thanh tra hành chính chung, khiếu nại quyết định hành chính, quyền ứng cử bầu cử theo Hiến pháp...
-   - Sự hiện diện của các văn bản này trong cùng chỉ mục là điều kiện tiên quyết để kiểm tra: Bộ truy xuất có bị lừa bởi độ tương đồng từ vựng để lấy các văn bản nhiễu hay không, và tầng kiểm định LLM có nhận diện chính xác câu hỏi nằm ngoài phạm vi tư vấn pháp luật lao động để kích hoạt cơ chế từ chối (Refusal) an toàn hay không.
+   - Sự hiện diện của các văn bản này trong cùng chỉ mục tạo ra môi trường phù hợp để kiểm tra khả năng phân biệt giữa câu hỏi trong phạm vi và các câu hỏi ngoài phạm vi có mức độ tương đồng về từ vựng hoặc ngữ nghĩa. Điều này đảm bảo rằng hệ thống có thể phân biệt các trường hợp nằm ngoài phạm vi tư vấn pháp luật lao động, từ đó kích hoạt cơ chế từ chối (Refusal) an toàn.
 
 ### 3.2. Vai trò của Văn bản Đối sánh Lịch sử Hiệu lực (Bộ luật Lao động 2012)
 - **Bộ luật Lao động 2012 (`10/2012/QH13`, 674 đoạn):** Đã hết hiệu lực toàn bộ từ ngày 01/01/2021.
@@ -88,4 +88,4 @@ Trong cơ sở dữ liệu tra cứu và chỉ mục (BM25 + FAISS), sự xuất
 ### 3.4. Thống nhất Số lượng Văn bản Toàn Hệ thống
 - **Số văn bản quy phạm pháp luật trong Corpus / Chỉ mục:** **17 văn bản**.
 - **Số đoạn quy định (chunks):** **4,890 đoạn**.
-- **Tính đồng bộ:** Toàn bộ tài liệu (`README.md`, `docs/corpus_catalog.md`), mã nguồn tiền xử lý (`scripts/generate_catalog.py`, `scripts/build_index.py`), và cơ sở dữ liệu (`data/structured/corpus.csv`, `data/structured/corpus.json`, `data/index/`) đều thống nhất tuyệt đối con số 17 văn bản.
+- **Tính đồng bộ:** Toàn bộ tài liệu (`README.md`, `docs/corpus_catalog.md`), mã nguồn tiền xử lý (`scripts/generate_catalog.py`, `scripts/build_index.py`), và cơ sở dữ liệu (`data/structured/corpus.csv`, `data/structured/corpus.json`, `data/index/`) được chuẩn hóa theo số liệu sinh tự động từ `data/structured/corpus.csv`.

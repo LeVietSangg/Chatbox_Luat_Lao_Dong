@@ -21,7 +21,7 @@
 Hệ thống được xây dựng nhằm giải quyết bài toán tra cứu văn bản pháp luật lao động Việt Nam một cách **nhanh chóng, chính xác và minh bạch**, giảm thiểu tối đa hiện tượng "ảo giác" (hallucination) của các mô hình ngôn ngữ lớn (LLM) thông qua kiến trúc RAG kiểm chứng đa tầng.
 
 ### 📋 Thống nhất Danh mục Dữ liệu (Corpus Overview):
-Toàn bộ cơ sở dữ liệu tra cứu và chỉ mục (BM25 & FAISS) được xây dựng từ **17 văn bản quy phạm pháp luật** với tổng cộng **4,890 đoạn quy định (chunks)**, phân rã chính xác tới cấp Khoản (hoặc cấp Điều đối với Điều không chia Khoản). Chi tiết danh mục và ngày snapshot được chuẩn hóa tại [docs/corpus_catalog.md](docs/corpus_catalog.md).
+Toàn bộ cơ sở dữ liệu tra cứu và chỉ mục (BM25 & FAISS) được xây dựng từ **17 văn bản quy phạm pháp luật** với tổng cộng **4,890 đoạn quy định (chunks)**, phân rã tới cấp Khoản và lùi về Điều nếu không có Khoản. Chi tiết danh mục và ngày snapshot được chuẩn hóa tại [docs/corpus_catalog.md](docs/corpus_catalog.md).
 
 Nhằm phục vụ đánh giá khoa học và mô phỏng thực tế kho pháp điển quốc gia, 17 văn bản trong cùng một chỉ mục chung (Shared Index) được phân loại thành **3 nhóm vai trò chức năng**:
 
