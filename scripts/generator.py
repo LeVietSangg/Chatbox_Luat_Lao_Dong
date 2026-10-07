@@ -12,6 +12,489 @@ from google.genai import types
 # Tắt cảnh báo AFC không cần thiết của SDK google-genai
 logging.getLogger("google").setLevel(logging.ERROR)
 
+# ====================================================================
+# STRUCTURED REFUSAL CLASSIFIER & LLM JUDGE
+# ====================================================================
+
+REFUSAL_PATTERNS = [
+    r"tôi không tìm thấy thông tin",
+    r"không tìm thấy thông tin",
+    r"không có thông tin",
+    r"ngữ cảnh không (?:chứa|có|đề cập|cung cấp)",
+    r"tài liệu (?:được cung cấp )?không (?:chứa|có|đề cập|cung cấp|nêu|quy định)",
+    r"văn bản (?:được cung cấp )?không (?:chứa|có|đề cập|cung cấp|nêu|quy định)",
+    r"(?:nằm )?ngoài phạm vi (?:pháp luật lao động|tài liệu|ngữ cảnh|hệ thống)",
+    r"không thuộc phạm vi",
+    r"chưa đủ thông tin để trả lời",
+    r"không thể trả lời (?:câu hỏi|vấn đề|dựa trên)",
+    r"xin lỗi,? (?:tôi )?không thể",
+    r"không tìm thấy quy định",
+    r"không có căn cứ (?:pháp luật )?để trả lời",
+]
+RE_REFUSAL_COMPILED = [re.compile(p, re.IGNORECASE) for p in REFUSAL_PATTERNS]
+RE_CITATION = re.compile(r"\[([a-zA-Z0-9_]+)\]")
+
+STOPWORDS_VI = {
+    'là', 'của', 'và', 'các', 'cho', 'với', 'trong', 'ở', 'theo', 'được', 'khi',
+    'này', 'đó', 'thì', 'có', 'những', 'về', 'tại', 'đến', 'từ', 'như', 'sau', 'bởi'
+}
+COMMON_LEGAL_WORDS = {'người', 'lao', 'động', 'sử', 'dụng'}
+
+
+def classify_refusal(
+    text: str,
+    query: str = None,
+    use_judge: bool = False,
+    client = None,
+    model_name: str = "gemini-2.5-flash"
+) -> dict:
+    """
+    Phân loại từ chối (Refusal Classification) có cấu trúc.
+    
+    Khắc phục hạn chế của việc so khớp chuỗi y hệt (text == REFUSAL_TEXT):
+    1. Chuẩn hóa văn bản loại bỏ khoảng trắng, dấu câu cuối, chữ hoa/thường.
+    2. Nhận diện các mẫu từ chối ngữ nghĩa đa dạng (out-of-scope, thiếu thông tin, xin lỗi...).
+    3. Kiểm tra sự vắng mặt của trích dẫn hợp lệ để tránh nhận nhầm câu trả lời thực tế.
+    4. Hỗ trợ LLM Judge khi use_judge=True hoặc khi có yêu cầu thẩm định chuyên sâu.
+    """
+    if not text or not text.strip():
+        return {
+            "is_refusal": True,
+            "confidence": 1.0,
+            "method": "empty_text",
+            "reason": "Câu trả lời rỗng hoặc không có nội dung."
+        }
+
+    # Nếu bật LLM Judge và có client
+    if use_judge and client is not None:
+        return judge_refusal(query=query, answer=text, client=client, model_name=model_name)
+
+    clean = text.strip().lower().rstrip(".!? ")
+    canonical = "tôi không tìm thấy thông tin để trả lời"
+
+    # 1. Khớp câu chuẩn canonical (cho phép linh hoạt dấu câu)
+    if clean == canonical:
+        return {
+            "is_refusal": True,
+            "confidence": 1.0,
+            "method": "canonical_exact",
+            "reason": "Khớp chính xác câu từ chối chuẩn."
+        }
+
+    # 2. Bắt đầu bằng câu từ chối chuẩn
+    if clean.startswith(canonical):
+        return {
+            "is_refusal": True,
+            "confidence": 0.98,
+            "method": "canonical_prefix",
+            "reason": "Bắt đầu bằng câu từ chối chuẩn."
+        }
+
+    # 3. Phân loại theo mẫu cấu trúc ngữ nghĩa
+    has_citations = bool(RE_CITATION.search(text))
+    has_refusal_phrase = any(p.search(clean) for p in RE_REFUSAL_COMPILED)
+
+    # Nếu có cụm từ từ chối và KHÔNG kèm citation hợp lệ -> chắc chắn từ chối
+    if has_refusal_phrase and not has_citations:
+        return {
+            "is_refusal": True,
+            "confidence": 0.95,
+            "method": "structured_pattern",
+            "reason": "Chứa cụm từ từ chối ngữ nghĩa và không có trích dẫn điều luật."
+        }
+
+    # Nếu câu ngắn (< 250 ký tự) chứa từ khóa từ chối
+    if has_refusal_phrase and len(text.strip()) < 250 and not has_citations:
+        return {
+            "is_refusal": True,
+            "confidence": 0.90,
+            "method": "structured_short_refusal",
+            "reason": "Đoạn văn ngắn mang ý định từ chối rõ ràng."
+        }
+
+    return {
+        "is_refusal": False,
+        "confidence": 0.95 if has_citations else 0.80,
+        "method": "structured_answer",
+        "reason": "Chứa nội dung giải đáp quy định pháp lý."
+    }
+
+
+def judge_refusal(
+    query: str,
+    answer: str,
+    client = None,
+    model_name: str = "gemini-2.5-flash"
+) -> dict:
+    """
+    Sử dụng LLM-as-a-Judge để phân loại có cấu trúc xem câu trả lời có phải là lời từ chối hay không.
+    """
+    if client is None:
+        return classify_refusal(answer, query=query, use_judge=False)
+
+    judge_prompt = f"""Bạn là trọng tài AI (LLM Judge) đánh giá Chatbot Pháp luật Lao động.
+Nhiệm vụ: Phân loại câu trả lời sau đây có phải là một lời "TỪ CHỐI TRẢ LỜI" (Refusal) hay không.
+
+Tiêu chí TỪ CHỐI (is_refusal = true):
+- Chatbot từ chối vì câu hỏi nằm ngoài phạm vi pháp luật lao động (hình sự, thuế, đất đai, giải trí...).
+- Chatbot từ chối vì không tìm thấy thông tin/căn cứ pháp lý trong tài liệu được cung cấp.
+- Chatbot tuyên bố không thể cung cấp câu trả lời hoặc tài liệu không đề cập.
+
+Tiêu chí KHÔNG TỪ CHỐI (is_refusal = false):
+- Chatbot cung cấp giải đáp quy định pháp lý, quyền, nghĩa vụ, thời hạn, hoặc căn cứ điều luật.
+
+Câu hỏi:
+\"\"\"{query or 'N/A'}\"\"\"
+
+Câu trả lời của Chatbot:
+\"\"\"{answer}\"\"\"
+
+Chỉ trả về JSON hợp lệ:
+{{"is_refusal": true, "confidence": 0.95, "reason": "Lý do ngắn gọn"}}
+"""
+    try:
+        config = types.GenerateContentConfig(
+            temperature=0.0,
+            response_mime_type="application/json"
+        )
+        res = client.models.generate_content(
+            model=model_name,
+            contents=judge_prompt,
+            config=config
+        )
+        raw = res.text.strip()
+        data = json.loads(raw)
+        return {
+            "is_refusal": bool(data.get("is_refusal", False)),
+            "confidence": float(data.get("confidence", 0.9)),
+            "method": "llm_judge",
+            "reason": str(data.get("reason", "LLM Judge classification"))
+        }
+    except Exception as e:
+        fallback = classify_refusal(answer, query=query, use_judge=False)
+        fallback["reason"] += f" (Judge error fallback: {e})"
+        return fallback
+
+
+# ====================================================================
+# CLAIM EXTRACTION & CLAIM SUPPORT MEASUREMENT
+# ====================================================================
+
+def extract_claims(answer: str) -> list[dict]:
+    """
+    Trích xuất các luận điểm (claims) từ câu trả lời và liên kết với citation tương ứng.
+    """
+    if not answer or not answer.strip():
+        return []
+
+    lines = [line.strip() for line in answer.strip().split('\n') if line.strip()]
+    raw_segments = []
+
+    for line in lines:
+        if re.match(r'^(?:[-*•]|\d+\.)\s+', line):
+            raw_segments.append(line)
+        else:
+            parts = re.split(r'(?<=[.!?])\s+(?=[A-Z0-9À-ỸĐ])', line)
+            for p in parts:
+                p = p.strip()
+                if p:
+                    raw_segments.append(p)
+
+    claims = []
+    for idx, seg in enumerate(raw_segments):
+        cits = RE_CITATION.findall(seg)
+        claim_text = RE_CITATION.sub('', seg).strip()
+        claim_text = re.sub(r'^(?:[-*•]|\d+\.)\s*', '', claim_text)
+        claim_text = re.sub(r'[*_#`]', '', claim_text)
+        claim_text = re.sub(r'[ \t]+', ' ', claim_text).strip()
+        claim_text = claim_text.rstrip(' ,;:')
+
+        if len(claim_text.split()) < 3:
+            continue
+
+        claims.append({
+            'claim_id': f'c_{idx+1}',
+            'text': claim_text,
+            'citations': list(dict.fromkeys(cits)),
+            'has_citation': len(cits) > 0
+        })
+
+    return claims
+
+
+def _clean_text_for_support(text: str) -> str:
+    text = text.lower()
+    text = re.sub(r'[*_#`]', '', text)
+    text = re.sub(r'\[[a-zA-Z0-9_]+\]', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
+def _extract_quantities(text: str) -> list[str]:
+    clean = _clean_text_for_support(text)
+    patterns = [
+        r'\b\d+(?:[.,]\d+)*\s*(?:ngày|tháng|năm|giờ|%|phần trăm|triệu|nghìn|đồng)\b',
+        r'\b\d+(?:[.,]\d+)+\b',
+    ]
+    quantities = []
+    for pat in patterns:
+        for match in re.finditer(pat, clean, re.IGNORECASE):
+            quantities.append(match.group(0).strip())
+    return list(dict.fromkeys(quantities))
+
+
+
+def _normalize_num(s: str) -> str:
+    s = re.sub(r'\.', '', s)
+    s = re.sub(r'\b0+(\d+)', r'\1', s)
+    return s.strip()
+
+
+def verify_claim_support_heuristic(claim_text: str, provision_text: str) -> dict:
+    """
+    Kiểm chứng mức độ bảo chứng của căn cứ pháp lý cho một luận điểm bằng heuristic & NLI grounding.
+    """
+    if not claim_text or not provision_text:
+        return {'supported': False, 'confidence': 1.0, 'method': 'empty_input', 'reason': 'Dữ liệu rỗng'}
+
+    c_clean = _clean_text_for_support(claim_text)
+    p_clean = _clean_text_for_support(provision_text)
+
+    # 1. Trực tiếp substring
+    if c_clean in p_clean or p_clean in c_clean:
+        return {'supported': True, 'confidence': 1.0, 'method': 'direct_substring', 'reason': 'Khẳng định trùng khớp trực tiếp nội dung điều luật'}
+
+    # 2. Số liệu & định lượng
+    c_quantities = _extract_quantities(c_clean)
+    p_clean_norm = _normalize_num(p_clean)
+
+    for q in c_quantities:
+        q_norm = _normalize_num(q)
+        num_match = re.search(r'\d+(?:[.,]\d+)*', q)
+        if num_match:
+            num_val = num_match.group(0)
+            num_norm = _normalize_num(num_val)
+            # Kiểm tra xem con số có xuất hiện trong điều luật không
+            if num_val not in p_clean and num_norm not in p_clean_norm:
+                return {
+                    'supported': False,
+                    'confidence': 0.95,
+                    'method': 'numerical_mismatch',
+                    'reason': f'Số liệu/thời hạn "{q}" trong khẳng định không có trong điều luật'
+                }
+            # Nếu có đơn vị đi kèm (đồng, ngày, tháng, năm, giờ, %): kiểm tra đơn vị có trong điều luật
+            unit_part = q[num_match.end():].strip()
+            if unit_part and len(unit_part) > 1:
+                base_unit = re.search(r'(?:ngày|tháng|năm|giờ|%|phần trăm|triệu|nghìn|đồng)', unit_part)
+                if base_unit and base_unit.group(0) not in p_clean:
+                    return {
+                        'supported': False,
+                        'confidence': 0.90,
+                        'method': 'unit_mismatch',
+                        'reason': f'Đơn vị đo lường "{base_unit.group(0)}" của "{q}" không có trong điều luật'
+                    }
+        elif q not in p_clean and q_norm not in p_clean_norm:
+            return {
+                'supported': False,
+                'confidence': 0.95,
+                'method': 'numerical_mismatch',
+                'reason': f'Số liệu/thời hạn "{q}" trong khẳng định không có trong điều luật'
+            }
+
+
+    # 3. Phủ định / cấm đoán
+    c_prohibited = any(w in c_clean for w in ['không được', 'nghiêm cấm', 'bị cấm'])
+    p_prohibited = any(w in p_clean for w in ['không được', 'nghiêm cấm', 'bị cấm'])
+    if c_prohibited and not p_prohibited and len(c_clean.split()) < 15:
+        return {
+            'supported': False,
+            'confidence': 0.9,
+            'method': 'polarity_mismatch',
+            'reason': 'Khẳng định mang tính cấm đoán nhưng điều luật không quy định cấm'
+        }
+
+    # 4. Token overlap với lọc từ phổ biến
+    c_tokens = [w for w in re.findall(r'\b\w+\b', c_clean) if w not in STOPWORDS_VI and len(w) > 1]
+    p_tokens = set(re.findall(r'\b\w+\b', p_clean))
+
+    if not c_tokens:
+        return {'supported': True, 'confidence': 0.7, 'method': 'no_content_tokens', 'reason': 'Không có từ khóa phủ định'}
+
+    distinct_c_tokens = [w for w in c_tokens if w not in COMMON_LEGAL_WORDS]
+    if distinct_c_tokens:
+        distinct_matched = [t for t in distinct_c_tokens if t in p_tokens]
+        distinct_coverage = len(distinct_matched) / len(distinct_c_tokens)
+    else:
+        distinct_coverage = 1.0
+
+    matched_tokens = [t for t in c_tokens if t in p_tokens]
+    coverage = len(matched_tokens) / len(c_tokens)
+
+    if coverage >= 0.60 and distinct_coverage >= 0.50:
+        return {
+            'supported': True,
+            'confidence': round((coverage + distinct_coverage) / 2, 2),
+            'method': 'content_overlap',
+            'reason': f'Độ bao phủ từ khóa pháp lý cao ({coverage:.1%}, đặc trưng: {distinct_coverage:.1%}) và số liệu nhất quán'
+        }
+    else:
+        return {
+            'supported': False,
+            'confidence': round(1.0 - coverage, 2),
+            'method': 'low_content_overlap',
+            'reason': f'Độ bao phủ từ khóa pháp lý chưa đủ ({coverage:.1%}, đặc trưng: {distinct_coverage:.1%}), thiếu cơ sở bảo chứng'
+        }
+
+
+def verify_claim_support(
+    claim_text: str,
+    provision_text: str,
+    judge_client = None,
+    model_name: str = "gemini-2.5-flash"
+) -> dict:
+    """
+    Đo lường mức độ bảo chứng của căn cứ pháp lý cho một luận điểm (Claim Support).
+    Hỗ trợ cả LLM Judge và heuristic NLI grounding.
+    """
+    if judge_client is not None:
+        judge_prompt = f"""Bạn là trọng tài AI (LLM Judge) kiểm chứng mức độ bảo chứng căn cứ pháp luật (Claim Support / Fact Verification).
+Nhiệm vụ: Đánh giá xem Nội dung điều luật có chứng thực/bảo chứng cho Khẳng định pháp lý hay không.
+
+NỘI DUNG ĐIỀU LUẬT:
+\"\"\"{provision_text}\"\"\"
+
+KHẲNG ĐỊNH CỦA CHATBOT:
+\"\"\"{claim_text}\"\"\"
+
+Quy tắc:
+- SUPPORTED (true): Toàn bộ thông tin, số liệu, thời hạn, điều kiện trong Khẳng định đều được Căn cứ điều luật xác thực trực tiếp hoặc suy luận tất yếu.
+- UNSUPPORTED (false): Khẳng định chứa số liệu sai lệch, gán ghép nghĩa vụ/quyền lợi không có trong điều luật, hoặc điều luật không đề cập đến nội dung khẳng định.
+
+Chỉ trả về JSON hợp lệ:
+{{"supported": true, "confidence": 0.95, "reason": "Lý do ngắn gọn"}}
+"""
+        try:
+            config = types.GenerateContentConfig(
+                temperature=0.0,
+                response_mime_type="application/json"
+            )
+            res = judge_client.models.generate_content(
+                model=model_name,
+                contents=judge_prompt,
+                config=config
+            )
+            raw = res.text.strip()
+            data = json.loads(raw)
+            return {
+                "supported": bool(data.get("supported", False)),
+                "confidence": float(data.get("confidence", 0.9)),
+                "method": "llm_judge",
+                "reason": str(data.get("reason", "LLM Judge verification"))
+            }
+        except Exception:
+            return verify_claim_support_heuristic(claim_text, provision_text)
+
+    return verify_claim_support_heuristic(claim_text, provision_text)
+
+
+def evaluate_answer_claim_support(
+    answer: str,
+    context_lookup: dict,
+    judge_client = None,
+    model_name: str = "gemini-2.5-flash"
+) -> dict:
+    """
+    Đánh giá mức độ Claim Support cho toàn bộ câu trả lời.
+    """
+    claims = extract_claims(answer)
+    if not claims:
+        return {
+            "total_claims": 0,
+            "cited_claims": 0,
+            "supported_claims": 0,
+            "unsupported_claims": 0,
+            "claim_support_rate": None,
+            "overall_claim_support_rate": None,
+            "is_fully_supported": True,
+            "claims": []
+        }
+
+    def find_provision_text(pid):
+        if pid in context_lookup:
+            val = context_lookup[pid]
+            return val if isinstance(val, str) else val.get("noi_dung", "")
+        # Thử tìm theo mã cha nếu mã con bị rút gọn (__a -> __K2)
+        cand = pid
+        while "__" in cand:
+            cand = cand.rsplit("__", 1)[0]
+            if cand in context_lookup:
+                val = context_lookup[cand]
+                return val if isinstance(val, str) else val.get("noi_dung", "")
+        return ""
+
+    detailed_claims = []
+    supported_count = 0
+    cited_count = 0
+
+    for cl in claims:
+        c_text = cl["text"]
+        cits = cl["citations"]
+        is_cited = len(cits) > 0
+        if is_cited:
+            cited_count += 1
+
+        is_supp = False
+        reasons = []
+
+        if not is_cited:
+            reasons.append("Luận điểm không kèm trích dẫn điều luật.")
+        else:
+            for pid in cits:
+                prov_text = find_provision_text(pid)
+                if not prov_text:
+                    reasons.append(f"Mã điều luật {pid} không có trong ngữ cảnh/corpus.")
+                    continue
+                ver_res = verify_claim_support(
+                    claim_text=c_text,
+                    provision_text=prov_text,
+                    judge_client=judge_client,
+                    model_name=model_name
+                )
+                if ver_res["supported"]:
+                    is_supp = True
+                    reasons.append(f"[{pid}] {ver_res['reason']}")
+                    break
+                else:
+                    reasons.append(f"[{pid}] {ver_res['reason']}")
+
+        if is_supp:
+            supported_count += 1
+
+        detailed_claims.append({
+            "claim_id": cl["claim_id"],
+            "text": c_text,
+            "citations": cits,
+            "has_citation": is_cited,
+            "supported": is_supp,
+            "reasons": reasons
+        })
+
+    claim_support_rate = (supported_count / cited_count) if cited_count > 0 else 0.0
+    overall_support_rate = (supported_count / len(claims)) if claims else 0.0
+    is_fully_supported = (supported_count == len(claims) and len(claims) > 0)
+
+    return {
+        "total_claims": len(claims),
+        "cited_claims": cited_count,
+        "supported_claims": supported_count,
+        "unsupported_claims": cited_count - supported_count,
+        "claim_support_rate": claim_support_rate,
+        "overall_claim_support_rate": overall_support_rate,
+        "is_fully_supported": is_fully_supported,
+        "claims": detailed_claims
+    }
+
+
 class LegalGenerator:
     """
     LLM Generation cho chatbot tra cứu pháp luật lao động.
@@ -35,6 +518,20 @@ class LegalGenerator:
     """
 
     REFUSAL_TEXT = "Tôi không tìm thấy thông tin để trả lời."
+
+    def is_refusal_response(self, text: str, query: str = None, use_judge: bool = False) -> bool:
+        """
+        Kiểm tra câu trả lời có phải là lời từ chối hay không bằng phân loại có cấu trúc hoặc judge.
+        """
+        res = classify_refusal(
+            text,
+            query=query,
+            use_judge=use_judge,
+            client=getattr(self, "client", None),
+            model_name=getattr(self, "model_name", "gemini-2.5-flash")
+        )
+        return res["is_refusal"]
+
 
     def __init__(
         self,
@@ -198,13 +695,16 @@ CONTEXT
     # CITATION VERIFIER
     # ================================================================
 
-    def verify_citations(self, answer, valid_ids):
+    def verify_citations(self, answer, valid_ids, return_normalized=False):
         """
-        Kiểm tra và chuẩn hóa citation do LLM sinh ra.
+        Kiểm tra và chuẩn hóa cú pháp citation do LLM sinh ra (Syntactic Verifier).
 
         - Citation tồn tại trong valid_ids: giữ nguyên.
         - Citation con (__a, __b, ...): nếu citation cha tồn tại
-        trong valid_ids thì chuẩn hóa về citation cha.
+        trong valid_ids thì chuẩn hóa về citation cha để hiển thị.
+        - Thu thập `normalized_ids` (những mã con bị rút gọn):
+          Dùng để phạt trong chỉ số Citation Validity (câu nào bị rút mã
+          sẽ bị tính là KHÔNG HỢP LỆ do tự bịa mã con ngoài context).
         - Citation không tồn tại và không có citation cha hợp lệ:
         loại bỏ và ghi nhận là hallucinated.
         """
@@ -212,6 +712,7 @@ CONTEXT
         citations = []
         hallucinated = []
         valid_citations = []
+        normalized_sub_ids = []
 
         # Hàm tìm citation cha
         def normalize_citation(pid):
@@ -265,6 +766,11 @@ CONTEXT
 
                 else:
 
+                    # Nếu phải rút mã từ mã con về mã cha (khác với mã gốc)
+                    if normalized_pid != pid:
+                        if pid not in normalized_sub_ids:
+                            normalized_sub_ids.append(pid)
+
                     if normalized_pid not in valid_citations:
                         valid_citations.append(normalized_pid)
 
@@ -308,6 +814,17 @@ CONTEXT
             verified_answer
         )
 
+        self.last_hallucinated_ids = list(set(hallucinated))
+        self.last_normalized_ids = list(set(normalized_sub_ids))
+
+        if return_normalized:
+            return (
+                verified_answer,
+                list(set(hallucinated)),
+                list(set(valid_citations)),
+                list(set(normalized_sub_ids))
+            )
+
         return (
             verified_answer,
             list(set(hallucinated)),
@@ -327,7 +844,8 @@ CONTEXT
         final_answer,
         valid_ids,
         hallucinated,
-        citations
+        citations,
+        normalized_ids=None
     ):
         """
         Ghi toàn bộ lượt chạy vào JSONL.
@@ -382,13 +900,15 @@ CONTEXT
             "valid_ids_in_context": valid_ids,
             "citations": citations,
             "hallucinated_ids": hallucinated,
+            "normalized_ids": normalized_ids or [],
 
             # --------------------------------------------------------
-            # Refusal
+            # Refusal (Phân loại có cấu trúc / Judge)
             # --------------------------------------------------------
 
-            "is_refusal": (
-                final_answer.strip() == self.REFUSAL_TEXT
+            "is_refusal": self.is_refusal_response(
+                final_answer,
+                query=query
             )
         }
 
@@ -575,10 +1095,12 @@ CONTEXT
                 (
                     final_answer,
                     hallucinated,
-                    citations
+                    citations,
+                    normalized_ids
                 ) = self.verify_citations(
                     raw_answer,
-                    valid_ids
+                    valid_ids,
+                    return_normalized=True
                 )
 
                 # --------------------------------------------------------
@@ -590,12 +1112,12 @@ CONTEXT
                     final_answer = self.REFUSAL_TEXT
 
                 # --------------------------------------------------------
-                # 6. Kiểm tra refusal
+                # 6. Kiểm tra refusal (Phân loại có cấu trúc / Judge)
                 # --------------------------------------------------------
 
-                is_refusal = (
-                    final_answer.strip()
-                    == self.REFUSAL_TEXT
+                is_refusal = self.is_refusal_response(
+                    final_answer,
+                    query=query
                 )
 
                 # --------------------------------------------------------
@@ -610,7 +1132,8 @@ CONTEXT
                     final_answer=final_answer,
                     valid_ids=valid_ids,
                     hallucinated=hallucinated,
-                    citations=citations
+                    citations=citations,
+                    normalized_ids=normalized_ids
                 )
 
                 # --------------------------------------------------------
@@ -621,6 +1144,7 @@ CONTEXT
                     "answer": final_answer,
                     "raw_answer": raw_answer,
                     "hallucinated_ids": hallucinated,
+                    "normalized_ids": normalized_ids,
                     "citations": citations,
                     "is_refusal": is_refusal,
                     "api_error": False
