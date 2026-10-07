@@ -157,23 +157,39 @@ class LegalRetriever:
         # Kiểm tra hỏi đích danh Điều luật: ví dụ "điều 14", "điều 112"
         dieu_match = re.search(r"\bđiều\s+(\d+)\b", q_lower)
 
-        # Nhận diện văn bản cụ thể nếu có
+        # Nhận diện văn bản cụ thể nếu có (sử dụng regex có biên từ \b để tránh khớp nhầm)
         explicit_doc = None
-        if "2012" in q_lower:
+
+        # 1. BLLĐ 2012 (10/2012/QH13)
+        if re.search(r"\b(?:bộ\s*luật\s*lao\s*động|bllđ|luật\s*lao\s*động)\s*(?:năm\s*)?2012\b", q_lower) or re.search(r"\b10/2012(?:/qh13)?\b", q_lower):
             explicit_doc = "10_2012_QH13"
-        elif "145" in q_lower or "nghị định 145" in q_lower:
+        # 2. Nghị định 145/2020/NĐ-CP (Tránh nhận nhầm số tiền hoặc số 145 độc lập)
+        elif re.search(r"\b(?:nghị\s*định|nđ)\s*(?:số\s*)?145\b", q_lower) or re.search(r"\b145/2020(?:/nđ-cp)?\b", q_lower):
             explicit_doc = "145_2020_NDCP"
-        elif "bảo hiểm" in q_lower or "bhxh" in q_lower:
+        # 3. Luật Việc làm / Bảo hiểm thất nghiệp (74/2025/QH15)
+        # Kiểm tra trước BHXH để tránh "bảo hiểm thất nghiệp" bị coi là Luật BHXH
+        elif re.search(r"\b(?:luật\s*việc\s*làm|bảo\s*hiểm\s*thất\s*nghiệp|bhtn|trợ\s*cấp\s*thất\s*nghiệp)\b", q_lower) or re.search(r"\b74/2025(?:/qh15)?\b", q_lower):
+            explicit_doc = "74_2025_QH15"
+        # 4. Luật Bảo hiểm xã hội (58/VBHN-VPQH)
+        # Yêu cầu rõ "bảo hiểm xã hội" hoặc "bhxh", không lấy từ "bảo hiểm" chung chung
+        elif re.search(r"\b(?:luật\s*)?(?:bảo\s*hiểm\s*xã\s*hội|bhxh)\b", q_lower) or re.search(r"\b58/vbhn(?:-vpqh)?\b", q_lower):
             explicit_doc = "58_VBHN-VPQH"
-        elif "an toàn" in q_lower or "atvslđ" in q_lower:
+        # 5. Luật An toàn, vệ sinh lao động (84/2015/QH13)
+        elif re.search(r"\b(?:luật\s*)?(?:an\s*toàn[,\s]*vệ\s*sinh\s*lao\s*động|atvslđ|an\s*toàn\s*lao\s*động)\b", q_lower) or re.search(r"\b84/2015(?:/qh13)?\b", q_lower):
             explicit_doc = "84_2015_QH13"
-        elif "công đoàn" in q_lower:
+        # 6. Luật Công đoàn (50/2024/QH15)
+        elif re.search(r"\b(?:luật\s*công\s*đoàn|công\s*đoàn)\b", q_lower) or re.search(r"\b50/2024(?:/qh15)?\b", q_lower):
             explicit_doc = "50_2024_QH15"
-        elif "2019" in q_lower or "bộ luật lao động" in q_lower or "bllđ" in q_lower:
+        # 7. Nghị định 12/2022/NĐ-CP (Xử phạt vi phạm)
+        elif re.search(r"\b(?:nghị\s*định|nđ)\s*(?:số\s*)?12\b", q_lower) or re.search(r"\b12/2022(?:/nđ-cp)?\b", q_lower):
+            explicit_doc = "12_2022_NDCP"
+        # 8. Nghị định 152/2020/NĐ-CP (Lao động nước ngoài)
+        elif re.search(r"\b(?:nghị\s*định|nđ)\s*(?:số\s*)?152\b", q_lower) or re.search(r"\b152/2020(?:/nđ-cp)?\b", q_lower):
+            explicit_doc = "152_2020_NDCP"
+        # 9. Bộ luật Lao động 2019 (45/2019/QH14)
+        # Chỉ nhận diện khi có BLLĐ/Bộ luật lao động hoặc số hiệu 45/2019, tránh nhận nhầm năm 2019
+        elif re.search(r"\b(?:bộ\s*luật\s*lao\s*động|bllđ|luật\s*lao\s*động)(?:\s*(?:năm\s*)?2019)?\b", q_lower) or re.search(r"\b45/2019(?:/qh14)?\b", q_lower):
             explicit_doc = "45_2019_QH14"
-        else:
-            if dieu_match:
-                explicit_doc = "45_2019_QH14"
 
         is_broad = any(kw in q_lower for kw in broad_keywords) or (dieu_match is not None)
 
@@ -206,7 +222,7 @@ class LegalRetriever:
             direct_pids = self.article_to_provisions.get((exp_doc, exp_dieu), [])
             if not direct_pids:
                 # Tìm trong các văn bản phổ biến khác nếu chưa có
-                for doc_code in ["45_2019_QH14", "145_2020_NDCP", "10_2012_QH13"]:
+                for doc_code in ["45_2019_QH14", "145_2020_NDCP", "74_2025_QH15", "58_VBHN-VPQH", "84_2015_QH13", "50_2024_QH15", "10_2012_QH13", "12_2022_NDCP"]:
                     if (doc_code, exp_dieu) in self.article_to_provisions:
                         direct_pids = self.article_to_provisions[(doc_code, exp_dieu)]
                         break
