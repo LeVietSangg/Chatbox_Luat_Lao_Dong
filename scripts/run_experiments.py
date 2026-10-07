@@ -128,7 +128,11 @@ def main():
             )
             
             retrieved_ids = [r["provision_id"] for r in res.get("chunks", [])]
-            
+            context_map = {
+                r["provision_id"]: r.get("content", {}).get("noi_dung", "")
+                for r in res.get("chunks", [])
+            }
+
             res_dict = {
                 "qid": qid,
                 "question": query,
@@ -136,9 +140,12 @@ def main():
                 "is_out_of_scope": is_out_of_scope,
                 "gold_ids": gold_ids,
                 "retrieved_ids": retrieved_ids,
+                "context_map": context_map,
+                "raw_answer": res.get("raw_answer", ""),
                 "answer": res["answer"],
                 "citations": res["citations"],
                 "hallucinated_ids": res["hallucinated_ids"],
+                "normalized_ids": res.get("normalized_ids", []),
                 "is_refusal": res["is_refusal"],
                 "api_error": res.get("api_error", False),
                 "error": res.get("error"),
@@ -151,7 +158,8 @@ def main():
             
             status = "REFUSE" if res["is_refusal"] else "ANSWER"
             halluc = f" [HALLUC: {res['hallucinated_ids']}]" if res['hallucinated_ids'] else ""
-            print(f"         → {status}{halluc}")
+            norm_tag = f" [NORMALIZED: {res.get('normalized_ids')}]" if res.get('normalized_ids') else ""
+            print(f"         → {status}{halluc}{norm_tag}")
             
             # Lưu ngay sau mỗi request để không mất dữ liệu
             with open(gen_output_path, "w", encoding="utf-8") as f:
@@ -167,9 +175,15 @@ def main():
         print(f"\n[METRICS CHO {method_name}]:")
         print(f"  - Refusal Accuracy: {metrics['refusal_accuracy']:.2%}" if metrics['refusal_accuracy'] is not None else "  - Refusal Accuracy: N/A")
         print(f"  - False Refusal Rate: {metrics['false_refusal_rate']:.2%}" if metrics['false_refusal_rate'] is not None else "  - False Refusal Rate: N/A")
-        print(f"  - Citation Validity: {metrics['citation_validity']:.2%}" if metrics['citation_validity'] is not None else "  - Citation Validity: N/A")
+        print(f"  - Citation Validity (Chính xác - Phạt rút mã): {metrics['citation_validity']:.2%}" if metrics['citation_validity'] is not None else "  - Citation Validity (Chính xác): N/A")
+        if metrics.get('citation_validity_relaxed') is not None:
+            print(f"  - Citation Validity (Nới lỏng): {metrics['citation_validity_relaxed']:.2%}")
+        if metrics.get('citation_normalized_rate') is not None:
+            print(f"  - Tỷ lệ câu bị rút mã con: {metrics['citation_normalized_rate']:.2%}")
         print(f"  - Citation Accuracy: {metrics['citation_accuracy']:.2%}" if metrics.get('citation_accuracy') is not None else "  - Citation Accuracy: N/A")
         print(f"  - Citation Precision: {metrics['citation_precision']:.2%}" if metrics.get('citation_precision') is not None else "  - Citation Precision: N/A")
+        print(f"  - Claim Support Rate (Ngữ nghĩa): {metrics['claim_support_rate']:.2%}" if metrics.get('claim_support_rate') is not None else "  - Claim Support Rate: N/A")
+
 
     # Lưu metrics tổng hợp ra file JSON riêng để tiện theo dõi và báo cáo
     gen_metrics_path = os.path.join(eval_dir, "generation_metrics.json")

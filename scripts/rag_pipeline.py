@@ -228,8 +228,10 @@ def execute_rag_pipeline(
 
     return {
         "answer": res.get("answer", ""),
+        "raw_answer": res.get("raw_answer", ""),
         "citations": res.get("citations", []),
         "hallucinated_ids": res.get("hallucinated_ids", []),
+        "normalized_ids": res.get("normalized_ids", []),
         "is_refusal": res.get("is_refusal", False),
         "api_error": res.get("api_error", False),
         "error": res.get("error"),

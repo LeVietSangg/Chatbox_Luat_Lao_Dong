@@ -135,12 +135,30 @@
       "raw_chars": 66813,
       "clean_chars": 65495,
       "clean_lines": 1058
+    },
+    {
+      "source": "Nhom_sua_doi\\97.L.2025.pdf",
+      "output": "97.L.2025.txt",
+      "method": "pdfplumber",
+      "raw_chars": 12349,
+      "clean_chars": 12394,
+      "clean_lines": 198
+    },
+    {
+      "source": "Nhom_sua_doi\\nghi-dinh-70-2023.pdf",
+      "output": "nghi-dinh-70-2023.txt",
+      "method": "pdfplumber",
+      "raw_chars": 16520,
+      "clean_chars": 16698,
+      "clean_lines": 194
     }
   ],
-  "failed": [],
+  "failed": [
+    "Nhom_sua_doi\\35.2022.NĐ-CP.pdf"
+  ],
   "summary": {
-    "total_pdfs": 17,
-    "success": 17,
-    "failed": 0
+    "total_pdfs": 20,
+    "success": 19,
+    "failed": 1
   }
 }

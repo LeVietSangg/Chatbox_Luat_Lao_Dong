@@ -17,7 +17,7 @@ if hasattr(sys.stdout, "reconfigure"):
 def main():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     corpus_path = os.path.join(base_dir, "data", "structured", "corpus.csv")
-    test_set_path = os.path.join(base_dir, "data", "eval", "test_set_v2.json")
+    test_set_path = os.path.join(base_dir, "data", "eval", "dev_set_v2.json")
 
     if not os.path.exists(corpus_path):
         print(f"Error: Không tìm thấy {corpus_path}")
@@ -105,7 +105,7 @@ def main():
     print("4. PHÂN BỐ CÁC VĂN BẢN TRONG TEST SET:")
     print("=" * 70)
     for vb, cnt in sorted(vanban_counts.items(), key=lambda x: x[1], reverse=True):
-        print(f"  - {vb}: {cnt} câu ({cnt/95*100:.1f}% trên 95 câu in-scope)")
+        print(f"  - {vb}: {cnt} câu ({cnt/85*100:.1f}% trên 85 câu in-scope)")
 
 if __name__ == "__main__":
     main()

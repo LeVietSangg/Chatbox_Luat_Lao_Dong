@@ -107,7 +107,8 @@ class LegalRetriever:
     # ------------------------------------------------------------------
     def search_dense(self, query, top_k=10, hieu_luc_filter="con_hieu_luc"):
         """Tìm kiếm bằng Dense Retrieval và lọc theo hiệu lực trước khi lấy Top-K."""
-        query_embedding = self.model.encode([query], normalize_embeddings=True)
+        tokenized_query = ViTokenizer.tokenize(query).lower()
+        query_embedding = self.model.encode([tokenized_query], normalize_embeddings=True)
         query_embedding = np.array(query_embedding).astype("float32")
 
         # Lấy nhiều candidate hơn top_k để có đủ kết quả sau khi lọc
