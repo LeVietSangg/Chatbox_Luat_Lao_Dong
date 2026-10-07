@@ -87,16 +87,13 @@ ABBREVIATIONS = {
 
 def expand_legal_query(q: str) -> str:
     """
-    Mở rộng câu hỏi đời thường sang thuật ngữ pháp lý chuẩn xác.
+    Mở rộng câu hỏi đời thường sang thuật ngữ pháp lý chuẩn xác (Synonym / Legal Concept Expansion).
+    Bỏ vá theo ca: KHÔNG gán cứng số Điều cụ thể hay bắt regex các câu mẫu out-of-scope.
     Giúp tăng Recall@k cho bộ truy xuất Hybrid RAG.
     """
     q_low = q.lower()
 
-    # Nếu là câu hỏi ngoài phạm vi rõ rệt -> Giữ nguyên để LLM từ chối chính xác
-    if re.search(r"\b(tôi\s+có\s+nên\s+kiện|kiện\s+ra\s+tòa|tính\s+toán\s+xem\s+tôi|tư\s+vấn\s+giúp\s+tôi\s+mua|viết\s+cho\s+tôi|soạn\s+cho\s+tôi|làm\s+thơ|thời\s+tiết|sữa\s+nào|làm\s+riêng\s+kinh\s+doanh)\b", q_low):
-        return q
-
-    # Chuẩn hóa viết tắt
+    # Chuẩn hóa viết tắt phổ biến
     norm_q = q_low
     for pattern, repl in ABBREVIATIONS.items():
         norm_q = re.sub(pattern, repl, norm_q)
@@ -105,41 +102,41 @@ def expand_legal_query(q: str) -> str:
 
     # 1. Nghỉ trước hạn / xin nghỉ việc / muốn nghỉ việc
     if re.search(r"nghỉ\s+(việc\s+)?trước\s+hạn|xin\s+nghỉ\s+việc|muốn\s+nghỉ\s+việc|đơn\s+phương\s+chấm\s+dứt\s+hợp\s+đồng", norm_q):
-        additions.append("quyền đơn phương chấm dứt hợp đồng lao động của người lao động thời hạn báo trước Điều 35")
+        additions.append("quyền đơn phương chấm dứt hợp đồng lao động người lao động thời hạn báo trước")
 
     # 2. Nghỉ ngang / tự ý bỏ việc / không báo trước
     elif re.search(r"nghỉ\s+(việc\s+)?ngang|tự\s+(ý\s+)?(nghỉ|bỏ)\s*(việc)?|bỏ\s+việc|nghỉ\s+(không|k|ko)\s*(phép|xin|báo)|nghỉ\s+đùng|thôi\s+việc\s+không", norm_q):
-        additions.append("đơn phương chấm dứt hợp đồng lao động trái pháp luật nghĩa vụ bồi thường Điều 39 Điều 40")
+        additions.append("đơn phương chấm dứt hợp đồng lao động trái pháp luật nghĩa vụ bồi thường tự ý bỏ việc")
 
     # 3. Cho nghỉ việc đột ngột / đuổi đột ngột (không báo trước)
     if re.search(r"nghỉ\s+việc\s+đột\s+ngột|đuổi\s+đột\s+ngột|nghỉ\s+đột\s+ngột|đuổi\s+(việc\s+)?ngay|thôi\s+việc\s+ngay", norm_q):
-        additions.append("người sử dụng lao động đơn phương chấm dứt hợp đồng lao động thời hạn báo trước trái pháp luật Điều 36 Điều 39 Điều 41")
+        additions.append("người sử dụng lao động đơn phương chấm dứt hợp đồng lao động thời hạn báo trước trái pháp luật")
     elif re.search(r"sa\s*thải|kỷ\s*luật\s*sa\s*thải", norm_q):
-        additions.append("kỷ luật sa thải xử lý kỷ luật lao động Điều 125")
+        additions.append("kỷ luật sa thải xử lý kỷ luật lao động")
 
     # 4. Hết hạn hợp đồng
     if re.search(r"hết\s+(hạn\s+)?hợp\s+đồng|hết\s+hđ", norm_q) and not re.search(r"trước\s+hạn", norm_q):
-        additions.append("chấm dứt hợp đồng lao động hết hạn Điều 34")
+        additions.append("chấm dứt hợp đồng lao động hết hạn hợp đồng")
 
     # 5. Ép buộc / cưỡng bức lao động
     if re.search(r"\b(bắt|ép|cưỡng\s*bức|bắt\s*buộc|cưỡng\s*ép)\b", norm_q):
-        additions.append("cưỡng bức lao động hành vi bị nghiêm cấm Điều 8 Điều 17")
+        additions.append("cưỡng bức lao động hành vi bị nghiêm cấm")
 
     # 6. Tiền lương / nợ lương / chậm lương
     if re.search(r"quỵt\s*lương|nợ\s*lương|chậm\s*lương|bùng\s*lương|không\s*trả\s*lương", norm_q):
-        additions.append("tiền lương chậm trả lương đền bù tiền lãi quyền đơn phương chấm dứt Điều 97 Điều 35")
+        additions.append("tiền lương chậm trả lương đền bù tiền lãi")
     elif re.search(r"tiền\s*lương|trả\s*lương|lương\s*tối\s*thiểu", norm_q):
-        additions.append("tiền lương kỳ hạn trả lương Điều 97")
+        additions.append("tiền lương kỳ hạn trả lương")
 
     # 7. Làm thêm giờ / tăng ca
     if re.search(r"làm\s*thêm|tăng\s*ca|ngoài\s*giờ|làm\s*đêm", norm_q):
-        additions.append("làm thêm giờ thời giờ làm việc sự đồng ý của người lao động Điều 107")
+        additions.append("làm thêm giờ thời giờ làm việc có sự đồng ý")
 
-    # 8. Nghỉ phép năm
+    # 8. Nghỉ phép năm / nghỉ lễ tết
     if re.search(r"nghỉ\s*phép\s*năm|nghỉ\s*phép|nghỉ\s*hằng\s*năm", norm_q):
-        additions.append("nghỉ hằng năm hưởng nguyên lương tiền lương ngày nghỉ thanh toán ngày chưa nghỉ Điều 113")
+        additions.append("nghỉ hằng năm hưởng nguyên lương tiền lương ngày nghỉ thanh toán ngày chưa nghỉ")
     elif re.search(r"nghỉ\s*lễ|nghỉ\s*tết|lễ\s*tết", norm_q):
-        additions.append("nghỉ lễ tết hưởng nguyên lương Điều 112")
+        additions.append("nghỉ lễ tết hưởng nguyên lương")
 
     # 9. Người sử dụng lao động
     if re.search(r"\b(chủ|sếp)\b", norm_q):
@@ -147,11 +144,11 @@ def expand_legal_query(q: str) -> str:
 
     # 10. Thử việc
     if re.search(r"thử\s*việc", norm_q):
-        additions.append("thời gian thử việc tiền lương thử việc Điều 25 Điều 26")
+        additions.append("thời gian thử việc tiền lương thử việc")
 
     # 11. Thai sản
     if re.search(r"thai\s*sản|nghỉ\s*đẻ|sinh\s*con", norm_q):
-        additions.append("chế độ thai sản lao động nữ Điều 137 Điều 139")
+        additions.append("chế độ thai sản lao động nữ")
 
     if additions:
         return q + " " + " ".join(additions)

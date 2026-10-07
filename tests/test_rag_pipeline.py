@@ -79,11 +79,11 @@ def test_execute_rag_pipeline_query_expansion():
     # Query đời thường về xin nghỉ việc trước hạn
     res = execute_rag_pipeline("tôi muốn xin nghỉ việc trước hạn", retriever, generator)
 
-    # Retriever nhận query đã mở rộng (có thêm thuật ngữ pháp lý và Điều luật)
+    # Retriever nhận query đã mở rộng (có thêm thuật ngữ pháp lý chuẩn xác)
     assert retriever.last_query is not None
     assert "quyền đơn phương chấm dứt" in retriever.last_query
     assert "người lao động" in retriever.last_query
-    assert "Điều 35" in retriever.last_query
+    assert "thời hạn báo trước" in retriever.last_query
 
     # LLM nhận query gốc của người dùng
     assert generator.last_query == "tôi muốn xin nghỉ việc trước hạn"

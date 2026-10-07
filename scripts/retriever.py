@@ -25,6 +25,12 @@ class LegalRetriever:
         with open(self.corpus_file, "r", encoding="utf-8") as f:
             self.corpus_list = json.load(f)
             self.corpus_dict = {item["provision_id"]: item for item in self.corpus_list}
+            for item in self.corpus_list:
+                pid = item.get("provision_id", "")
+                if "__K" in pid:
+                    alt_pid = pid.replace("__K", "__")
+                    if alt_pid not in self.corpus_dict:
+                        self.corpus_dict[alt_pid] = item
 
         # Load mapping (index position -> provision_id)
         print("Loading mapping...")
@@ -76,7 +82,9 @@ class LegalRetriever:
 
         for idx in ranked_indices:
             prov_id = self.provision_ids[idx]
-            content = self.corpus_dict[prov_id]
+            content = self.corpus_dict.get(prov_id)
+            if not content:
+                continue
 
             # Lọc hiệu lực trước khi lấy Top-K
             if hieu_luc_filter is not None:
@@ -116,7 +124,9 @@ class LegalRetriever:
                 continue
 
             prov_id = self.provision_ids[idx]
-            content = self.corpus_dict[prov_id]
+            content = self.corpus_dict.get(prov_id)
+            if not content:
+                continue
 
             # Lọc hiệu lực trước khi lấy Top-K
             if hieu_luc_filter is not None:
