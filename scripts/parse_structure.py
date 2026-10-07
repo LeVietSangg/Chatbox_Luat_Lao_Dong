@@ -9,6 +9,8 @@ Logic chunking (theo project.md):
   - Chunk theo Khoản: mỗi khoản = 1 chunk
   - Lùi về Điều khi Điều không có Khoản: cả Điều = 1 chunk
   - Chèn tiêu đề Điều vào đầu mỗi chunk
+  - Gắn câu dẫn (intro) của Điều vào đầu mỗi chunk Khoản
+  - Tách chunk dài hơn 3000 ký tự theo ranh giới Điểm
 """
 
 import os
@@ -27,6 +29,7 @@ DATA_CLEAN = BASE_DIR / "project" / "data" / "clean"
 DATA_STRUCTURED = BASE_DIR / "project" / "data" / "structured"
 
 SNAPSHOT_DATE = "2026-08-01"
+MAX_CHUNK_LEN = 3000
 
 from overrides import DOC_REGISTRY, MODIFIED_PROVISIONS, ADDED_PROVISIONS
 
@@ -197,7 +200,7 @@ def parse_document(text: str, doc_info: dict) -> list[dict]:
                     doc_info, chuong=current_chuong, dieu_num=dieu_num,
                     tieu_de_dieu=tieu_de_dieu,
                     khoan_num=khoan_num, diem=diem_str,
-                    noi_dung=khoan_content,
+                    noi_dung=khoan_content, intro=intro,
                 )
                 chunks.append(chunk)
 
@@ -206,7 +209,8 @@ def parse_document(text: str, doc_info: dict) -> list[dict]:
 
 def _make_chunk(doc_info: dict, chuong: str, dieu_num: str,
                 tieu_de_dieu: str, khoan_num: str | None,
-                diem: str | None, noi_dung: str) -> dict:
+                diem: str | None, noi_dung: str,
+                intro: str = "") -> dict:
     """Tạo một chunk với provision_id và metadata."""
     doc_code = doc_info["doc_code"]
 
@@ -220,7 +224,12 @@ def _make_chunk(doc_info: dict, chuong: str, dieu_num: str,
     if tieu_de_dieu:
         header += f". {tieu_de_dieu}"
 
-    full_content = f"{header}\n{noi_dung}" if noi_dung and noi_dung != tieu_de_dieu else header
+    parts = [header]
+    if intro:
+        parts.append(intro)
+    if noi_dung and noi_dung != tieu_de_dieu:
+        parts.append(noi_dung)
+    full_content = "\n".join(parts) if len(parts) > 1 else header
 
     trang_thai = doc_info.get("trang_thai_chung", "con_hieu_luc")
     # Nếu văn bản hết hiệu lực một phần, mặc định các chunk là còn hiệu lực
@@ -296,6 +305,106 @@ def apply_versioning(all_chunks: list[dict]) -> list[dict]:
         else:
             new_chunks.append(chunk)
     return new_chunks
+
+
+def split_long_chunks(chunks: list[dict]) -> list[dict]:
+    """Tách các chunk dài hơn MAX_CHUNK_LEN ký tự theo ranh giới Điểm."""
+    result = []
+    for chunk in chunks:
+        if len(chunk["noi_dung"]) <= MAX_CHUNK_LEN:
+            result.append(chunk)
+            continue
+        result.extend(_split_one_chunk(chunk))
+    return result
+
+
+def _split_one_chunk(chunk: dict) -> list[dict]:
+    """Tách một chunk dài thành nhiều sub-chunk theo ranh giới Điểm hoặc dòng."""
+    noi_dung = chunk["noi_dung"]
+    lines = noi_dung.split("\n")
+
+    # Dòng đầu là header "Điều X. Tiêu đề"
+    header = lines[0]
+    body = "\n".join(lines[1:])
+    budget = MAX_CHUNK_LEN - len(header) - 1  # -1 cho ký tự \n
+
+    # Tìm ranh giới Điểm (a), b), ...) trong body
+    diem_matches = list(RE_DIEM.finditer(body))
+
+    if not diem_matches:
+        # Không có Điểm → tách theo dòng
+        segments = _split_text_by_lines(body, budget)
+        sub_chunks = []
+        for i, seg in enumerate(segments):
+            sub = chunk.copy()
+            sub["provision_id"] = f"{chunk['provision_id']}__pt{i + 1}"
+            sub["noi_dung"] = f"{header}\n{seg}"
+            sub_chunks.append(sub)
+        return sub_chunks
+
+    # Phần trước Điểm đầu tiên (nội dung khoản + câu dẫn điểm)
+    pre_diem = body[:diem_matches[0].start()].rstrip()
+
+    # Tách từng Điểm thành segment
+    diem_segments = []
+    for i, dm in enumerate(diem_matches):
+        seg_end = diem_matches[i + 1].start() if i + 1 < len(diem_matches) else len(body)
+        diem_segments.append((dm.group(1), body[dm.start():seg_end].rstrip()))
+
+    # Gộp các Điểm liên tiếp sao cho mỗi nhóm ≤ MAX_CHUNK_LEN
+    groups = []
+    current_parts = []
+    current_diems = []
+    current_len = 0
+
+    if pre_diem:
+        current_parts.append(pre_diem)
+        current_len = len(pre_diem) + 1
+
+    for diem_letter, seg_text in diem_segments:
+        seg_len = len(seg_text) + 1
+        if current_len + seg_len > budget and current_parts:
+            groups.append((current_diems[:], "\n".join(current_parts)))
+            current_parts = []
+            current_diems = []
+            current_len = 0
+        current_parts.append(seg_text)
+        current_diems.append(diem_letter)
+        current_len += seg_len
+
+    if current_parts:
+        groups.append((current_diems, "\n".join(current_parts)))
+
+    # Tạo sub-chunks
+    sub_chunks = []
+    for i, (diems, text) in enumerate(groups):
+        sub = chunk.copy()
+        sub["provision_id"] = f"{chunk['provision_id']}__pt{i + 1}"
+        sub["noi_dung"] = f"{header}\n{text}"
+        if diems:
+            sub["diem"] = ", ".join(diems)
+        sub_chunks.append(sub)
+
+    return sub_chunks
+
+
+def _split_text_by_lines(text: str, max_len: int) -> list[str]:
+    """Tách text theo ranh giới dòng, mỗi phần ≤ max_len ký tự."""
+    lines = text.split("\n")
+    parts = []
+    current = []
+    current_len = 0
+    for line in lines:
+        line_len = len(line) + 1
+        if current_len + line_len > max_len and current:
+            parts.append("\n".join(current))
+            current = []
+            current_len = 0
+        current.append(line)
+        current_len += line_len
+    if current:
+        parts.append("\n".join(current))
+    return parts
 
 
 def ensure_unique_ids(all_chunks: list[dict]) -> int:
@@ -423,6 +532,13 @@ def main():
         print(f"\nBo sung cac provision moi...")
         all_chunks.extend(ADDED_PROVISIONS)
         print(f"  Da them {len(ADDED_PROVISIONS)} chunk moi.")
+
+    # Tách chunk dài hơn 3000 ký tự
+    long_before = sum(1 for c in all_chunks if len(c["noi_dung"]) > MAX_CHUNK_LEN)
+    if long_before:
+        print(f"\nTach {long_before} chunk dai (>{MAX_CHUNK_LEN} ky tu)...")
+        all_chunks = split_long_chunks(all_chunks)
+        print(f"  Tong sau khi tach: {len(all_chunks)} chunks.")
 
     # Kiểm tra provision_id duy nhất
     print(f"\nKiem tra tinh duy nhat cua provision_id...")

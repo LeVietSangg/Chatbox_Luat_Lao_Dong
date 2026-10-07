@@ -34,13 +34,15 @@ def main():
 
     print(f"Total documents: {len(documents)}")
 
-    # 1. BM25 Index
-    print("Tokenizing documents for BM25 (using pyvi)...")
+    # Tiền xử lý thống nhất: tách từ tiếng Việt (pyvi) cho cả BM25 và Dense
+    print("Tokenizing documents (using pyvi)...")
     start_time = time.time()
-    tokenized_docs = [ViTokenizer.tokenize(doc).lower().split() for doc in documents]
+    tokenized_docs_str = [ViTokenizer.tokenize(doc).lower() for doc in documents]
     print(f"Tokenization took {time.time() - start_time:.2f} seconds.")
 
+    # 1. BM25 Index
     print("Building BM25 index...")
+    tokenized_docs = [doc.split() for doc in tokenized_docs_str]
     bm25 = BM25Okapi(tokenized_docs)
     
     bm25_path = os.path.join(index_dir, "bm25_index.pkl")
@@ -56,8 +58,8 @@ def main():
 
     print("Encoding documents for Dense Retrieval...")
     start_time = time.time()
-    # Normalize embeddings for cosine similarity with Inner Product FAISS index
-    embeddings = model.encode(documents, show_progress_bar=True, normalize_embeddings=True)
+    # Dùng văn bản đã tách từ (thống nhất với BM25)
+    embeddings = model.encode(tokenized_docs_str, show_progress_bar=True, normalize_embeddings=True)
     embeddings = np.array(embeddings).astype("float32")
     print(f"Encoding took {time.time() - start_time:.2f} seconds.")
     print(f"Embeddings shape: {embeddings.shape}")
