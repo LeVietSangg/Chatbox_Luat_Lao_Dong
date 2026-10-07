@@ -462,18 +462,33 @@ def generate_stats(all_chunks: list[dict]) -> dict:
                 "dieu": set(),
                 "khoan": 0,
                 "diem": 0,
-                "hieu_luc": chunk["hieu_luc"],
+                "chunks_con_hieu_luc": 0,
+                "chunks_het_hieu_luc": 0,
             }
-        stats["by_document"][key]["chunks"] += 1
-        stats["by_document"][key]["dieu"].add(chunk["dieu"])
+        entry = stats["by_document"][key]
+        entry["chunks"] += 1
+        entry["dieu"].add(chunk["dieu"])
         if chunk["khoan"]:
-            stats["by_document"][key]["khoan"] += 1
+            entry["khoan"] += 1
         if chunk["diem"]:
-            stats["by_document"][key]["diem"] += len(chunk["diem"].split(","))
+            entry["diem"] += len(chunk["diem"].split(","))
+        if chunk["hieu_luc"] == "con_hieu_luc":
+            entry["chunks_con_hieu_luc"] += 1
+        else:
+            entry["chunks_het_hieu_luc"] += 1
 
-    # Convert sets to counts for JSON serialization
+    # Convert sets to counts + tính hiệu lực cấp văn bản
     for key in stats["by_document"]:
-        stats["by_document"][key]["dieu"] = len(stats["by_document"][key]["dieu"])
+        entry = stats["by_document"][key]
+        entry["dieu"] = len(entry["dieu"])
+        con = entry["chunks_con_hieu_luc"]
+        het = entry["chunks_het_hieu_luc"]
+        if het == 0:
+            entry["hieu_luc"] = "con_hieu_luc"
+        elif con == 0:
+            entry["hieu_luc"] = "het_hieu_luc"
+        else:
+            entry["hieu_luc"] = "het_hieu_luc_mot_phan"
 
     return stats
 
