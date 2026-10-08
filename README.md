@@ -21,7 +21,7 @@
 Hệ thống được xây dựng nhằm giải quyết bài toán tra cứu văn bản pháp luật lao động Việt Nam một cách **nhanh chóng, chính xác và minh bạch**, giảm thiểu tối đa hiện tượng "ảo giác" (hallucination) của các mô hình ngôn ngữ lớn (LLM) thông qua kiến trúc RAG kiểm chứng đa tầng.
 
 ### 📋 Thống nhất Danh mục Dữ liệu (Corpus Overview):
-Toàn bộ cơ sở dữ liệu tra cứu và chỉ mục (BM25 & FAISS) được xây dựng từ **17 văn bản quy phạm pháp luật** với tổng cộng **4,890 đoạn quy định (chunks)**, phân rã tới cấp Khoản và lùi về Điều nếu không có Khoản. Chi tiết danh mục và ngày snapshot được chuẩn hóa tại [docs/corpus_catalog.md](docs/corpus_catalog.md).
+Toàn bộ cơ sở dữ liệu tra cứu và chỉ mục (BM25 & FAISS) được xây dựng từ **17 văn bản quy phạm pháp luật** với tổng cộng **4,890 đoạn quy định (chunks) + 49 đoạn đc chép tay từ file overrides.py (để thay thế cho các chunk bị hết hiệu lực trong các văn bản mạng trạng thái hết hiệu lực một phần)**, phân rã tới cấp Khoản và lùi về Điều nếu không có Khoản. Chi tiết danh mục và ngày snapshot được chuẩn hóa tại [docs/corpus_catalog.md](docs/corpus_catalog.md).
 
 Nhằm phục vụ đánh giá khoa học và mô phỏng thực tế kho pháp điển quốc gia, 17 văn bản trong cùng một chỉ mục chung (Shared Index) được phân loại thành **3 nhóm vai trò chức năng**:
 
@@ -83,7 +83,7 @@ Việc tích hợp Hiến pháp 2013 (290 đoạn), Luật Thanh tra, Luật Ng�
  (PyVi tách từ)     (bkai-foundation-models/vietnamese-bi-encoder + FAISS)
         └─────────┬─────────┘
                   ▼
-     [Hybrid Fusion — RRF (k=10, α=0.5)]
+     [Hybrid Fusion — RRF (k=5, α=0.5)]
                   │
                   ▼
      [Lọc Hiệu lực Văn bản & Mở rộng Ngữ cảnh Điều luật]
@@ -126,7 +126,7 @@ project/
 └── scripts/                    # Các module mã nguồn cốt lõi
     ├── retriever.py            # Module tìm kiếm Hybrid (BM25 + FAISS + RRF + Sibling Expansion)
     ├── generator.py            # Module tạo câu trả lời với LLM & Citation Verification
-    ├── create_test_set.py      # Script sinh bộ câu hỏi kiểm thử chuẩn (155 câu)
+    ├── create_test_set_v3.py   # Script chuẩn hóa bộ câu hỏi kiểm thử đóng băng (135 câu)
     ├── run_experiments.py      # Script chạy thực nghiệm tự động đánh giá các chỉ số
     └── package_submission.py   # Script đóng gói nộp bài an toàn (tự động loại trừ .env & history)
 ```
@@ -262,12 +262,13 @@ Trình duyệt web mặc định sẽ tự động mở trang web tra cứu. N�
 
 Dự án có sẵn quy trình đánh giá khoa học định lượng (Quantitative Evaluation) phục vụ báo cáo đồ án:
 
-### Bước 7.1: Khởi tạo bộ câu hỏi kiểm thử (Test Set)
-Tạo bộ dữ liệu chuẩn 155 câu hỏi (bao gồm câu hỏi dễ, trung bình, phức tạp, đa bước, lịch sử hiệu lực và câu hỏi ngoài phạm vi):
+### Bước 7.1: Chuẩn bị bộ câu hỏi kiểm thử đóng băng (Test Set v3)
+Tập kiểm thử chính thức gồm 135 câu hỏi (85 câu trong phạm vi, 50 câu ngoài phạm vi) đã được kiểm định hợp lệ và lưu trữ cố định tại `data/eval/test_set_v3.json`. Để tái sinh hoặc kiểm tra tính toàn vẹn:
 ```bash
-python scripts/create_test_set.py
+python scripts/create_test_set_v3.py
+python scripts/verify_gold_labels.py
 ```
-File kết quả sẽ được lưu tại: `data/eval/test_set.json`.
+File dữ liệu: `data/eval/test_set_v3.json`.
 
 ### Bước 7.2: Chạy thực nghiệm đánh giá Retrieval & Generation
 Chạy toàn bộ pipeline kiểm thử để đo lường các chỉ số: Recall@k, MRR, Citation Exact Match, Refusal Accuracy, Latency:

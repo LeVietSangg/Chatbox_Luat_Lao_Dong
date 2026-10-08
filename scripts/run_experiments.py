@@ -25,12 +25,12 @@ from rag_pipeline import execute_rag_pipeline
 def main():
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     eval_dir = os.path.join(data_dir, "eval")
-    test_set_path = os.path.join(eval_dir, "test_set_v2.json")
+    test_set_path = os.path.join(eval_dir, "test_set_v3.json")
     TOP_K = 10
     RRF_K = 5
     ALPHA = 0.5
     RETRIEVAL_DEPTH = 50
-    EXPAND_SIBLINGS = True
+    EXPAND_SIBLINGS = False
     HIEU_LUC_FILTER = "con_hieu_luc"
     MAX_CONTEXT_CHARS = 10_000
     

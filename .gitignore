@@ -33,7 +33,8 @@ env/
 *.swp
 *.swo
 
-# MacOS
+# Test cache
+.pytest_cache/
 .DS_Store
 
 # Project specific

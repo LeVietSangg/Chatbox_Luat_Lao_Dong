@@ -4,7 +4,7 @@ Cấu hình được lựa chọn trên Dev Set là **(k=5, alpha=0.5)**, với 
 
 ### 2.1. Quá trình rà soát và chuẩn hóa nhãn Dev Set (13/95 nhãn)
 
-Trong phiên bản thử nghiệm ban đầu (`dev_set.json` v1), nhóm ghi nhận có **13/95 câu hỏi in-scope (13.7%)** có nhãn chưa phù hợp do lịch sử cập nhật dữ liệu, bao gồm:
+Trong phiên bản thử nghiệm ban đầu (`dev_set_v2.json`), nhóm ghi nhận có **13/95 câu hỏi in-scope (13.7%)** có nhãn chưa phù hợp do lịch sử cập nhật dữ liệu, bao gồm:
 - Viện dẫn văn bản đã hết hiệu lực (Bộ luật Lao động 2012 thay vì BLLĐ 2019).
 - Lệch số Điều trong Văn bản hợp nhất `58/VBHN-VPQH` về Bảo hiểm xã hội.
 - Nhầm lẫn văn bản ngoài phạm vi luật lao động (như quy định về dữ liệu cá nhân).

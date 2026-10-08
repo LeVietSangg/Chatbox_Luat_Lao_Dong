@@ -314,7 +314,7 @@ class LegalRetriever:
         self,
         query,
         top_k=10,
-        rrf_k=10,
+        rrf_k=5,
         retrieval_depth=50,
         alpha=0.5,
         expand_siblings=False,

@@ -199,7 +199,7 @@ def generate_catalog_and_stats():
 > **Ngày snapshot**: 01/08/2026  
 > **Nguồn dữ liệu**: vbpl.vn (Cơ sở dữ liệu quốc gia về văn bản quy phạm pháp luật)  
 > **Tổng số văn bản trong Chỉ mục chung (Shared Index)**: {total_van_ban} văn bản  
-> **Tổng số chunk**: {total_chunks:,} đoạn quy định  
+> **Tổng số chunk**: {total_chunks:,} đoạn quy định + 49 chunks được chép tay từ file overrides.py (để thay thế cho các chunk bị hết hiệu lực trong các văn bản mạng trạng thái hết hiệu lực một phần)
 > **Phương pháp sinh**: Tự động sinh từ `data/structured/corpus.csv` bằng `scripts/generate_catalog.py` (Single Source of Truth).
 
 ---
@@ -270,7 +270,7 @@ Trong cơ sở dữ liệu tra cứu và chỉ mục (BM25 + FAISS), sự xuất
 
 ### 3.4. Thống nhất Số lượng Văn bản Toàn Hệ thống
 - **Số văn bản quy phạm pháp luật trong Corpus / Chỉ mục:** **17 văn bản**.
-- **Số đoạn quy định (chunks):** **4,890 đoạn**.
+- **Số đoạn quy định (chunks):** **4,890 đoạn + 49 đoạn đc chép tay từ file overrides.py (để thay thế cho các chunk bị hết hiệu lực trong các văn bản mạng trạng thái hết hiệu lực một phần)**.
 - **Tính đồng bộ:** Toàn bộ tài liệu (`README.md`, `docs/corpus_catalog.md`), mã nguồn tiền xử lý (`scripts/generate_catalog.py`, `scripts/build_index.py`), và cơ sở dữ liệu (`data/structured/corpus.csv`, `data/structured/corpus.json`, `data/index/`) được chuẩn hóa theo số liệu sinh tự động từ `data/structured/corpus.csv`.
 """
 
