@@ -47,3 +47,18 @@ def test_safe_render_llm_answer_malicious_markdown():
 
     assert "<img" not in rendered
     assert "<strong>&lt;img src=x onerror=alert(1)&gt;</strong>" == rendered
+
+def test_safe_render_llm_answer_markdown_bullets():
+    raw_llm = """Điều 5 quy định:
+
+* Thông tin về doanh nghiệp.
+* Thông tin cá nhân.
+* Địa điểm làm việc."""
+
+    rendered = safe_render_llm_answer(raw_llm)
+
+    assert "<ul>" in rendered
+    assert "<li>Thông tin về doanh nghiệp.</li>" in rendered
+    assert "<li>Thông tin cá nhân.</li>" in rendered
+    assert "<li>Địa điểm làm việc.</li>" in rendered
+    assert "* Thông tin về doanh nghiệp." not in rendered

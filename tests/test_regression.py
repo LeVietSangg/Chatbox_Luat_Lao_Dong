@@ -7,9 +7,21 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 from retriever import LegalRetriever
 
 
+data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+index_dir = os.path.join(data_dir, "index")
+corpus_file = os.path.join(data_dir, "structured", "corpus.json")
+INDEX_READY = (
+    os.path.exists(corpus_file)
+    and os.path.exists(os.path.join(index_dir, "bm25_index.pkl"))
+    and os.path.exists(os.path.join(index_dir, "faiss_index.bin"))
+    and os.path.exists(os.path.join(index_dir, "provision_mapping.json"))
+)
+
+
 @pytest.fixture(scope="module")
 def retriever():
-    data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+    if not INDEX_READY:
+        pytest.skip("Test hồi quy cần chỉ mục thật (data/index/ và data/structured/corpus.json)")
     return LegalRetriever(data_dir=data_dir)
 
 
@@ -108,7 +120,7 @@ REGRESSION_CASES = [
 
 
 class TestRegressionQA:
-    """Bộ 15 câu hỏi hồi quy cố định kiểm tra độ ổn định truy xuất của hệ thống."""
+    """Bộ 15 câu hỏi hồi quy cố định kiểm tra độ ổn định truy xuất của hệ thống (yêu cầu chỉ mục thật, đánh giá top-10)."""
 
     @pytest.mark.parametrize("case", REGRESSION_CASES, ids=[c["id"] for c in REGRESSION_CASES])
     def test_regression_retrieval(self, retriever, case):
@@ -122,7 +134,7 @@ class TestRegressionQA:
         )
         assert len(results) > 0, f"Retriever trả về rỗng cho {case['id']}"
 
-        # Kiểm tra xem Điều mong đợi có xuất hiện trong top-5 kết quả hay không
+        # Kiểm tra xem Điều mong đợi có xuất hiện trong top-10 kết quả hay không
         retrieved_dieus = [
             str(r["content"].get("dieu", "")).strip()
             for r in results
@@ -130,6 +142,6 @@ class TestRegressionQA:
         ]
 
         assert case["expected_dieu"] in retrieved_dieus, (
-            f"Câu {case['id']} không tìm thấy Điều {case['expected_dieu']} trong top-5! "
+            f"Câu {case['id']} không tìm thấy Điều {case['expected_dieu']} trong top-10! "
             f"Các điều tìm được: {retrieved_dieus}"
         )

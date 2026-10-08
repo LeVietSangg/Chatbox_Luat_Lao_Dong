@@ -4,6 +4,7 @@ import re
 import time
 import random
 import logging
+import hashlib
 
 from dotenv import load_dotenv
 from google import genai
@@ -881,10 +882,10 @@ CONTEXT
             ],
 
             # --------------------------------------------------------
-            # Generation input
+            # Generation input (hash only — avoid leaking full prompt)
             # --------------------------------------------------------
 
-            "prompt": prompt,
+            "prompt_hash": hashlib.sha256(prompt.encode("utf-8")).hexdigest()[:16],
 
             # --------------------------------------------------------
             # Generation output
@@ -975,12 +976,9 @@ CONTEXT
         base_delay = 5
         max_delay = 60
 
-        # Lỗi tạm thời cần retry
-        RETRYABLE_CODES = (
-            "429", "500", "503",
-            "overload", "resource_exhausted",
-            "empty_response"   # model trả rỗng — có thể do quá tải nội bộ
-        )
+        # Lỗi tạm thời cần retry (phân loại theo mã HTTP và loại exception)
+        RETRYABLE_HTTP_CODES = {429, 500, 503}
+        RETRYABLE_KEYWORDS = ("resource_exhausted", "overloaded", "empty_response")
 
         for attempt in range(max_retries + 1):
 
@@ -1152,10 +1150,13 @@ CONTEXT
 
             except Exception as e:
 
+                # Kiểm tra mã HTTP từ thuộc tính exception (ưu tiên) rồi mới fallback string
+                http_code = getattr(e, "code", None) or getattr(e, "status_code", None)
                 error_str = str(e).lower()
-                is_retryable = any(
-                    code in error_str
-                    for code in RETRYABLE_CODES
+
+                is_retryable = (
+                    isinstance(http_code, int)
+                    and http_code in RETRYABLE_HTTP_CODES
                 )
 
                 if is_retryable and attempt < max_retries:
@@ -1164,7 +1165,7 @@ CONTEXT
                     jitter = wait * 0.2 * random.random()  # ±20%
                     wait = wait + jitter
 
-                    label = "Rate limit" if "429" in error_str else "Overload"
+                    label = "Rate limit" if http_code == 429 else "Overload"
                     print(f"  ⏳ {label} (lần {attempt + 1}/{max_retries}), "
                           f"chờ {wait:.1f}s rồi thử lại...", flush=True)
                     time.sleep(wait)

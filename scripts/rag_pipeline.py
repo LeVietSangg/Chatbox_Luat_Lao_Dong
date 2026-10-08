@@ -55,19 +55,76 @@ def safe_escape(text: str) -> str:
 
 def safe_render_llm_answer(text: str) -> str:
     """
-    Escape an toàn câu trả lời của LLM trước khi render HTML,
-    chỉ hỗ trợ chuyển đổi an toàn các thẻ in đậm (**) và in nghiêng (*).
+    Escape an toàn câu trả lời của LLM trước khi render HTML.
+
+    Hỗ trợ:
+    - In đậm: **text**
+    - In nghiêng: *text*
+    - Danh sách: * item
     """
     if not text:
         return ""
-    # 1. Escape toàn bộ thẻ HTML nguy hiểm (<script>, <img onerror>, ...)
-    escaped = html.escape(str(text).strip(), quote=True)
-    # 2. Hỗ trợ hiển thị an toàn cú pháp in đậm **text**
-    escaped = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', escaped)
-    # 3. Hỗ trợ hiển thị an toàn cú pháp in nghiêng *text*
-    escaped = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', escaped)
-    return escaped
 
+    def render_inline(line: str) -> str:
+        # In đậm
+        line = re.sub(
+            r'\*\*(.+?)\*\*',
+            r'<strong>\1</strong>',
+            line
+        )
+
+        # In nghiêng: chỉ xử lý trong cùng một dòng
+        line = re.sub(
+            r'(?<!\*)\*(?!\*)([^*\n]+?)(?<!\*)\*(?!\*)',
+            r'<em>\1</em>',
+            line
+        )
+
+        return line
+
+    # Escape HTML trước khi tạo HTML an toàn
+    escaped = html.escape(str(text).strip(), quote=True)
+
+    lines = escaped.splitlines()
+    rendered = []
+    in_list = False
+
+    for line in lines:
+        # Markdown bullet: "* nội dung"
+        # Markdown bullet: "* nội dung" hoặc "- nội dung"
+        match = re.match(r'^\s*[*-]\s+(.+?)\s*$', line)
+
+        if match:
+            if not in_list:
+                rendered.append('<div class="answer-list">')
+                in_list = True
+
+            item = render_inline(match.group(1))
+
+            # Bullet chứa **tiêu đề:** → bậc 1, không có dấu
+            is_heading = bool(re.match(r'^<strong>.+?</strong>\s*$', item))
+
+            if is_heading:
+                rendered.append(
+                    f'<div style="margin:8px 0 3px 0; line-height:1.5;">{item}</div>'
+                )
+            else:
+                # Nội dung → bậc 2, có dấu và thụt vào
+                rendered.append(
+                    f'<div style="margin:2px 0 2px 18px; line-height:1.5;">• {item}</div>'
+                )
+
+        else:
+            if in_list:
+                rendered.append("</div>")
+                in_list = False
+
+            rendered.append(render_inline(line))
+
+    if in_list:
+        rendered.append("</div>")
+
+    return "\n".join(rendered)
 
 # ── 2. Mở rộng câu hỏi đời thường (Query Expansion) ───────────────────────────
 ABBREVIATIONS = {
