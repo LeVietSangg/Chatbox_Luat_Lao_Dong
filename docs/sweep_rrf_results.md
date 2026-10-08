@@ -1,65 +1,31 @@
-# Báo cáo Quét Tham số RRF (Hyperparameter Tuning trên Dev Set)
-
-- **Ngày thực hiện**: 2026-10-08 05:38:23
-- **Dữ liệu**: `dev_set_v2.json` (95 câu in-scope)
-- **Top-K**: 10
-- **Retrieval depth**: 50
-- **Bộ lọc hiệu lực**: `con_hieu_luc`
-- **Expand siblings**: `True` *(thống nhất với cấu hình báo cáo cuối)*
-- **Không gian quét**: $k \in [1, 2, 3, 5, 10, 20, 30, 60]$, $\alpha \in [0.3, 0.4, 0.5, 0.6, 0.7]$
-
-## 1. Bảng kết quả thực nghiệm toàn bộ lưới
-
-| $k$ | $\alpha$ (BM25) | Recall@1 | Recall@3 | Recall@5 | MRR@10 | Latency p50 (ms) |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1 | 0.3 | 0.5053 | 0.8000 | 0.8947 | 0.6632 | 52.67 |
-| 1 | 0.4 | 0.5158 | 0.8105 | 0.8842 | 0.6739 | 52.67 |
-| 1 | 0.5 | 0.5789 | 0.8000 | 0.8737 | 0.6968 | 52.67 |
-| 1 | 0.6 | 0.4947 | 0.7684 | 0.8632 | 0.6506 | 52.67 |
-| 1 | 0.7 | 0.4632 | 0.7579 | 0.8526 | 0.6300 | 52.67 |
-| 2 | 0.3 | 0.5158 | 0.8000 | 0.8947 | 0.6692 | 52.67 |
-| 2 | 0.4 | 0.5368 | 0.8316 | 0.8842 | 0.6891 | 52.73 |
-| 2 | 0.5 | 0.5789 | 0.8105 | 0.8737 | 0.7038 | 52.67 |
-| 2 | 0.6 | 0.5368 | 0.8105 | 0.8632 | 0.6757 | 52.73 |
-| 2 | 0.7 | 0.4842 | 0.7474 | 0.8526 | 0.6385 | 52.73 |
-| 3 | 0.3 | 0.5158 | 0.7895 | 0.8947 | 0.6710 | 52.73 |
-| 3 | 0.4 | 0.5368 | 0.8421 | 0.8737 | 0.6910 | 52.67 |
-| 3 | 0.5 | 0.6000 | 0.8211 | 0.8737 | 0.7205 | 52.67 |
-| 3 | 0.6 | 0.5368 | 0.8000 | 0.8632 | 0.6815 | 52.67 |
-| 3 | 0.7 | 0.4842 | 0.7684 | 0.8316 | 0.6376 | 52.67 |
-| 5 | 0.3 | 0.5263 | 0.7895 | 0.8842 | 0.6784 | 52.67 |
-| 5 | 0.4 | 0.5684 | 0.8211 | 0.8737 | 0.7076 | 52.73 |
-| 5 | 0.5 | 0.6105 | 0.8211 | 0.8632 | 0.7280 ⭐ | 52.67 |
-| 5 | 0.6 | 0.5368 | 0.7895 | 0.8526 | 0.6820 | 52.73 |
-| 5 | 0.7 | 0.5053 | 0.7579 | 0.8316 | 0.6532 | 52.67 |
-| 10 | 0.3 | 0.5474 | 0.8105 | 0.8842 | 0.6929 | 52.67 |
-| 10 | 0.4 | 0.5684 | 0.8211 | 0.8632 | 0.7059 | 52.67 |
-| 10 | 0.5 | 0.6000 | 0.8105 | 0.8632 | 0.7224 | 52.73 |
-| 10 | 0.6 | 0.5684 | 0.8000 | 0.8316 | 0.7006 | 52.67 |
-| 10 | 0.7 | 0.5053 | 0.7684 | 0.8316 | 0.6537 | 52.67 |
-| 20 | 0.3 | 0.5474 | 0.8000 | 0.8737 | 0.6885 | 52.67 |
-| 20 | 0.4 | 0.5579 | 0.8105 | 0.8737 | 0.7000 | 52.73 |
-| 20 | 0.5 | 0.5895 | 0.8105 | 0.8737 | 0.7159 | 52.67 |
-| 20 | 0.6 | 0.5895 | 0.8000 | 0.8421 | 0.7124 | 52.67 |
-| 20 | 0.7 | 0.5158 | 0.7684 | 0.8316 | 0.6635 | 52.67 |
-| 30 | 0.3 | 0.5579 | 0.8105 | 0.8632 | 0.6924 | 52.67 |
-| 30 | 0.4 | 0.5579 | 0.8000 | 0.8737 | 0.7005 | 52.73 |
-| 30 | 0.5 | 0.5895 | 0.8000 | 0.8737 | 0.7150 | 52.67 |
-| 30 | 0.6 | 0.5789 | 0.8000 | 0.8632 | 0.7091 | 52.67 |
-| 30 | 0.7 | 0.5158 | 0.7789 | 0.8316 | 0.6688 | 52.67 |
-| 60 | 0.3 | 0.5684 | 0.8000 | 0.8737 | 0.7006 | 52.67 |
-| 60 | 0.4 | 0.5579 | 0.8000 | 0.8842 | 0.7015 | 52.73 |
-| 60 | 0.5 | 0.5895 | 0.8000 | 0.8632 | 0.7169 | 52.67 |
-| 60 | 0.6 | 0.5789 | 0.8000 | 0.8632 | 0.7078 | 53.15 |
-| 60 | 0.7 | 0.5263 | 0.7684 | 0.8421 | 0.6722 | 52.71 |
-
 ## 2. Phân tích & Cơ sở Lựa chọn Tham số
 
-Cấu hình được lựa chọn trên Dev Set là **$k = 5$** và **$\alpha = 0.5$**, với **MRR@10 = `0.7280`** và **Recall@5 = `0.8632`**.
+Cấu hình được lựa chọn trên Dev Set là **(k=5, alpha=0.5)**, với **MRR@10 = 0.7280** và **Recall@5 = 0.8632** (95% CI Wilson: **[78.0%, 91.8%]**).
 
-### Khắc phục hiện tượng mép lưới và kiểm chứng tính tối ưu:
-1. **Thống nhất cấu hình với báo cáo cuối**: Thực nghiệm quét tham số được tiến hành với `expand_siblings = True`, đồng bộ hoàn toàn với pipeline đánh giá chính thức (`run_experiments.py`), thay vì giả định `expand_siblings = False` như thử nghiệm sơ khai ban đầu.
-2. **Giải quyết vấn đề $k = 5$ ở mép lưới**: Trong thử nghiệm cũ với lưới hẹp $k \in [5, 10, 20, 60]$, $k = 5$ nằm ở biên giới hạn dưới và chênh lệch MRR@10 so với $k = 10$ chỉ là $0.0045$, chưa đủ chứng minh đây là cực đại toàn cục hay điểm cụt biên. Khi mở rộng lưới xuống các giá trị $k \in [1, 2, 3]$:
-   - Khi $k$ giảm dưới 5 (tại $\alpha = 0.5$): $k=1$, $k=2$ và $k=3$ lần lượt đạt MRR@10 = 0.6968, 0.7038 và 0.7205, đều thấp hơn $k=5$ (0.7280).
-   - Khi $k$ tăng trên 5 (tại $\alpha = 0.5$): $k=10$, $k=20$, $k=30$ và $k=60$ lần lượt đạt MRR@10 = 0.7224, 0.7159, 0.7150 và 0.7169. Tất cả đều thấp hơn $k=5$, mặc dù xu hướng không hoàn toàn đơn điệu.
-3. **Kết luận khoa học**: Cấu hình $(k=5,\alpha=0.5)$ đạt MRR@10 cao nhất trên toàn bộ 40 cấu hình của lưới thử nghiệm. Đồng thời, $k=5$ không nằm ở biên của lưới và có MRR@10 cao hơn các giá trị $k$ lân cận là $k=3$ và $k=10$. Vì vậy, việc lựa chọn cặp tham số này có cơ sở thực nghiệm rõ ràng trên Dev Set và không còn phụ thuộc vào việc $k=5$ nằm ở biên dưới của lưới thử nghiệm ban đầu.
+### 2.1. Quá trình rà soát và chuẩn hóa nhãn Dev Set (13/95 nhãn)
+
+Trong phiên bản thử nghiệm ban đầu (`dev_set.json` v1), nhóm ghi nhận có **13/95 câu hỏi in-scope (13.7%)** có nhãn chưa phù hợp do lịch sử cập nhật dữ liệu, bao gồm:
+- Viện dẫn văn bản đã hết hiệu lực (Bộ luật Lao động 2012 thay vì BLLĐ 2019).
+- Lệch số Điều trong Văn bản hợp nhất `58/VBHN-VPQH` về Bảo hiểm xã hội.
+- Nhầm lẫn văn bản ngoài phạm vi luật lao động (như quy định về dữ liệu cá nhân).
+
+Các nhãn này đã được rà soát và cập nhật trong **`dev_set_v2.json`** (commit `d6b48bd`). Thực nghiệm sweep được tiến hành trên phiên bản dữ liệu đã rà soát này để đảm bảo tính nhất quán của kết quả.
+
+### 2.2. Khoảng tin cậy và mức độ biến động của Recall@5
+
+1. **Khoảng tin cậy của Recall@5:** Trên cỡ mẫu **N=95** câu, Recall@5 được báo cáo kèm khoảng tin cậy 95% Wilson nhằm thể hiện độ bất định của ước lượng. Ví dụ, với Recall@5 = 86.3%, khoảng tin cậy 95% là **[78.0%, 91.8%]**.
+
+2. **Mức độ biến động:** Ở các cấu hình có hiệu năng gần nhau, các khoảng tin cậy của Recall@5 có mức giao thoa đáng kể. Vì vậy, các chênh lệch nhỏ về Recall@5 trên Dev Set cần được diễn giải thận trọng và không được sử dụng đơn độc để phân tách các cấu hình.
+
+3. **Tiêu chí lựa chọn:** MRR@10 được sử dụng làm tiêu chí chính để lựa chọn cấu hình, trong khi Recall@5 được sử dụng làm tiêu chí phụ khi các cấu hình có MRR@10 tương đương. MRR@10 phản ánh cả việc truy hồi đúng và vị trí của kết quả đúng trong danh sách xếp hạng.
+
+### 2.3. Mở rộng lưới tham số và đánh giá cấu hình `k=5`
+
+1. **Đồng bộ cấu hình:** Thực nghiệm sweep được thực hiện với `expand_siblings = True`, thống nhất với pipeline đánh giá cuối (`run_experiments.py`).
+
+2. **Mở rộng lưới quanh `k=5`:** Nhằm kiểm tra xem `k=5` có bị giới hạn bởi mép dưới của lưới cũ (`k ∈ [5,10,20,60]`) hay không, phạm vi quét được mở rộng xuống `k ∈ [1,2,3]` và bổ sung `k=30`.
+
+   - Khi `k<5` tại `alpha=0.5`: k=1,2,3 có MRR@10 lần lượt là **0.6968, 0.7038, 0.7205**, đều thấp hơn k=5 (**0.7280**).
+   - Khi `k>5` tại `alpha=0.5`: k=10,20,30,60 có MRR@10 lần lượt là **0.7224, 0.7159, 0.7150, 0.7169**, đều thấp hơn k=5.
+
+3. **Nhận định:** Trên toàn bộ **40 cấu hình** được khảo sát, `(k=5, alpha=0.5)` đạt MRR@10 cao nhất. Việc mở rộng lưới cho thấy `k=5` vẫn đạt kết quả cao hơn các giá trị lân cận đã khảo sát, thay vì chỉ là giá trị thấp nhất của lưới thử nghiệm ban đầu.
