@@ -1,8 +1,8 @@
 """
 run_experiments.py
-Chạy thực nghiệm chính thức (Tuần 6) trên tập Test Set 120 câu.
+Chạy thực nghiệm chính thức (Tuần 6) trên tập Test Set 135 câu
 Bao gồm:
-1. Đánh giá Retrieval (BM25, Dense, Hybrid) - Tính Recall@1/3/5, MRR@10
+1. Đánh giá Retrieval (BM25, Dense, Hybrid) - Tính Recall@1/3/5/10, MRR@10
 2. Đánh giá Generation (Refusal, Citation) trên 3 cấu hình Retrieval.
 
 Do giới hạn Rate Limit của Gemini API (5 req/min), quá trình Generation sẽ mất khá nhiều thời gian.
