@@ -47,7 +47,7 @@ def classify_refusal(
     query: str = None,
     use_judge: bool = False,
     client = None,
-    model_name: str = "gemini-2.5-flash"
+    model_name: str = "gemini-3.5-flash-lite"
 ) -> dict:
     """
     Phân loại từ chối (Refusal Classification) có cấu trúc.
@@ -125,7 +125,7 @@ def judge_refusal(
     query: str,
     answer: str,
     client = None,
-    model_name: str = "gemini-2.5-flash"
+    model_name: str = "gemini-3.5-flash-lite"
 ) -> dict:
     """
     Sử dụng LLM-as-a-Judge để phân loại có cấu trúc xem câu trả lời có phải là lời từ chối hay không.
@@ -351,7 +351,7 @@ def verify_claim_support(
     claim_text: str,
     provision_text: str,
     judge_client = None,
-    model_name: str = "gemini-2.5-flash"
+    model_name: str = "gemini-3.5-flash-lite"
 ) -> dict:
     """
     Đo lường mức độ bảo chứng của căn cứ pháp lý cho một luận điểm (Claim Support).
@@ -402,7 +402,7 @@ def evaluate_answer_claim_support(
     answer: str,
     context_lookup: dict,
     judge_client = None,
-    model_name: str = "gemini-2.5-flash"
+    model_name: str = "gemini-3.5-flash-lite"
 ) -> dict:
     """
     Đánh giá mức độ Claim Support cho toàn bộ câu trả lời.
@@ -529,7 +529,7 @@ class LegalGenerator:
             query=query,
             use_judge=use_judge,
             client=getattr(self, "client", None),
-            model_name=getattr(self, "model_name", "gemini-2.5-flash")
+            model_name=getattr(self, "model_name", "gemini-3.5-flash-lite")
         )
         return res["is_refusal"]
 

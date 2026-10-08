@@ -71,7 +71,7 @@ def run_evaluation(retriever, generator, eval_set, top_k=5, use_judge=False):
             query=query,
             use_judge=use_judge,
             client=getattr(generator, "client", None),
-            model_name=getattr(generator, "model_name", "gemini-2.5-flash")
+            model_name=getattr(generator, "model_name", "gemini-3.5-flash-lite")
         )
         is_ref = ref_info["is_refusal"]
 
@@ -434,7 +434,7 @@ def main():
 
     # Load retriever & generator
     retriever = LegalRetriever(data_dir=data_dir)
-    generator = LegalGenerator(model_name="gemini-2.5-flash", temperature=0.0)
+    generator = LegalGenerator(model_name="gemini-3.5-flash-lite", temperature=0.0)
 
     # Chạy đánh giá
     print("Bắt đầu đánh giá Generation trên Dev Set...")

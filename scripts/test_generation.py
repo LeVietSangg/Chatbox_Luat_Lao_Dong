@@ -13,7 +13,7 @@ def main():
     retriever = LegalRetriever()
     
     print("Khởi tạo LLM Generator (Gemini)...")
-    generator = LegalGenerator(model_name = "gemini-2.5-flash-lite", temperature=0.0)
+    generator = LegalGenerator(model_name="gemini-3.5-flash-lite", temperature=0.0)
 
     # Chọn một số câu hỏi từ dev set
     dev_set_path = os.path.join(os.path.dirname(__file__), "..", "data", "eval", "dev_set.json")
