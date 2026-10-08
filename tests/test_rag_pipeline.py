@@ -24,7 +24,7 @@ class DummyRetriever:
             for i in range(1, top_k + 1)
         ]
 
-    def search_bm25(self, query, top_k=10, hieu_luc_filter="con_hieu_luc"):
+    def search_bm25(self, query, top_k=10, hieu_luc_filter="con_hieu_luc", expand_siblings=False):
         self.last_query = query
         self.last_method = "bm25"
         return [
@@ -36,7 +36,7 @@ class DummyRetriever:
             for i in range(1, top_k + 1)
         ]
 
-    def search_dense(self, query, top_k=10, hieu_luc_filter="con_hieu_luc"):
+    def search_dense(self, query, top_k=10, hieu_luc_filter="con_hieu_luc", expand_siblings=False):
         self.last_query = query
         self.last_method = "dense"
         return [

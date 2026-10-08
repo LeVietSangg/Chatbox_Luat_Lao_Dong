@@ -83,16 +83,19 @@ def evaluate(retriever, dev_set, top_k_values=None):
 
     max_k = max(max(top_k_values), TOP_K)  # Luôn lấy top-10 để tính MRR@10
     methods = {
+        # 1. So sánh đối đầu công bằng (Fair Baseline - Cùng 10 chunks, KHÔNG mở rộng Sibling)
         "BM25": lambda q: retriever.search_bm25(
             q,
             top_k=max_k,
-            hieu_luc_filter=HIEU_LUC_FILTER
+            hieu_luc_filter=HIEU_LUC_FILTER,
+            expand_siblings=False
         ),
 
         "Dense": lambda q: retriever.search_dense(
             q,
             top_k=max_k,
-            hieu_luc_filter=HIEU_LUC_FILTER
+            hieu_luc_filter=HIEU_LUC_FILTER,
+            expand_siblings=False
         ),
 
         "Hybrid_RRF": lambda q: retriever.search_hybrid(
@@ -101,7 +104,18 @@ def evaluate(retriever, dev_set, top_k_values=None):
             rrf_k=SELECTED_RRF_K,
             alpha=SELECTED_ALPHA,
             retrieval_depth=RETRIEVAL_DEPTH,
-            expand_siblings=EXPAND_SIBLINGS,
+            expand_siblings=False,  # So sánh công bằng thuần túy: đúng 10 chunks
+            hieu_luc_filter=HIEU_LUC_FILTER
+        ),
+
+        # 2. Nhánh mở rộng Sibling Expansion (Ablation / Bổ trợ ngữ cảnh)
+        "Hybrid_RRF_Expand": lambda q: retriever.search_hybrid(
+            q,
+            top_k=max_k,
+            rrf_k=SELECTED_RRF_K,
+            alpha=SELECTED_ALPHA,
+            retrieval_depth=RETRIEVAL_DEPTH,
+            expand_siblings=True,   # Mở rộng các Khoản anh em cùng Điều
             hieu_luc_filter=HIEU_LUC_FILTER
         ),
     }

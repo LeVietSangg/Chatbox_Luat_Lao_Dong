@@ -70,8 +70,15 @@ class LegalRetriever:
     # ------------------------------------------------------------------
     # Sparse Retrieval (BM25)
     # ------------------------------------------------------------------
-    def search_bm25(self, query, top_k=10, hieu_luc_filter="con_hieu_luc"):
-        """Tìm kiếm bằng BM25 và lọc theo hiệu lực trước khi lấy Top-K."""
+    def search_bm25(self, query, top_k=10, hieu_luc_filter="con_hieu_luc", expand_siblings=False):
+        """Tìm kiếm bằng BM25 và lọc theo hiệu lực trước khi lấy Top-K.
+        
+        Args:
+            query: Câu truy vấn.
+            top_k: Số kết quả cần lấy (mặc định 10).
+            hieu_luc_filter: Trạng thái hiệu lực cần lọc ('con_hieu_luc', ...).
+            expand_siblings: Có mở rộng các khoản anh em cùng Điều hay không.
+        """
         tokenized_query = ViTokenizer.tokenize(query).lower().split()
         scores = self.bm25.get_scores(tokenized_query)
 
@@ -100,13 +107,23 @@ class LegalRetriever:
             if len(results) >= top_k:
                 break
 
+        if expand_siblings:
+            results = self.expand_sibling_provisions(results, query)
+
         return results
 
     # ------------------------------------------------------------------
     # Dense Retrieval (FAISS + Bi-Encoder)
     # ------------------------------------------------------------------
-    def search_dense(self, query, top_k=10, hieu_luc_filter="con_hieu_luc"):
-        """Tìm kiếm bằng Dense Retrieval và lọc theo hiệu lực trước khi lấy Top-K."""
+    def search_dense(self, query, top_k=10, hieu_luc_filter="con_hieu_luc", expand_siblings=False):
+        """Tìm kiếm bằng Dense Retrieval và lọc theo hiệu lực trước khi lấy Top-K.
+        
+        Args:
+            query: Câu truy vấn.
+            top_k: Số kết quả cần lấy (mặc định 10).
+            hieu_luc_filter: Trạng thái hiệu lực cần lọc ('con_hieu_luc', ...).
+            expand_siblings: Có mở rộng các khoản anh em cùng Điều hay không.
+        """
         tokenized_query = ViTokenizer.tokenize(query).lower()
         query_embedding = self.model.encode([tokenized_query], normalize_embeddings=True)
         query_embedding = np.array(query_embedding).astype("float32")
@@ -142,6 +159,9 @@ class LegalRetriever:
 
             if len(results) >= top_k:
                 break
+
+        if expand_siblings:
+            results = self.expand_sibling_provisions(results, query)
 
         return results
 

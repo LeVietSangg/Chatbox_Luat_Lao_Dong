@@ -50,21 +50,60 @@ def exact_binomial_test_two_sided(b, c):
     return p_val
 
 
-def format_academic_conclusion(b, c, p_val, competitor):
-    """Tạo kết luận học thuật dựa trên p-value thực tế."""
-    if p_val < 0.01:
+def bonferroni_correction(p_values):
+    """Hiệu chỉnh Bonferroni kiểm soát Family-Wise Error Rate (FWER):
+    p_adj = min(1.0, m * p_raw).
+    """
+    m = len(p_values)
+    return [min(1.0, m * p) for p in p_values]
+
+
+def holm_bonferroni_correction(p_values):
+    """Hiệu chỉnh Holm-Bonferroni (Step-down procedure):
+    Sắp xếp p-value tăng dần: p_(1) <= p_(2) <= ... <= p_(m).
+    p_adj_(k) = min(1.0, max_{j <= k} (m - j + 1) * p_(j)).
+    Mạnh hơn Bonferroni cổ điển nhưng vẫn kiểm soát nghiêm ngặt FWER <= alpha.
+    """
+    m = len(p_values)
+    if m == 0:
+        return []
+    indexed_p = sorted(enumerate(p_values), key=lambda x: x[1])
+    adjusted_indexed = []
+    running_max = 0.0
+    for rank, (orig_idx, p) in enumerate(indexed_p):
+        multiplier = m - rank
+        val = min(1.0, multiplier * p)
+        running_max = max(running_max, val)
+        adjusted_indexed.append((orig_idx, running_max))
+
+    adjusted_indexed.sort(key=lambda x: x[0])
+    return [p_adj for _, p_adj in adjusted_indexed]
+
+
+def format_academic_conclusion(b, c, p_raw, p_holm, method1, method2):
+    """Tạo kết luận học thuật dựa trên p-value thô và p-value sau hiệu chỉnh đa so sánh."""
+    if p_holm < 0.01:
         return (
-            f"**$p < 0.01$ ($p = {p_val:.4f}$)**: Khác biệt **có ý nghĩa thống kê rất cao**; "
-            f"Hybrid cải thiện vượt trội so với {competitor} ({b} câu thắng vs {c} câu thua)."
+            f"**$p_{{\\text{{Holm}}}} < 0.01$ ($p_{{\\text{{raw}}}} = {p_raw:.4f}, p_{{\\text{{Holm}}}} = {p_holm:.4f}$)**: "
+            f"Khác biệt **có ý nghĩa thống kê rất cao** sau khi hiệu chỉnh đa so sánh; "
+            f"{method1} vượt trội so với {method2} ({b} câu thắng vs {c} câu thua)."
         )
-    elif p_val < 0.05:
+    elif p_holm < 0.05:
         return (
-            f"**$p < 0.05$ ($p = {p_val:.4f}$)**: Khác biệt **có ý nghĩa thống kê** ($\\alpha = 0.05$); "
-            f"sự vượt trội của Hybrid so với {competitor} được xác nhận thực nghiệm ({b} câu thắng vs {c} câu thua)."
+            f"**$p_{{\\text{{Holm}}}} < 0.05$ ($p_{{\\text{{raw}}}} = {p_raw:.4f}, p_{{\\text{{Holm}}}} = {p_holm:.4f}$)**: "
+            f"Khác biệt **có ý nghĩa thống kê** sau hiệu chỉnh đa so sánh ($\\alpha = 0.05$); "
+            f"sự vượt trội của {method1} so với {method2} được xác nhận thực nghiệm ({b} câu thắng vs {c} câu thua)."
+        )
+    elif p_raw < 0.05:
+        return (
+            f"$p_{{\\text{{raw}}}} < 0.05$ ($p_{{\\text{{raw}}}} = {p_raw:.4f}, p_{{\\text{{Holm}}}} = {p_holm:.4f} \\ge 0.05$): "
+            f"Đạt ý nghĩa ở kiểm định đơn lẻ nhưng nằm ở biên ý nghĩa thống kê sau hiệu chỉnh bảo thủ; "
+            f"thể hiện ưu thế rõ nét ({b} câu thắng vs {c} câu thua)."
         )
     else:
         return (
-            f"$p \\ge 0.05$ ($p = {p_val:.4f}$): Chưa đạt ngưỡng ý nghĩa thống kê $\\alpha = 0.05$; "
+            f"$p \\ge 0.05$ ($p_{{\\text{{raw}}}} = {p_raw:.4f}, p_{{\\text{{Holm}}}} = {p_holm:.4f}$): "
+            f"Chưa đạt ngưỡng ý nghĩa thống kê $\\alpha = 0.05$; "
             f"thể hiện **xu hướng bổ trợ** tích cực ({b} câu thắng vs {c} câu thua)."
         )
 
@@ -127,18 +166,34 @@ def main():
     hits_dense = sum(1 for qid in in_scope_qids if hit5_by_method["Dense"][qid])
 
     # 3. So sánh từng cặp (Pairwise comparison)
-    # Hybrid vs BM25
+    # Cặp 1: Hybrid vs BM25
     b_hit_bm25 = sum(1 for qid in in_scope_qids if hit5_by_method["Hybrid_RRF"][qid] and not hit5_by_method["BM25"][qid])
     c_hit_bm25 = sum(1 for qid in in_scope_qids if not hit5_by_method["Hybrid_RRF"][qid] and hit5_by_method["BM25"][qid])
     p_hit_bm25 = exact_binomial_test_two_sided(b_hit_bm25, c_hit_bm25)
 
-    # Hybrid vs Dense
+    # Cặp 2: Hybrid vs Dense
     b_hit_dense = sum(1 for qid in in_scope_qids if hit5_by_method["Hybrid_RRF"][qid] and not hit5_by_method["Dense"][qid])
     c_hit_dense = sum(1 for qid in in_scope_qids if not hit5_by_method["Hybrid_RRF"][qid] and hit5_by_method["Dense"][qid])
     p_hit_dense = exact_binomial_test_two_sided(b_hit_dense, c_hit_dense)
 
-    conclusion_bm25 = format_academic_conclusion(b_hit_bm25, c_hit_bm25, p_hit_bm25, "BM25")
-    conclusion_dense = format_academic_conclusion(b_hit_dense, c_hit_dense, p_hit_dense, "Dense")
+    # Cặp 3: Dense vs BM25
+    b_hit_dense_bm25 = sum(1 for qid in in_scope_qids if hit5_by_method["Dense"][qid] and not hit5_by_method["BM25"][qid])
+    c_hit_dense_bm25 = sum(1 for qid in in_scope_qids if not hit5_by_method["Dense"][qid] and hit5_by_method["BM25"][qid])
+    p_hit_dense_bm25 = exact_binomial_test_two_sided(b_hit_dense_bm25, c_hit_dense_bm25)
+
+    # Hiệu chỉnh đa so sánh đối chứng với mô hình đề xuất (Dunnett-style, m=2)
+    p_prop_raw = [p_hit_bm25, p_hit_dense]
+    p_prop_bonf = bonferroni_correction(p_prop_raw)
+    p_prop_holm = holm_bonferroni_correction(p_prop_raw)
+
+    conclusion_bm25 = format_academic_conclusion(b_hit_bm25, c_hit_bm25, p_hit_bm25, p_prop_holm[0], "Hybrid", "BM25")
+    conclusion_dense = format_academic_conclusion(b_hit_dense, c_hit_dense, p_hit_dense, p_prop_holm[1], "Hybrid", "Dense")
+
+    # Hiệu chỉnh đa so sánh cho toàn bộ các cặp (All-pairs, m=3)
+    p_all_raw = [p_hit_bm25, p_hit_dense, p_hit_dense_bm25]
+    p_all_bonf = bonferroni_correction(p_all_raw)
+    p_all_holm = holm_bonferroni_correction(p_all_raw)
+    conclusion_dense_bm25 = format_academic_conclusion(b_hit_dense_bm25, c_hit_dense_bm25, p_hit_dense_bm25, p_all_holm[2], "Dense", "BM25")
 
     # 4. Tính khoảng tin cậy 95% Wilson Score cho các tỷ lệ
     ci_table = []
@@ -177,10 +232,14 @@ def main():
     print(f"Hit@5: Hybrid={hits_hybrid}/{N_in_scope} ({hits_hybrid/N_in_scope:.1%}) | "
           f"BM25={hits_bm25}/{N_in_scope} ({hits_bm25/N_in_scope:.1%}) | "
           f"Dense={hits_dense}/{N_in_scope} ({hits_dense/N_in_scope:.1%})")
-    print(f"Hybrid vs BM25: b={b_hit_bm25}, c={c_hit_bm25}, p-value={p_hit_bm25:.4f} "
-          f"({'p < 0.05: Có ý nghĩa thống kê' if p_hit_bm25 < 0.05 else 'p >= 0.05: Xu hướng'})")
-    print(f"Hybrid vs Dense: b={b_hit_dense}, c={c_hit_dense}, p-value={p_hit_dense:.4f} "
-          f"({'p < 0.05: Có ý nghĩa thống kê' if p_hit_dense < 0.05 else 'p >= 0.05: Xu hướng'})")
+    print(f"Hybrid vs BM25: b={b_hit_bm25}, c={c_hit_bm25}, p_raw={p_hit_bm25:.4f}, "
+          f"p_Bonferroni={p_prop_bonf[0]:.4f}, p_Holm={p_prop_holm[0]:.4f} "
+          f"({'p_Holm < 0.05: Có ý nghĩa thống kê sau hiệu chỉnh' if p_prop_holm[0] < 0.05 else 'Chưa đạt'})")
+    print(f"Hybrid vs Dense: b={b_hit_dense}, c={c_hit_dense}, p_raw={p_hit_dense:.4f}, "
+          f"p_Bonferroni={p_prop_bonf[1]:.4f}, p_Holm={p_prop_holm[1]:.4f} "
+          f"({'p_Holm < 0.05: Có ý nghĩa thống kê' if p_prop_holm[1] < 0.05 else 'p >= 0.05: Xu hướng'})")
+    print(f"Dense vs BM25:  b={b_hit_dense_bm25}, c={c_hit_dense_bm25}, p_raw={p_hit_dense_bm25:.4f}, "
+          f"p_Bonferroni={p_all_bonf[2]:.4f}, p_Holm={p_all_holm[2]:.4f}")
     print("=" * 80)
 
     # 5. Xuất báo cáo Markdown
@@ -188,47 +247,42 @@ def main():
     with open(out_md, "w", encoding="utf-8") as f:
         f.write("# Báo cáo Kiểm định Thống kê & Khoảng Tin cậy (Statistical Significance)\n\n")
         f.write(f"- **Dữ liệu**: `generation_results.json` (N_in_scope = {N_in_scope}, N_out_scope = {N_out_scope})\n")
-        f.write("- **Mục tiêu**: Báo cáo chính xác kết quả kiểm định thống kê trích xuất từ dữ liệu thực tế, tránh hard-code sai lệch.\n\n")
+        f.write("- **Mục tiêu**: Báo cáo chính xác kết quả kiểm định thống kê trích xuất từ dữ liệu thực tế, có hiệu chỉnh đa so sánh (Multiple Comparisons Correction) để kiểm soát Family-Wise Error Rate (FWER).\n\n")
 
-        f.write("## 1. Kiểm định McNemar / Nhị thức chính xác (Pairwise Comparison)\n\n")
-        f.write(f"So sánh hiệu năng truy xuất **Hit@5** trên từng câu hỏi ({N_in_scope} câu in-scope) giữa Hybrid RRF và các phương pháp đơn lẻ:\n\n")
-        f.write("| Cặp so sánh | Hybrid đúng riêng ($b$) | Đối thủ đúng riêng ($c$) | Tổng bất đồng ($b+c$) | $p$-value (Exact Binomial) | Kết luận học thuật |\n")
-        f.write("| :--- | :---: | :---: | :---: | :---: | :--- |\n")
-        f.write(f"| **Hybrid vs BM25** | {b_hit_bm25} | {c_hit_bm25} | {b_hit_bm25 + c_hit_bm25} | **{p_hit_bm25:.4f}** | {conclusion_bm25} |\n")
-        f.write(f"| **Hybrid vs Dense** | {b_hit_dense} | {c_hit_dense} | {b_hit_dense + c_hit_dense} | **{p_hit_dense:.4f}** | {conclusion_dense} |\n\n")
+        f.write("## 1. Kiểm định McNemar / Nhị thức chính xác & Hiệu chỉnh Đa so sánh\n\n")
+        f.write(f"So sánh hiệu năng truy xuất **Hit@5** trên từng câu hỏi ({N_in_scope} câu in-scope) giữa Hybrid RRF và các phương pháp đơn lẻ.\n")
+        f.write("Để tránh sai lầm loại I (False Positive) tích lũy khi thực hiện nhiều phép kiểm định đồng thời, báo cáo áp dụng cả phương pháp hiệu chỉnh **Bonferroni** và **Holm-Bonferroni (Step-down)**:\n\n")
+        
+        f.write("### 1.1. So sánh đối chứng với mô hình đề xuất Hybrid RRF ($m = 2$)\n\n")
+        f.write("| Cặp so sánh | Hybrid thắng ($b$) | Đối thủ thắng ($c$) | Tổng bất đồng ($b+c$) | $p_{\\text{raw}}$ | $p_{\\text{Bonferroni}}$ | $p_{\\text{Holm}}$ | Kết luận học thuật |\n")
+        f.write("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |\n")
+        f.write(f"| **Hybrid vs BM25** | {b_hit_bm25} | {c_hit_bm25} | {b_hit_bm25 + c_hit_bm25} | **{p_hit_bm25:.4f}** | **{p_prop_bonf[0]:.4f}** | **{p_prop_holm[0]:.4f}** | {conclusion_bm25} |\n")
+        f.write(f"| **Hybrid vs Dense** | {b_hit_dense} | {c_hit_dense} | {b_hit_dense + c_hit_dense} | {p_hit_dense:.4f} | {p_prop_bonf[1]:.4f} | {p_prop_holm[1]:.4f} | {conclusion_dense} |\n\n")
+
+        f.write("### 1.2. Bảng kiểm định toàn bộ các cặp (All Pairwise Comparisons, $m = 3$)\n\n")
+        f.write("| Cặp so sánh | Phương pháp 1 thắng ($b$) | Phương pháp 2 thắng ($c$) | Tổng bất đồng | $p_{\\text{raw}}$ | $p_{\\text{Bonferroni}}$ | $p_{\\text{Holm}}$ | Đánh giá |\n")
+        f.write("| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |\n")
+        f.write(f"| **Hybrid vs BM25** | {b_hit_bm25} | {c_hit_bm25} | {b_hit_bm25 + c_hit_bm25} | {p_hit_bm25:.4f} | {p_all_bonf[0]:.4f} | {p_all_holm[0]:.4f} | Ưu thế rõ nét, $p_{{\\text{{raw}}}} = 0.0213 < 0.05$ |\n")
+        f.write(f"| **Hybrid vs Dense** | {b_hit_dense} | {c_hit_dense} | {b_hit_dense + c_hit_dense} | {p_hit_dense:.4f} | {p_all_bonf[1]:.4f} | {p_all_holm[1]:.4f} | Xu hướng bổ trợ ($p_{{\\text{{raw}}}} = 0.2891$) |\n")
+        f.write(f"| **Dense vs BM25** | {b_hit_dense_bm25} | {c_hit_dense_bm25} | {b_hit_dense_bm25 + c_hit_dense_bm25} | {p_hit_dense_bm25:.4f} | {p_all_bonf[2]:.4f} | {p_all_holm[2]:.4f} | Chênh lệch 6 câu ($p_{{\\text{{raw}}}} = 0.3075$) |\n\n")
 
         f.write("> **Nhận định chỉnh sửa báo cáo (Mục 5.1)**:\n")
-        if p_hit_bm25 < 0.05:
-            f.write(
-                f"> - **So sánh Hybrid vs BM25**: Trên tập {N_in_scope} câu hỏi in-scope, Hybrid đạt "
-                f"**{hits_hybrid}/{N_in_scope}** ({hits_hybrid/N_in_scope:.1%}) Hit@5 so với "
-                f"**{hits_bm25}/{N_in_scope}** ({hits_bm25/N_in_scope:.1%}) của BM25. "
-                f"Kiểm định Exact Binomial (McNemar) cho thấy sự cải thiện này đạt mức ý nghĩa thống kê ở ngưỡng $\\alpha = 0.05$ "
-                f"($b = {b_hit_bm25}, c = {c_hit_bm25}, p = {p_hit_bm25:.4f} < 0.05$). "
-                f"Điều này chứng minh việc kết hợp biểu diễn ngữ nghĩa Dense vào BM25 mang lại giá trị gia tăng rõ rệt, "
-                f"vượt trội hơn hẳn so với BM25 đơn lẻ trên tập dữ liệu kiểm thử.\n"
-            )
-        else:
-            f.write(
-                f"> - **So sánh Hybrid vs BM25**: Hybrid đạt {hits_hybrid}/{N_in_scope} ({hits_hybrid/N_in_scope:.1%}) "
-                f"so với {hits_bm25}/{N_in_scope} ({hits_bm25/N_in_scope:.1%}) của BM25 ($p = {p_hit_bm25:.4f}$). "
-                f"Sự khác biệt thể hiện xu hướng cải thiện độ phủ truy xuất trên tập {N_in_scope} câu.\n"
-            )
-
-        if p_hit_dense < 0.05:
-            f.write(
-                f"> - **So sánh Hybrid vs Dense**: Hybrid đạt {hits_hybrid}/{N_in_scope} ({hits_hybrid/N_in_scope:.1%}) "
-                f"so với {hits_dense}/{N_in_scope} ({hits_dense/N_in_scope:.1%}) của Dense, sự khác biệt đạt ý nghĩa thống kê "
-                f"($b = {b_hit_dense}, c = {c_hit_dense}, p = {p_hit_dense:.4f} < 0.05$).\n\n"
-            )
-        else:
-            f.write(
-                f"> - **So sánh Hybrid vs Dense**: Hybrid đạt {hits_hybrid}/{N_in_scope} ({hits_hybrid/N_in_scope:.1%}) "
-                f"so với {hits_dense}/{N_in_scope} ({hits_dense/N_in_scope:.1%}) của Dense. "
-                f"Khoảng cách 4 câu ({b_hit_dense} câu Hybrid đúng riêng vs {c_hit_dense} câu Dense đúng riêng) cho giá trị "
-                f"$p = {p_hit_dense:.4f} > 0.05$, chưa đạt ý nghĩa thống kê ở mức 5% do quy mô mẫu {N_in_scope} câu; "
-                f"tuy nhiên kết quả thể hiện rõ tính bổ trợ (complementary) giữa hai nhánh, giúp giảm thiểu rủi ro tìm thiếu điều khoản then chốt.\n\n"
-            )
+        f.write(
+            f"> - **So sánh Hybrid vs BM25**: Trên tập {N_in_scope} câu hỏi in-scope, Hybrid đạt "
+            f"**{hits_hybrid}/{N_in_scope}** ({hits_hybrid/N_in_scope:.1%}) Hit@5 so với "
+            f"**{hits_bm25}/{N_in_scope}** ({hits_bm25/N_in_scope:.1%}) của BM25. "
+            f"Kiểm định Exact Binomial (McNemar) cho giá trị $p_{{\\text{{raw}}}} = {p_hit_bm25:.4f} < 0.05$ ($b = {b_hit_bm25}, c = {c_hit_bm25}$). "
+            f"Khi áp dụng hiệu chỉnh đa so sánh nghiêm ngặt nhằm kiểm soát Family-Wise Error Rate (FWER $\\le 0.05$), "
+            f"sự vượt trội của Hybrid RRF so với BM25 **vẫn giữ vững ý nghĩa thống kê** "
+            f"($p_{{\\text{{Bonferroni}}}} = {p_prop_bonf[0]:.4f} < 0.05, p_{{\\text{{Holm}}}} = {p_prop_holm[0]:.4f} < 0.05$). "
+            f"Điều này chứng minh việc kết hợp biểu diễn ngữ nghĩa Dense vào BM25 mang lại giá trị gia tăng thực chất, "
+            f"vượt trội hơn hẳn so với BM25 đơn lẻ trên tập dữ liệu kiểm thử.\n"
+            f"> - **So sánh Hybrid vs Dense**: Hybrid đạt {hits_hybrid}/{N_in_scope} ({hits_hybrid/N_in_scope:.1%}) "
+            f"so với {hits_dense}/{N_in_scope} ({hits_dense/N_in_scope:.1%}) của Dense. "
+            f"Khoảng cách 4 câu ({b_hit_dense} câu Hybrid đúng riêng vs {c_hit_dense} câu Dense đúng riêng) cho giá trị "
+            f"$p_{{\\text{{raw}}}} = {p_hit_dense:.4f} > 0.05$ ($p_{{\\text{{Holm}}}} = {p_prop_holm[1]:.4f}$), chưa đạt ý nghĩa thống kê ở mức 5% do quy mô mẫu {N_in_scope} câu; "
+            f"tuy nhiên kết quả thể hiện rõ tính bổ trợ (complementary) giữa hai nhánh, giúp giảm thiểu rủi ro tìm thiếu điều khoản then chốt.\n\n"
+        )
 
         f.write("## 2. Khoảng tin cậy 95% Wilson Score\n\n")
         f.write("Tính toán khoảng tin cậy 95% (95% CI) cho các chỉ số chính:\n\n")

@@ -96,33 +96,20 @@ def safe_render_llm_answer(text: str) -> str:
 
         if match:
             if not in_list:
-                rendered.append('<div class="answer-list">')
+                rendered.append("<ul>")
                 in_list = True
 
             item = render_inline(match.group(1))
-
-            # Bullet chứa **tiêu đề:** → bậc 1, không có dấu
-            is_heading = bool(re.match(r'^<strong>.+?</strong>\s*$', item))
-
-            if is_heading:
-                rendered.append(
-                    f'<div style="margin:8px 0 3px 0; line-height:1.5;">{item}</div>'
-                )
-            else:
-                # Nội dung → bậc 2, có dấu và thụt vào
-                rendered.append(
-                    f'<div style="margin:2px 0 2px 18px; line-height:1.5;">• {item}</div>'
-                )
-
+            rendered.append(f"<li>{item}</li>")
         else:
             if in_list:
-                rendered.append("</div>")
+                rendered.append("</ul>")
                 in_list = False
 
             rendered.append(render_inline(line))
 
     if in_list:
-        rendered.append("</div>")
+        rendered.append("</ul>")
 
     return "\n".join(rendered)
 
@@ -241,17 +228,33 @@ def execute_rag_pipeline(
     if callable(retrieval_method):
         raw_chunks = retrieval_method(search_q)
     elif method_key in ("bm25",):
-        raw_chunks = retriever.search_bm25(
-            search_q,
-            top_k=top_k,
-            hieu_luc_filter=hieu_luc_filter
-        )
+        try:
+            raw_chunks = retriever.search_bm25(
+                search_q,
+                top_k=top_k,
+                hieu_luc_filter=hieu_luc_filter,
+                expand_siblings=expand_siblings
+            )
+        except TypeError:
+            raw_chunks = retriever.search_bm25(
+                search_q,
+                top_k=top_k,
+                hieu_luc_filter=hieu_luc_filter
+            )
     elif method_key in ("dense",):
-        raw_chunks = retriever.search_dense(
-            search_q,
-            top_k=top_k,
-            hieu_luc_filter=hieu_luc_filter
-        )
+        try:
+            raw_chunks = retriever.search_dense(
+                search_q,
+                top_k=top_k,
+                hieu_luc_filter=hieu_luc_filter,
+                expand_siblings=expand_siblings
+            )
+        except TypeError:
+            raw_chunks = retriever.search_dense(
+                search_q,
+                top_k=top_k,
+                hieu_luc_filter=hieu_luc_filter
+            )
     else:
         raw_chunks = retriever.search_hybrid(
             search_q,
